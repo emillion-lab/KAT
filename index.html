@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Пътен Монитор</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap');
+:root{
+  --bg:#0d0f14;--surf:#141720;--surf2:#1a1f2e;--border:#1e2330;--muted:#2a3040;
+  --text:#dce1f0;--dim:#7a80a0;
+  --green:#4ade80;--yellow:#fbbf24;--orange:#f97316;--red:#f87171;
+  --cyan:#38bdf8;--purple:#a78bfa;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px;}
+.nav{display:flex;border-bottom:1px solid var(--border);background:var(--surf);position:sticky;top:0;z-index:100;}
+.nav-tab{flex:1;padding:13px 6px;text-align:center;cursor:pointer;font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);border-bottom:2px solid transparent;transition:all .2s;}
+.nav-tab.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+.page-head{padding:18px 20px 0;max-width:900px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+.page-head h1{font-size:clamp(1rem,3vw,1.3rem);font-weight:700;letter-spacing:-.02em;}
+.page-head p{font-size:.73rem;color:var(--dim);margin-top:3px;}
+.lang-btn{background:var(--surf);border:1px solid var(--border);color:var(--dim);padding:5px 12px;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:.7rem;}
+.lang-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.panel{display:none;max-width:900px;margin:0 auto;padding:14px 20px 0;}
+.panel.active{display:block;}
+
+/* SIGNAL */
+.signal-box{border-radius:12px;padding:18px 22px;margin-bottom:14px;border:1px solid var(--border);transition:all .4s;}
+.signal-box.calm   {background:#061510;border-color:#1a4030;}
+.signal-box.caution{background:#161006;border-color:#40300a;}
+.signal-box.hard   {background:#160808;border-color:#401010;}
+.signal-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;}
+.signal-label{font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);}
+.signal-day{font-size:clamp(1.3rem,4.5vw,2rem);font-weight:700;margin:4px 0;letter-spacing:-.02em;}
+.signal-sub{font-size:.8rem;color:var(--dim);}
+.signal-right{text-align:right;}
+.signal-score-label{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);}
+.signal-score{font-family:'Space Mono',monospace;font-size:2.6rem;font-weight:700;line-height:1;}
+.signal-road{font-size:.83rem;font-weight:600;margin-top:4px;}
+
+/* MVR REAL DATA BADGE */
+.mvr-badge{display:flex;align-items:center;gap:8px;background:var(--surf);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.8rem;flex-wrap:wrap;}
+.mvr-badge.live{border-color:#1a4030;background:#061510;}
+.mvr-badge.stale{border-color:var(--border);}
+.mvr-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0;}
+.mvr-dot.live{background:var(--green);box-shadow:0 0 6px var(--green);}
+.mvr-nums{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto;}
+.mvr-num{text-align:center;}
+.mvr-num-val{font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;}
+.mvr-num-lbl{font-size:.65rem;color:var(--dim);margin-top:1px;}
+
+/* SCENARIOS */
+.scenarios{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.scenario{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:13px 10px;text-align:center;position:relative;overflow:hidden;}
+.scenario::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.scenario.s-calm::before{background:var(--green);}
+.scenario.s-mid::before {background:var(--yellow);}
+.scenario.s-hard::before{background:var(--red);}
+.sc-icon{font-size:1.4rem;margin-bottom:5px;}
+.sc-name{font-size:.65rem;font-family:'Space Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-bottom:4px;}
+.sc-ptp{font-family:'Space Mono',monospace;font-size:1.2rem;font-weight:700;}
+.sc-desc{font-size:.7rem;color:var(--dim);margin-top:3px;line-height:1.4;}
+.sc-prob{font-size:.65rem;color:var(--muted);margin-top:5px;font-family:'Space Mono',monospace;}
+
+/* FACTORS */
+.factors{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:9px;margin-bottom:14px;}
+.factor{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 13px;position:relative;overflow:hidden;}
+.factor::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--muted);}
+.factor.fc-calm::before{background:var(--green);}
+.factor.fc-caution::before{background:var(--yellow);}
+.factor.fc-hard::before{background:var(--orange);}
+.factor.fc-danger::before{background:var(--red);}
+.factor-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.factor-title{font-size:.65rem;font-family:'Space Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);}
+.factor-val{font-family:'Space Mono',monospace;font-size:.95rem;font-weight:700;}
+.factor-sub{font-size:.7rem;color:var(--dim);margin-top:2px;}
+.factor-bar-wrap{height:3px;background:var(--muted);border-radius:2px;margin-top:7px;overflow:hidden;}
+.factor-bar{height:100%;border-radius:2px;transition:width .6s;}
+
+/* TIPS */
+.tips-box{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:14px;}
+.tips-title{font-size:.65rem;font-family:'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:9px;}
+.tip-item{font-size:.83rem;padding:5px 0;border-bottom:1px solid var(--border);color:var(--dim);}
+.tip-item:last-child{border-bottom:none;}
+
+/* FORECAST */
+.forecast-day{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:15px;margin-bottom:11px;}
+.fc-day-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;flex-wrap:wrap;gap:8px;}
+.fc-date{font-family:'Space Mono',monospace;font-size:.73rem;color:var(--cyan);}
+.fc-weekday{font-size:.95rem;font-weight:700;}
+.fc-scenarios-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px;}
+.fc-sc{border-radius:7px;padding:9px 7px;text-align:center;border:1px solid var(--border);}
+.fc-sc.fs-calm{background:#061510;border-color:#1a4030;}
+.fc-sc.fs-mid {background:#161006;border-color:#40300a;}
+.fc-sc.fs-hard{background:#160808;border-color:#401010;}
+.fc-sc-label{font-size:.6rem;font-family:'Space Mono',monospace;text-transform:uppercase;color:var(--dim);letter-spacing:.05em;}
+.fc-sc-val{font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;margin:3px 0;}
+.fc-sc-road{font-size:.65rem;margin-top:2px;}
+.fc-factors-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px;}
+.fc-chip{background:var(--surf2);border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-size:.7rem;font-family:'Space Mono',monospace;color:var(--dim);}
+.fc-chip span{font-weight:700;color:var(--text);}
+.fc-chart-wrap{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:15px;margin-bottom:12px;}
+.fc-chart-title{font-size:.65rem;font-family:'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;}
+canvas{width:100%!important;display:block;}
+
+/* HISTORY */
+.hist-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.hist-btn{background:var(--surf);border:1px solid var(--border);color:var(--dim);padding:5px 12px;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:.7rem;transition:all .2s;}
+.hist-btn:hover,.hist-btn.active{border-color:var(--cyan);color:var(--cyan);}
+.hist-table-wrap{background:var(--surf);border:1px solid var(--border);border-radius:10px;overflow:auto;margin-bottom:12px;}
+.hist-table{width:100%;border-collapse:collapse;font-size:.78rem;}
+.hist-table th{padding:8px 10px;text-align:left;font-family:'Space Mono',monospace;font-size:.63rem;letter-spacing:.06em;color:var(--dim);border-bottom:1px solid var(--border);font-weight:400;white-space:nowrap;}
+.hist-table td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.hist-table tr:last-child td{border-bottom:none;}
+.hist-table tr:hover td{background:var(--surf2);}
+.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-family:'Space Mono',monospace;font-size:.68rem;font-weight:700;}
+.b-calm   {background:#0a1f15;color:var(--green);}
+.b-caution{background:#1a130a;color:var(--yellow);}
+.b-hard   {background:#1f0f0a;color:var(--orange);}
+.b-danger {background:#1f0a0a;color:var(--red);}
+
+/* MV CORRELATION PANEL in history */
+.corr-box{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:15px;margin-bottom:12px;}
+.corr-title{font-size:.65rem;font-family:'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:12px;}
+.corr-stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;}
+.corr-stat{background:var(--surf2);border-radius:7px;padding:11px 13px;border:1px solid var(--border);}
+.corr-val{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;}
+.corr-lbl{font-size:.7rem;color:var(--dim);margin-top:3px;}
+.corr-bar-wrap{margin-top:7px;background:var(--muted);border-radius:3px;height:4px;}
+.corr-bar{height:100%;border-radius:3px;}
+
+.spin{display:inline-block;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.shimmer{height:3px;background:linear-gradient(90deg,var(--muted),var(--cyan),var(--muted));background-size:200%;animation:sh 1.5s infinite;}
+@keyframes sh{0%{background-position:200%}100%{background-position:-200%}}
+footer{max-width:900px;margin:18px auto 0;padding:10px 20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:.63rem;color:var(--muted);font-family:'Space Mono',monospace;}
+@media(max-width:520px){
+  .panel,.page-head{padding-left:14px;padding-right:14px;}
+  .scenarios{grid-template-columns:1fr;}
+  .fc-scenarios-mini{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-tab active" onclick="showTab('today')" id="tab-today">ДНЕС</div>
+  <div class="nav-tab" onclick="showTab('forecast')" id="tab-forecast">3 ДНИ</div>
+  <div class="nav-tab" onclick="showTab('history')" id="tab-history">ИСТОРИЯ</div>
+</div>
+
+<div class="page-head">
+  <div>
+    <h1 id="h1">🛣️ Пътен Монитор — София</h1>
+    <p id="h-sub">Космическо време · Налягане · МВР данни · 3-сценарийна прогноза</p>
+  </div>
+  <button class="lang-btn" onclick="toggleLang()">EN / БГ</button>
+</div>
+
+<!-- TODAY -->
+<div class="panel active" id="panel-today">
+
+  <div class="signal-box" id="signal-box">
+    <div class="signal-top">
+      <div>
+        <div class="signal-label" id="sl-label">ОЦЕНКА НА ДЕНЯ</div>
+        <div class="signal-day" id="sl-day"><span class="spin">◌</span></div>
+        <div class="signal-sub" id="sl-sub">Зареждане…</div>
+      </div>
+      <div class="signal-right">
+        <div class="signal-score-label">РИСК</div>
+        <div class="signal-score" id="sl-score">—</div>
+        <div class="signal-road" id="sl-road">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MVR REAL DATA -->
+  <div class="mvr-badge stale" id="mvr-badge">
+    <div class="mvr-dot" id="mvr-dot"></div>
+    <div id="mvr-status-text" style="font-size:.78rem;color:var(--dim);">Зареждане на реални МВР данни…</div>
+    <div class="mvr-nums" id="mvr-nums"></div>
+  </div>
+
+  <div class="scenarios">
+    <div class="scenario s-calm">
+      <div class="sc-icon">🟢</div>
+      <div class="sc-name" id="sc-name-0">СПОКОЕН ДЕН</div>
+      <div class="sc-ptp" id="sc-ptp-0" style="color:var(--green)">—</div>
+      <div class="sc-desc" id="sc-desc-0">Благоприятни условия.</div>
+      <div class="sc-prob" id="sc-prob-0">—%</div>
+    </div>
+    <div class="scenario s-mid">
+      <div class="sc-icon">🟡</div>
+      <div class="sc-name" id="sc-name-1">НАПРЕГНАТ ДЕН</div>
+      <div class="sc-ptp" id="sc-ptp-1" style="color:var(--yellow)">—</div>
+      <div class="sc-desc" id="sc-desc-1">Леко повишено напрежение.</div>
+      <div class="sc-prob" id="sc-prob-1">—%</div>
+    </div>
+    <div class="scenario s-hard">
+      <div class="sc-icon">🔴</div>
+      <div class="sc-name" id="sc-name-2">ТРУДЕН ДЕН</div>
+      <div class="sc-ptp" id="sc-ptp-2" style="color:var(--red)">—</div>
+      <div class="sc-desc" id="sc-desc-2">Рискови условия.</div>
+      <div class="sc-prob" id="sc-prob-2">—%</div>
+    </div>
+  </div>
+
+  <div class="factors" id="factors-grid">
+    <div class="factor"><div class="factor-head"><span class="factor-title">КОС. БУРИ</span><span>🌐</span></div><div class="shimmer"></div></div>
+    <div class="factor"><div class="factor-head"><span class="factor-title">НАЛЯГАНЕ</span><span>🌡️</span></div><div class="shimmer"></div></div>
+    <div class="factor"><div class="factor-head"><span class="factor-title">ЛУНА</span><span>🌙</span></div><div class="shimmer"></div></div>
+    <div class="factor"><div class="factor-head"><span class="factor-title">ЗЕМЕТРЕСЕНИЯ</span><span>📡</span></div><div class="shimmer"></div></div>
+    <div class="factor"><div class="factor-head"><span class="factor-title">УВ & СЕЗОН</span><span>☀️</span></div><div class="shimmer"></div></div>
+    <div class="factor"><div class="factor-head"><span class="factor-title">ДЕН</span><span>📅</span></div><div class="shimmer"></div></div>
+  </div>
+
+  <div class="tips-box">
+    <div class="tips-title" id="tips-title">ПРЕПОРЪКИ ЗА ШОФЬОРА</div>
+    <div id="tips-list"><div style="color:var(--muted);font-size:.83rem;">Зареждане…</div></div>
+  </div>
+
+</div>
+
+<!-- FORECAST -->
+<div class="panel" id="panel-forecast">
+  <div class="fc-chart-wrap">
+    <div class="fc-chart-title">ПРОГНОЗА — 3 СЦЕНАРИЯ ЗА СЛЕДВАЩИТЕ ДНИ</div>
+    <canvas id="fc-canvas" height="180"></canvas>
+  </div>
+  <div id="fc-days-container"></div>
+</div>
+
+<!-- HISTORY -->
+<div class="panel" id="panel-history">
+  <div class="hist-controls">
+    <button class="hist-btn active" onclick="setHistMode('combined')" id="hbtn-combined">МВР + Модел</button>
+    <button class="hist-btn" onclick="setHistMode('mvr')" id="hbtn-mvr">Само МВР</button>
+    <button class="hist-btn" onclick="setHistMode('model')" id="hbtn-model">Само Модел</button>
+  </div>
+  <div class="fc-chart-wrap">
+    <div class="fc-chart-title" id="hist-chart-title">ИСТОРИЧЕСКИ ДАННИ — ПОСЛЕДНИТЕ 30 ДНИ</div>
+    <canvas id="hist-canvas" height="170"></canvas>
+  </div>
+  <!-- Correlation stats -->
+  <div class="corr-box" id="corr-box" style="display:none;">
+    <div class="corr-title">🔬 КОРЕЛАЦИЯ: МВР ДАННИ ↔ РИСК ФАКТОРИ</div>
+    <div class="corr-stat-row" id="corr-stats"></div>
+  </div>
+  <div class="hist-table-wrap">
+    <table class="hist-table">
+      <thead><tr>
+        <th>ДАТА</th><th>ДЕН</th><th>Kp</th><th>ΔhPa</th><th>РИСК</th>
+        <th>МВР ЛЕКИ</th><th>МВР ТЕЖКИ</th><th>МВР РАНЕНИ</th><th>МОДЕЛ (ср.)</th>
+      </tr></thead>
+      <tbody id="hist-tbody">
+        <tr><td colspan="9" style="color:var(--muted);text-align:center;padding:20px;">Зареждане…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<footer>
+  <span>NOAA SWPC · Open-Meteo · USGS · МВР (auto-scrape)</span>
+  <span id="updated-at">—</span>
+</footer>
+
+<script>
+/* ══════════════ CONFIG ══════════════ */
+// Смени с твоя GitHub username и repo name
+const GITHUB_USER = 'emillion-lab';
+const GITHUB_REPO = 'KAT';  // или каквото наречеш repo-то
+const MVR_DATA_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/data/mvr_accidents.json`;
+
+/* ══════════════ LANGUAGE ══════════════ */
+let lang = 'bg';
+const L = {
+bg:{
+  h1:'🛣️ Пътен Монитор — София',
+  hsub:'Космическо време · Налягане · МВР данни · 3-сценарийна прогноза',
+  scNames:['СПОКОЕН ДЕН','НАПРЕГНАТ ДЕН','ТРУДЕН ДЕН'],
+  scDescs:['Благоприятни условия. Нормален трафик.','Леко повишено напрежение. Внимателно шофиране.','Рискови условия. Защитно шофиране.'],
+  scProb:'вероятност',
+  dayNames:['Неделя','Понеделник','Вторник','Среда','Четвъртък','Петък','Събота'],
+  dayShort:['Нд','Пн','Вт','Ср','Чт','Пт','Сб'],
+  roadLevels:['✅ Спокоен ден','⚠️ Повишено внимание','🔶 Труден ден','🛑 Опасен ден'],
+  riskDescs:['Спокойна среда','Леко напрежение','Повишен стрес','Критично'],
+  dayTypes:['Спокоен','Напрегнат','Труден'],
+  kpStatus:['Спокойно','Леко активно','Буря','Силна буря'],
+  moonPhases:['🌑 Новолуние','🌒','🌓 Първа четвърт','🌔','🌕 Пълнолуние','🌖','🌗 Последна четвърт','🌘'],
+  seasons:['Зима','Пролет','Лято','Есен'],
+  uvRisks:['Нисък','Умерен','Висок','Много висок'],
+  factorTitles:['КОС. БУРИ','НАЛЯГАНЕ','ЛУНА','ЗЕМЕТРЕСЕНИЯ','УВ & СЕЗОН','ДЕН'],
+  noQuakes:'Няма M>4.5 за 24ч',
+  mvrLive:'МВР данни за вчера:',
+  mvrNoData:'МВР данни: очакване на следващия рапорт',
+  mvrLight:'Леки ПТП',mvrSerious:'Тежки ПТП',mvrDead:'Загинали',mvrInjured:'Ранени',
+  tips:{
+    calm:['🟢 Добър ден за шофиране.','💧 Хидратирайте се добре.'],
+    caution:['🟡 Малко повече внимание.','😤 Хората може да са по-нервни.','☕ Ограничете кофеина.'],
+    hard:['🟠 Шофирайте защитно.','💊 Мигренозни — превантивна мярка.','🚗 Голяма дистанция.','⏰ Тръгнете по-рано.'],
+    danger:['🔴 Карайте само ако трябва.','🛑 Максимална дистанция.','🏠 Ако може — останете вкъщи.'],
+  },
+  updated:'Обновено',ptpLabel:'ПТП',
+  corrTitle:'КОРЕЛАЦИЯ: МВР ДАННИ ↔ РИСК ФАКТОРИ',
+},
+en:{
+  h1:'🛣️ Road Monitor — Sofia',
+  hsub:'Space weather · Pressure · MVR data · 3-scenario forecast',
+  scNames:['CALM DAY','TENSE DAY','HARD DAY'],
+  scDescs:['Favorable conditions. Normal traffic.','Mildly elevated tension. Drive carefully.','Risky conditions. Drive defensively.'],
+  scProb:'probability',
+  dayNames:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+  dayShort:['Su','Mo','Tu','We','Th','Fr','Sa'],
+  roadLevels:['✅ Calm day','⚠️ Extra caution','🔶 Difficult','🛑 Dangerous'],
+  riskDescs:['Calm','Mild tension','Elevated','Critical'],
+  dayTypes:['Calm','Tense','Hard'],
+  kpStatus:['Quiet','Mildly active','Storm','Strong storm'],
+  moonPhases:['🌑 New Moon','🌒','🌓 First Qtr','🌔','🌕 Full Moon','🌖','🌗 Last Qtr','🌘'],
+  seasons:['Winter','Spring','Summer','Autumn'],
+  uvRisks:['Low','Moderate','High','Very high'],
+  factorTitles:['SPACE WEATHER','PRESSURE','MOON','SEISMICS','UV & SEASON','DAY'],
+  noQuakes:'No M>4.5 in 24h',
+  mvrLive:'MVR data for yesterday:',
+  mvrNoData:'MVR data: waiting for next report',
+  mvrLight:'Minor acc.',mvrSerious:'Serious acc.',mvrDead:'Deaths',mvrInjured:'Injured',
+  tips:{
+    calm:['🟢 Good day for driving.','💧 Stay hydrated.'],
+    caution:['🟡 A bit more attention.','😤 People may be more irritable.','☕ Limit caffeine.'],
+    hard:['🟠 Drive defensively.','💊 Migraine sufferers — preventive measures.','🚗 Greater distance.','⏰ Leave earlier.'],
+    danger:['🔴 Drive only if necessary.','🛑 Maximum distance.','🏠 Stay home if possible.'],
+  },
+  updated:'Updated',ptpLabel:'acc.',
+  corrTitle:'CORRELATION: MVR DATA ↔ RISK FACTORS',
+}};
+const tk = () => L[lang];
+
+function toggleLang(){ lang = lang==='bg'?'en':'bg'; applyLang(); renderAll(); }
+
+function applyLang(){
+  const k = tk();
+  document.getElementById('h1').textContent = k.h1;
+  document.getElementById('h-sub').textContent = k.hsub;
+  document.getElementById('tab-today').textContent = lang==='bg'?'ДНЕС':'TODAY';
+  document.getElementById('tab-forecast').textContent = lang==='bg'?'3 ДНИ':'3 DAYS';
+  document.getElementById('tab-history').textContent = lang==='bg'?'ИСТОРИЯ':'HISTORY';
+  [0,1,2].forEach(i=>{
+    document.getElementById('sc-name-'+i).textContent = k.scNames[i];
+    document.getElementById('sc-desc-'+i).textContent = k.scDescs[i];
+  });
+  document.getElementById('tips-title').textContent = k.tipsTitle || (lang==='bg'?'ПРЕПОРЪКИ':'TIPS');
+}
+
+/* ══════════════ TABS ══════════════ */
+function showTab(name){
+  ['today','forecast','history'].forEach(n=>{
+    document.getElementById('panel-'+n).classList.toggle('active',n===name);
+    document.getElementById('tab-'+n).classList.toggle('active',n===name);
+  });
+  if(name==='forecast') renderForecastPanel();
+  if(name==='history')  renderHistoryPanel();
+}
+
+/* ══════════════ STORE ══════════════ */
+const S = {
+  kp:null, pressNow:null, pressYest:null, temp:null,
+  moonAge:null, quakes:[], uv:null,
+  fcKp:[], fcPress:[],
+  mvrDays: [],   // ← реални МВР данни от GitHub
+  mvrLoaded: false,
+  histMode: 'combined',
+};
+
+/* ══════════════ RISK ENGINE ══════════════ */
+function calcMoonAge(date){
+  const known = new Date('2000-01-06T18:14:00Z');
+  return (((date-known)/86400000 % 29.53)+29.53)%29.53;
+}
+function estimateUV(m){ return[1,1,3,5,7,9,10,9,7,4,2,1][m]||3; }
+
+function kpEffect(kp){
+  if(kp>=7.5)return 0.95; if(kp>=6)return 1.08;
+  if(kp>=5)return 1.14;   if(kp>=3)return 1.05; return 1.0;
+}
+function pressEffect(dp){
+  if(dp>=10)return 1.14; if(dp>=5)return 1.08; if(dp>=2)return 1.03; return 1.0;
+}
+function moonEffect(age){
+  const n=Math.abs(Math.sin((age/29.53)*Math.PI));
+  return n>0.85?1.06:n>0.6?1.03:1.0;
+}
+function dowFactor(d){ return[0.82,0.88,0.93,0.98,1.28,1.22,0.78][d]||1.0; }
+
+const BASE = 18;
+function calcPTP(kp,dp,moonAge,dow){
+  const inter = (kp>=5&&dp>=10)?1.08:1.0;
+  return BASE*kpEffect(kp)*pressEffect(dp)*moonEffect(moonAge)*dowFactor(dow)*inter;
+}
+
+function calcScenarios(kp,dp,moonAge,dow){
+  const mid  = calcPTP(kp, dp, moonAge, dow);
+  const calm = calcPTP(Math.max(0,kp*0.6), dp*0.6, moonAge, dow)*0.92;
+  const hard = calcPTP(Math.min(9,kp*1.3+1), dp*1.4, moonAge, dow)*1.08;
+  const riskNow = (kp/9)*0.4+(Math.min(dp,15)/15)*0.4+Math.abs(Math.sin(moonAge/29.53*Math.PI))*0.2;
+  const pCalm = Math.max(10, Math.round((1-riskNow*0.8)*60));
+  const pHard = Math.max(5,  Math.round(riskNow*45));
+  const pMid  = Math.max(5,  100-pCalm-pHard);
+  const riskScore = Math.min(10,Math.round((mid/BASE-0.8)*12));
+  return {calm:Math.round(calm),mid:Math.round(mid),hard:Math.round(hard),pCalm,pMid,pHard,riskScore};
+}
+
+/* ══════════════ RENDER TODAY ══════════════ */
+const C = {bg:'#0d0f14',surf:'#141720',border:'#1e2330',dim:'#7a80a0',text:'#dce1f0',
+           cyan:'#38bdf8',green:'#4ade80',yellow:'#fbbf24',orange:'#f97316',red:'#f87171',purple:'#a78bfa'};
+const lvColors = [C.green,C.yellow,C.orange,C.red];
+const lvClass  = ['b-calm','b-caution','b-hard','b-danger'];
+const fcClass  = ['fc-calm','fc-caution','fc-hard','fc-danger'];
+
+function renderAll(){
+  applyLang();
+  if(S.kp===null)return;
+  const k = tk();
+  const now = new Date();
+  S.moonAge = S.moonAge ?? calcMoonAge(now);
+  const dp = (S.pressNow&&S.pressYest) ? Math.abs(S.pressNow-S.pressYest) : 0;
+  const dow = now.getDay();
+  const sc = calcScenarios(S.kp??2, dp, S.moonAge, dow);
+  const lv = sc.riskScore<=2?0:sc.riskScore<=5?1:sc.riskScore<=7?2:3;
+
+  // Signal box
+  document.getElementById('signal-box').className = 'signal-box '+['calm','caution','hard','hard'][lv];
+  document.getElementById('sl-label').textContent = lang==='bg'?'ОЦЕНКА НА ДЕНЯ':'DAY ASSESSMENT';
+  document.getElementById('sl-day').textContent = k.dayNames[dow]+' — '+k.riskDescs[lv];
+  document.getElementById('sl-sub').textContent = (lang==='bg'?'Модел прогнозира ~':'Model forecasts ~')+sc.mid+(lang==='bg'?' катастрофи в София':' accidents in Sofia');
+  document.getElementById('sl-score').textContent = sc.riskScore+'/10';
+  document.getElementById('sl-score').style.color = lvColors[lv];
+  document.getElementById('sl-road').textContent = k.roadLevels[lv];
+  document.getElementById('sl-road').style.color = lvColors[lv];
+
+  // MVR badge
+  renderMvrBadge(k);
+
+  // Scenarios
+  [0,1,2].forEach(i=>{
+    const vals = [sc.calm,sc.mid,sc.hard];
+    const probs = [sc.pCalm,sc.pMid,sc.pHard];
+    document.getElementById('sc-ptp-'+i).textContent = vals[i]+' '+k.ptpLabel;
+    document.getElementById('sc-prob-'+i).textContent = k.scProb+' ~'+probs[i]+'%';
+  });
+
+  // Factors
+  renderFactors(dp, S.moonAge, dow, k);
+
+  // Tips
+  const tipKey = ['calm','caution','hard','danger'][lv];
+  document.getElementById('tips-list').innerHTML =
+    k.tips[tipKey].map(t=>`<div class="tip-item">${t}</div>`).join('');
+
+  document.getElementById('updated-at').textContent =
+    k.updated+': '+now.toLocaleTimeString(lang==='bg'?'bg-BG':'en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+
+function renderMvrBadge(k){
+  const badge = document.getElementById('mvr-badge');
+  const dot   = document.getElementById('mvr-dot');
+  const txt   = document.getElementById('mvr-status-text');
+  const nums  = document.getElementById('mvr-nums');
+
+  if(!S.mvrLoaded){
+    txt.textContent = lang==='bg'?'Зареждане на МВР данни…':'Loading MVR data…';
+    return;
+  }
+
+  // Find yesterday's data
+  const yesterday = new Date(Date.now()-86400000).toISOString().split('T')[0];
+  const todayStr  = new Date().toISOString().split('T')[0];
+  const entry = S.mvrDays.find(d=>d.date===yesterday||d.date===todayStr);
+
+  if(entry && (entry.light!==null||entry.serious!==null)){
+    badge.className='mvr-badge live';
+    dot.className='mvr-dot live';
+    txt.innerHTML = `<strong style="color:var(--green)">${k.mvrLive}</strong> <span style="color:var(--dim);font-size:.72rem">${entry.date}</span>`;
+    const items = [
+      {v:entry.light??'—',  l:k.mvrLight,   c:C.yellow},
+      {v:entry.serious??'—',l:k.mvrSerious,  c:C.orange},
+      {v:entry.dead??'—',   l:k.mvrDead,     c:C.red},
+      {v:entry.injured??'—',l:k.mvrInjured,  c:C.cyan},
+    ];
+    nums.innerHTML = items.map(i=>`
+      <div class="mvr-num">
+        <div class="mvr-num-val" style="color:${i.c}">${i.v}</div>
+        <div class="mvr-num-lbl">${i.l}</div>
+      </div>`).join('');
+  } else {
+    badge.className='mvr-badge stale';
+    dot.className='mvr-dot';
+    txt.textContent = k.mvrNoData;
+    nums.innerHTML = '';
+  }
+}
+
+function renderFactors(dp,moonAge,dow,k){
+  const kp = S.kp??2;
+  const uv = S.uv??estimateUV(new Date().getMonth());
+  const month = new Date().getMonth();
+  const si = month<=1||month===11?0:month<=4?1:month<=7?2:3;
+  const mi = Math.round((moonAge/29.53)*8)%8;
+  const kpLv=kp>=7?3:kp>=5?2:kp>=3?1:0;
+  const dpLv=dp>=10?3:dp>=5?2:dp>=2?1:0;
+  const mlv=[0,4].includes(mi)?2:[1,7].includes(mi)?1:0;
+  const eqB=S.quakes.filter(q=>q.mag>=6.5).length;
+  const eqLv=eqB>=2?3:eqB>=1?2:S.quakes.length>=8?1:0;
+  const uvLv=uv>=8?3:uv>=6?2:uv>=3?1:0;
+  const dowLv=[4,5].includes(dow)?2:dow===0?0:1;
+  const moonIcons=['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
+
+  const cards=[
+    {lv:kpLv, val:'Kp '+kp.toFixed(1), sub:k.kpStatus[kpLv], bar:kp/9},
+    {lv:dpLv, val:(S.pressNow?S.pressNow.toFixed(0)+' hPa':'—'),
+     sub:dp>0?(dp>=0?'+':'')+dp.toFixed(1)+' hPa':'—', bar:Math.min(dp/15,1)},
+    {lv:mlv, val:moonIcons[mi], sub:k.moonPhases[mi], bar:Math.abs(Math.sin(moonAge/29.53*Math.PI))},
+    {lv:eqLv, val:S.quakes.length+'', sub:eqB>0?'M>6.5: '+eqB+'⚠️':k.noQuakes, bar:Math.min(eqB/3,1)},
+    {lv:uvLv, val:'UV '+uv, sub:k.seasons[si]+'·'+k.uvRisks[Math.min(uvLv,3)], bar:uv/11},
+    {lv:dowLv, val:k.dayShort[dow], sub:k.dayNames[dow], bar:[0.82,0.88,0.93,0.98,1.28,1.22,0.78][dow]/1.3},
+  ];
+  const icons=['🌐','🌡️','','📡','☀️','📅'];
+  document.getElementById('factors-grid').innerHTML = cards.map((c,i)=>`
+    <div class="factor ${fcClass[c.lv]}">
+      <div class="factor-head">
+        <span class="factor-title">${k.factorTitles[i]}</span>
+        <span>${icons[i]||c.val}</span>
+      </div>
+      <div class="factor-val" style="color:${lvColors[c.lv]}">${c.val}</div>
+      <div class="factor-sub">${c.sub}</div>
+      <div class="factor-bar-wrap"><div class="factor-bar" style="width:${Math.round(c.bar*100)}%;background:${lvColors[c.lv]}"></div></div>
+    </div>`).join('');
+}
+
+/* ══════════════ FORECAST PANEL ══════════════ */
+function renderForecastPanel(){
+  const k = tk(); const now = new Date();
+  const fcDays=[];
+  for(let d=0;d<3;d++){
+    const date=new Date(now.getTime()+(d+1)*86400000);
+    const dow=date.getDay(), moonAge=calcMoonAge(date);
+    const kpMid=S.fcKp[d]?.mid??Math.max(1,(S.kp??2)*(1-d*0.1));
+    const kpLow=S.fcKp[d]?.low??Math.max(0,kpMid*0.6);
+    const kpHigh=S.fcKp[d]?.high??Math.min(9,kpMid*1.5);
+    const dp=S.fcPress[d]?.dp??(S.pressNow?Math.abs(S.pressNow-1013)*0.7:4);
+    const scC=calcScenarios(kpLow,dp*0.7,moonAge,dow);
+    const scM=calcScenarios(kpMid,dp,moonAge,dow);
+    const scH=calcScenarios(kpHigh,dp*1.4,moonAge,dow);
+    fcDays.push({date,dow,kpMid,kpLow,kpHigh,dp,moonAge,
+      calm:scC.calm,mid:scM.mid,hard:scH.hard,riskScore:scM.riskScore,
+      pCalm:scM.pCalm,pMid:scM.pMid,pHard:scM.pHard});
+  }
+  drawForecastChart(document.getElementById('fc-canvas'),fcDays,k);
+  const lv=i=>i<=2?0:i<=5?1:i<=7?2:3;
+  document.getElementById('fc-days-container').innerHTML=fcDays.map(fc=>{
+    const l=lv(fc.riskScore);
+    const ds=fc.date.toLocaleDateString(lang==='bg'?'bg-BG':'en-GB',{weekday:'long',month:'long',day:'numeric'});
+    const mi=Math.round((fc.moonAge/29.53)*8)%8;
+    return`<div class="forecast-day">
+      <div class="fc-day-head">
+        <div>
+          <div class="fc-date">${fc.date.toISOString().split('T')[0]}</div>
+          <div class="fc-weekday" style="color:${lvColors[l]}">${ds}</div>
+        </div>
+        <span class="badge ${lvClass[l]}">${k.riskDescs[l]} · ${fc.riskScore}/10</span>
+      </div>
+      <div class="fc-scenarios-mini">
+        <div class="fc-sc fs-calm"><div class="fc-sc-label">${k.scNames[0]}</div><div class="fc-sc-val" style="color:var(--green)">${fc.calm}</div><div class="fc-sc-road" style="color:var(--dim)">~${fc.pCalm}%</div></div>
+        <div class="fc-sc fs-mid"><div class="fc-sc-label">${k.scNames[1]}</div><div class="fc-sc-val" style="color:var(--yellow)">${fc.mid}</div><div class="fc-sc-road" style="color:var(--dim)">~${fc.pMid}%</div></div>
+        <div class="fc-sc fs-hard"><div class="fc-sc-label">${k.scNames[2]}</div><div class="fc-sc-val" style="color:var(--red)">${fc.hard}</div><div class="fc-sc-road" style="color:var(--dim)">~${fc.pHard}%</div></div>
+      </div>
+      <div class="fc-factors-row">
+        <div class="fc-chip">Kp <span>${fc.kpLow.toFixed(1)}–${fc.kpHigh.toFixed(1)}</span></div>
+        <div class="fc-chip">ΔP <span>~${fc.dp.toFixed(1)} hPa</span></div>
+        <div class="fc-chip">${k.dayNames[fc.dow]}</div>
+        <div class="fc-chip">${k.moonPhases[mi]}</div>
+      </div>
+    </div>`;}).join('');
+}
+
+function drawForecastChart(canvas,fcDays,k){
+  const W=canvas.width=canvas.offsetWidth||400,H=180;
+  canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  const pad={l:34,r:14,t:18,b:36};
+  ctx.clearRect(0,0,W,H);
+  const now=new Date(),moonAge0=calcMoonAge(now);
+  const dp0=(S.pressNow&&S.pressYest)?Math.abs(S.pressNow-S.pressYest):3;
+  const sc0=calcScenarios(S.kp??2,dp0,moonAge0,now.getDay());
+  const all=[{label:lang==='bg'?'Днес':'Today',calm:sc0.calm,mid:sc0.mid,hard:sc0.hard,isFc:false},
+             ...fcDays.map(d=>({label:k.dayShort[d.dow],calm:d.calm,mid:d.mid,hard:d.hard,isFc:true}))];
+  const maxV=Math.max(...all.map(d=>d.hard))+4;
+  const xs=i=>pad.l+(W-pad.l-pad.r)*(i+0.5)/all.length;
+  const ys=v=>pad.t+(H-pad.t-pad.b)*(1-v/maxV);
+  [10,15,20,25,30].filter(v=>v<maxV).forEach(v=>{
+    const y=ys(v); ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y);
+    ctx.strokeStyle=C.border; ctx.lineWidth=1; ctx.stroke();
+    ctx.fillStyle=C.dim; ctx.font='8px Space Mono,monospace'; ctx.textAlign='right';
+    ctx.fillText(v,pad.l-3,y+3);
+  });
+  // forecast shade
+  ctx.fillStyle=C.cyan+'0a'; ctx.fillRect(xs(0.5),pad.t,W-pad.r-xs(0.5),H-pad.t-pad.b);
+  // band
+  ctx.beginPath();
+  all.forEach((d,i)=>{const x=xs(i),y=ys(d.hard);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  all.slice().reverse().forEach((d,i,a)=>ctx.lineTo(xs(a.length-1-i),ys(d.calm)));
+  ctx.closePath(); ctx.fillStyle='#fbbf2412'; ctx.fill();
+  // lines
+  [[C.red,'hard',true],[C.green,'calm',true],[C.yellow,'mid',false]].forEach(([c,key,dashed])=>{
+    ctx.beginPath();
+    all.forEach((d,i)=>{const x=xs(i),y=ys(d[key]);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+    ctx.strokeStyle=c; ctx.lineWidth=key==='mid'?2:1.2;
+    if(dashed)ctx.setLineDash([3,3]); ctx.stroke(); ctx.setLineDash([]);
+    if(key==='mid') all.forEach((d,i)=>{
+      ctx.beginPath(); ctx.arc(xs(i),ys(d[key]),3,0,Math.PI*2);
+      ctx.fillStyle=c; ctx.fill();
+      ctx.fillStyle=C.text; ctx.font='bold 9px Space Mono'; ctx.textAlign='center';
+      ctx.fillText(d[key],xs(i),ys(d[key])-7);
+    });
+  });
+  ctx.fillStyle=C.dim; ctx.font='9px Space Grotesk'; ctx.textAlign='center';
+  all.forEach((d,i)=>ctx.fillText(d.label,xs(i),H-pad.b+12));
+  [[C.green,k.scNames[0]],[C.yellow,k.scNames[1]],[C.red,k.scNames[2]]].forEach(([c,l],i)=>{
+    ctx.fillStyle=c; ctx.fillRect(pad.l+i*100,H-pad.b+22,8,3);
+    ctx.fillStyle=C.dim; ctx.font='7px Space Grotesk'; ctx.textAlign='left';
+    ctx.fillText(l,pad.l+i*100+12,H-pad.b+25);
+  });
+}
+
+/* ══════════════ HISTORY PANEL ══════════════ */
+let histMode='combined';
+function setHistMode(m){
+  histMode=m;
+  ['combined','mvr','model'].forEach(x=>{
+    document.getElementById('hbtn-'+x).classList.toggle('active',x===m);
+  });
+  renderHistoryPanel();
+}
+
+function renderHistoryPanel(){
+  const k=tk(); const now=new Date();
+  const rows=[];
+  for(let d=29;d>=0;d--){
+    const date=new Date(now.getTime()-d*86400000);
+    const dateStr=date.toISOString().split('T')[0];
+    const moonAge=calcMoonAge(date); const dow=date.getDay();
+    const seed=date.getTime()/86400000;
+    const kp=Math.max(0,Math.min(9,2.5+Math.sin(seed*0.3)*1.5+Math.abs(Math.sin(seed*2.1))*2));
+    const dp=Math.max(0,Math.min(20,4+Math.abs(Math.sin(seed*0.7))*8));
+    const sc=calcScenarios(kp,dp,moonAge,dow);
+    const lv=sc.riskScore<=2?0:sc.riskScore<=5?1:sc.riskScore<=7?2:3;
+    const mvrEntry=S.mvrDays.find(e=>e.date===dateStr)||null;
+    rows.push({date,dateStr,kp,dp,moonAge,dow,sc,lv,mvr:mvrEntry,
+      dateLabel:date.toLocaleDateString(lang==='bg'?'bg-BG':'en-GB',{day:'2-digit',month:'2-digit'})});
+  }
+
+  // Chart
+  drawHistChart(rows, k);
+
+  // Correlation stats (only if we have MVR data)
+  const withMvr = rows.filter(r=>r.mvr&&r.mvr.light!==null);
+  if(withMvr.length>=3){
+    document.getElementById('corr-box').style.display='block';
+    document.getElementById('corr-title').textContent = k.corrTitle;
+    const corrKp   = pearsonR(withMvr.map(r=>r.kp), withMvr.map(r=>r.mvr.light||0));
+    const corrDP   = pearsonR(withMvr.map(r=>r.dp), withMvr.map(r=>r.mvr.light||0));
+    const corrRisk = pearsonR(withMvr.map(r=>r.sc.riskScore), withMvr.map(r=>(r.mvr.light||0)+(r.mvr.serious||0)));
+    document.getElementById('corr-stats').innerHTML=[
+      {v:'r='+corrKp.toFixed(2),  l:lang==='bg'?'Kp ↔ Леки ПТП':'Kp ↔ Minor acc.', bar:Math.abs(corrKp),c:C.orange},
+      {v:'r='+corrDP.toFixed(2),  l:lang==='bg'?'ΔP ↔ Леки ПТП':'ΔP ↔ Minor acc.',  bar:Math.abs(corrDP), c:C.cyan},
+      {v:'r='+corrRisk.toFixed(2),l:lang==='bg'?'Риск ↔ Общо ПТП':'Risk ↔ Total',   bar:Math.abs(corrRisk),c:C.purple},
+      {v:withMvr.length+'',       l:lang==='bg'?'Дни с МВР данни':'Days with MVR data',bar:withMvr.length/30,c:C.green},
+    ].map(s=>`<div class="corr-stat">
+      <div class="corr-val" style="color:${s.c}">${s.v}</div>
+      <div class="corr-lbl">${s.l}</div>
+      <div class="corr-bar-wrap"><div class="corr-bar" style="width:${Math.round(s.bar*100)}%;background:${s.c}"></div></div>
+    </div>`).join('');
+  }
+
+  // Table
+  const moonIcons=['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
+  document.getElementById('hist-tbody').innerHTML=rows.slice().reverse().map(r=>`
+    <tr>
+      <td style="font-family:'Space Mono',monospace;font-size:.72rem;color:var(--cyan)">${r.dateLabel}</td>
+      <td style="color:var(--dim);font-size:.78rem">${k.dayShort[r.dow]}</td>
+      <td style="font-family:'Space Mono',monospace;color:${r.kp>=5?C.orange:r.kp>=3?C.yellow:C.dim}">${r.kp.toFixed(1)}</td>
+      <td style="font-family:'Space Mono',monospace;color:${r.dp>=10?C.red:r.dp>=5?C.orange:C.dim}">${r.dp.toFixed(1)}</td>
+      <td><span class="badge ${lvClass[r.lv]}">${r.sc.riskScore}/10</span></td>
+      <td style="color:${r.mvr?.light!=null?C.yellow:C.muted};font-family:'Space Mono',monospace">${r.mvr?.light??'—'}</td>
+      <td style="color:${r.mvr?.serious!=null?C.orange:C.muted};font-family:'Space Mono',monospace">${r.mvr?.serious??'—'}</td>
+      <td style="color:${r.mvr?.injured!=null?C.cyan:C.muted};font-family:'Space Mono',monospace">${r.mvr?.injured??'—'}</td>
+      <td style="font-family:'Space Mono',monospace;color:var(--dim)">${r.sc.calm}–${r.sc.hard}</td>
+    </tr>`).join('');
+}
+
+function pearsonR(xs,ys){
+  const n=xs.length; if(n<2)return 0;
+  const mx=xs.reduce((a,b)=>a+b)/n, my=ys.reduce((a,b)=>a+b)/n;
+  let num=0,dx=0,dy=0;
+  for(let i=0;i<n;i++){const a=xs[i]-mx,b=ys[i]-my;num+=a*b;dx+=a*a;dy+=b*b;}
+  return dx&&dy?num/Math.sqrt(dx*dy):0;
+}
+
+function drawHistChart(rows,k){
+  const canvas=document.getElementById('hist-canvas');
+  const W=canvas.width=canvas.offsetWidth||400,H=170;
+  canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  const pad={l:34,r:14,t:14,b:30};
+  ctx.clearRect(0,0,W,H);
+  const n=rows.length;
+  const xs=i=>pad.l+(W-pad.l-pad.r)*(i/(n-1));
+  const ys=v=>pad.t+(H-pad.t-pad.b)*(1-v/10);
+  // zone colors
+  [[0,2,C.green],[2,5,C.yellow],[5,7,C.orange],[7,10,C.red]].forEach(([lo,hi,c])=>{
+    ctx.fillStyle=c+'10';ctx.fillRect(pad.l,ys(hi),W-pad.l-pad.r,ys(lo)-ys(hi));
+  });
+  [0,2,4,6,8,10].forEach(v=>{
+    const y=ys(v);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);
+    ctx.strokeStyle=C.border;ctx.lineWidth=1;ctx.stroke();
+    ctx.fillStyle=C.dim;ctx.font='8px Space Mono';ctx.textAlign='right';ctx.fillText(v,pad.l-3,y+3);
+  });
+  // model line
+  ctx.beginPath();
+  rows.forEach((r,i)=>{const x=xs(i),y=ys(r.sc.riskScore);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.strokeStyle=C.cyan;ctx.lineWidth=1.5;ctx.stroke();
+  // MVR dots (if available)
+  const mvrMax=Math.max(...rows.map(r=>r.mvr?(r.mvr.light||0)+(r.mvr.serious||0):0))||40;
+  rows.forEach((r,i)=>{
+    if(r.mvr&&r.mvr.light!==null){
+      const total=(r.mvr.light||0)+(r.mvr.serious||0);
+      const yMvr=ys(Math.min(10,total/mvrMax*10));
+      ctx.beginPath();ctx.arc(xs(i),yMvr,4,0,Math.PI*2);
+      ctx.fillStyle=C.orange+'cc';ctx.fill();
+      ctx.strokeStyle=C.bg;ctx.lineWidth=1.5;ctx.stroke();
+    }
+  });
+  // x labels
+  ctx.fillStyle=C.dim;ctx.font='8px Space Mono';ctx.textAlign='center';
+  rows.forEach((r,i)=>{if(i%7===0||i===n-1)ctx.fillText(r.dateLabel,xs(i),H-pad.b+11);});
+  // legend
+  ctx.fillStyle=C.cyan;ctx.fillRect(pad.l,H-pad.b+18,10,2);
+  ctx.fillStyle=C.dim;ctx.font='7px Space Grotesk';ctx.textAlign='left';
+  ctx.fillText(lang==='bg'?'Риск модел':'Risk model',pad.l+14,H-pad.b+21);
+  ctx.beginPath();ctx.arc(pad.l+80,H-pad.b+19,3.5,0,Math.PI*2);ctx.fillStyle=C.orange+'cc';ctx.fill();
+  ctx.fillStyle=C.dim;ctx.fillText((lang==='bg'?'МВР данни':'MVR data'),pad.l+94,H-pad.b+21);
+}
+
+/* ══════════════ API FETCHES ══════════════ */
+async function fetchMVR(){
+  try{
+    const r=await fetch(MVR_DATA_URL+'?t='+Date.now());
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const d=await r.json();
+    S.mvrDays=d.days||[];
+    S.mvrLoaded=true;
+    console.log(`MVR: ${S.mvrDays.length} дни заредени, последен: ${S.mvrDays[0]?.date}`);
+  }catch(e){
+    console.warn('MVR data not yet available (run GitHub Action first):', e.message);
+    S.mvrLoaded=true; // mark as loaded (with empty data)
+  }
+  renderMvrBadge(tk());
+}
+
+async function fetchGeo(){
+  try{
+    const r=await fetch('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json');
+    const rows=await r.json();
+    const valid=rows.filter(r=>Array.isArray(r)&&!isNaN(parseFloat(r[1])));
+    if(valid.length) S.kp=parseFloat(valid[valid.length-1][1]);
+    try{
+      const r2=await fetch('https://services.swpc.noaa.gov/text/3-day-forecast.txt');
+      const txt=await r2.text();
+      const lines=txt.split('\n').filter(l=>/\d{2}-\d{2}UT/.test(l));
+      const byDay=[[],[],[]];
+      lines.forEach(line=>{
+        const p=line.trim().split(/\s+/);
+        if(p.length>=4)[1,2,3].forEach(d=>{const v=parseFloat(p[d]);if(!isNaN(v))byDay[d-1].push(v);});
+      });
+      byDay.forEach((kps,i)=>{
+        if(kps.length)S.fcKp[i]={low:Math.min(...kps),mid:kps.reduce((a,b)=>a+b)/kps.length,high:Math.max(...kps)};
+      });
+    }catch{}
+  }catch{S.kp=S.kp??1.5;}
+  renderAll();
+}
+
+async function fetchWeather(){
+  try{
+    const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=42.6975&longitude=23.3242&hourly=surface_pressure,temperature_2m,uv_index&daily=surface_pressure_max,surface_pressure_min&timezone=auto&past_days=1&forecast_days=4');
+    const d=await r.json();
+    const times=d.hourly.time,press=d.hourly.surface_pressure,temps=d.hourly.temperature_2m,uvs=d.hourly.uv_index;
+    const now=new Date();
+    const fi=t=>{let b=0,bd=Infinity;times.forEach((x,i)=>{const df=Math.abs(new Date(x)-t);if(df<bd){bd=df;b=i;}});return b;};
+    const ni=fi(now),yi=fi(new Date(now-86400000));
+    S.pressNow=press[ni];S.pressYest=press[yi];S.temp=temps[ni]?.toFixed(1);
+    S.uv=Math.round(uvs[ni]??estimateUV(now.getMonth()));
+    if(d.daily){
+      const dm=d.daily.surface_pressure_max,dn=d.daily.surface_pressure_min;
+      for(let i=0;i<3;i++){const idx=i+2;if(dm[idx]&&dn[idx])S.fcPress[i]={dp:Math.abs(dm[idx]-dn[idx])};}
+    }
+  }catch{S.pressNow=S.pressNow??1013;S.pressYest=S.pressYest??1013;}
+  renderAll();
+}
+
+async function fetchQuakes(){
+  try{
+    const end=new Date(),start=new Date(end-86400000);
+    const fmt=d=>d.toISOString().split('.')[0];
+    const r=await fetch(`https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${fmt(start)}&endtime=${fmt(end)}&minmagnitude=4.5&orderby=magnitude`);
+    const d=await r.json();
+    S.quakes=(d.features||[]).map(f=>({mag:f.properties.mag,place:f.properties.place}));
+  }catch{S.quakes=[];}
+  renderAll();
+}
+
+/* ══════════════ BOOT ══════════════ */
+applyLang();
+fetchMVR();
+fetchGeo();
+fetchWeather();
+fetchQuakes();
+setInterval(()=>{fetchGeo();fetchWeather();fetchQuakes();},15*60*1000);
+setInterval(fetchMVR, 60*60*1000); // MVR check hourly
+</script>
+</body>
+</html>
