@@ -1,0 +1,46 @@
+# .github/workflows/mvr-scraper.yml
+# Постави този файл в: .github/workflows/mvr-scraper.yml
+# Постави scrape_mvr.py в: scripts/scrape_mvr.py
+
+name: MVR Accidents Scraper
+
+on:
+  schedule:
+    # Всеки ден в 08:00 UTC (11:00 София)
+    # МВР публикува рапорта обичайно сутринта за предния ден
+    - cron: '0 8 * * *'
+  workflow_dispatch:  # позволява ръчно стартиране
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # нужно за git commit
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run scraper
+        run: python scripts/scrape_mvr.py
+
+      - name: Check if data changed
+        id: diff
+        run: |
+          git diff --quiet data/mvr_accidents.json && \
+            echo "changed=false" >> $GITHUB_OUTPUT || \
+            echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push if changed
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/mvr_accidents.json
+          git commit -m "auto: MVR accidents data $(date -u +%Y-%m-%d)"
+          git push
