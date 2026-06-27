@@ -364,7 +364,7 @@ function showTab(name){
 
 /* ══════════════ STORE ══════════════ */
 const S = {
-  kp:null, pressNow:null, pressYest:null, temp:null,
+  kp:null, // will render with default 2 after timeout pressNow:null, pressYest:null, temp:null,
   moonAge:null, quakes:[], uv:null,
   fcKp:[], fcPress:[],
   mvrDays: [],   // ← реални МВР данни от GitHub
@@ -419,7 +419,7 @@ const fcClass  = ['fc-calm','fc-caution','fc-hard','fc-danger'];
 
 function renderAll(){
   applyLang();
-  if(S.kp===null)return;
+  if(S.kp===null) S.kp=2; // use calm default if NOAA not loaded yet
   const k = tk();
   const now = new Date();
   S.moonAge = S.moonAge ?? calcMoonAge(now);
@@ -765,6 +765,7 @@ async function fetchMVR(){
     S.mvrLoaded=true; // mark as loaded (with empty data)
   }
   renderMvrBadge(tk());
+  if(S.kp!==null) renderAll();
 }
 
 async function fetchGeo(){
@@ -825,6 +826,8 @@ fetchMVR();
 fetchGeo();
 fetchWeather();
 fetchQuakes();
+// Fallback render after 4s - show what we have even if some APIs are slow
+setTimeout(()=>{ if(S.kp===null){S.kp=2;} renderAll(); }, 4000);
 setInterval(()=>{fetchGeo();fetchWeather();fetchQuakes();},15*60*1000);
 setInterval(fetchMVR, 60*60*1000); // MVR check hourly
 </script>
