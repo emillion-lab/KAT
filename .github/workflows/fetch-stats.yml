@@ -1,0 +1,25 @@
+name: Fetch Road Safety Statistics
+on:
+  schedule:
+    # 1st of every month at 06:00 UTC
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Fetch statistics
+        run: python scripts/fetch_stats.py
+      - name: Commit updated data
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add data/historical.json
+          git diff --staged --quiet || git commit -m "data: update road safety statistics $(date -u +%Y-%m)"
+          git push
