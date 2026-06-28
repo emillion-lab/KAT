@@ -3,60 +3,11 @@
   "note": "Официални данни. Актуализирай ежегодно.",
   "national": [
     {
-      "year": 2015,
-      "total": 8934,
-      "dead": 708,
-      "injured": 10144,
-      "serious": 1558
-    },
-    {
-      "year": 2016,
-      "total": 9054,
-      "dead": 708,
-      "injured": 9985,
-      "serious": 1541
-    },
-    {
-      "year": 2017,
-      "total": 9454,
-      "dead": 682,
-      "injured": 10311,
-      "serious": 1519
-    },
-    {
-      "year": 2018,
-      "total": 9718,
-      "dead": 634,
-      "injured": 10572,
-      "serious": 1541
-    },
-    {
-      "year": 2019,
-      "total": 9527,
-      "dead": 609,
-      "injured": 10340,
-      "serious": 1462
-    },
-    {
-      "year": 2020,
-      "total": 7453,
-      "dead": 507,
-      "injured": 8028,
-      "serious": 1183
-    },
-    {
-      "year": 2021,
-      "total": 8424,
-      "dead": 549,
-      "injured": 9108,
-      "serious": 1348
-    },
-    {
-      "year": 2022,
-      "total": 9061,
-      "dead": 601,
-      "injured": 9889,
-      "serious": 1446
+      "year": 2024,
+      "total": 9102,
+      "dead": 571,
+      "injured": 9844,
+      "serious": 1389
     },
     {
       "year": 2023,
@@ -66,11 +17,70 @@
       "serious": 1431
     },
     {
-      "year": 2024,
-      "total": 9102,
-      "dead": 571,
-      "injured": 9844,
-      "serious": 1389
+      "year": 2022,
+      "total": 9061,
+      "dead": 601,
+      "injured": 9889,
+      "serious": 1446
+    },
+    {
+      "year": 2021,
+      "total": 8424,
+      "dead": 549,
+      "injured": 9108,
+      "serious": 1348
+    },
+    {
+      "year": 2020,
+      "total": 7453,
+      "dead": 507,
+      "injured": 8028,
+      "serious": 1183
+    },
+    {
+      "year": 2019,
+      "total": 9527,
+      "dead": 609,
+      "injured": 10340,
+      "serious": 1462,
+      "deaths_per_100k": 9.2,
+      "deaths_per_100k_source": "World Bank"
+    },
+    {
+      "year": 2018,
+      "total": 9718,
+      "dead": 634,
+      "injured": 10572,
+      "serious": 1541,
+      "deaths_per_100k": 8.9,
+      "deaths_per_100k_source": "World Bank"
+    },
+    {
+      "year": 2017,
+      "total": 9454,
+      "dead": 682,
+      "injured": 10311,
+      "serious": 1519,
+      "deaths_per_100k": 9.9,
+      "deaths_per_100k_source": "World Bank"
+    },
+    {
+      "year": 2016,
+      "total": 9054,
+      "dead": 708,
+      "injured": 9985,
+      "serious": 1541,
+      "deaths_per_100k": 10.2,
+      "deaths_per_100k_source": "World Bank"
+    },
+    {
+      "year": 2015,
+      "total": 8934,
+      "dead": 708,
+      "injured": 10144,
+      "serious": 1558,
+      "deaths_per_100k": 10.1,
+      "deaths_per_100k_source": "World Bank"
     }
   ],
   "sofia_daily_avg": {
@@ -104,5 +114,21 @@
     "10_oct": 1.03,
     "11_nov": 1.06,
     "12_dec": 1.1
+  },
+  "updated": "2026-06-28T06:32:22.935529+00:00",
+  "last_complete_year": 2024,
+  "api_sources": {
+    "worldbank": {
+      "records": 10,
+      "latest": "2019"
+    },
+    "who": {
+      "records": 1,
+      "latest": "2021"
+    },
+    "eurostat": {
+      "records": 0,
+      "latest": null
+    }
   }
 }
