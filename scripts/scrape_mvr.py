@@ -3,6 +3,7 @@
 import urllib.request, json, re, os
 from datetime import datetime, timedelta, timezone
 from urllib.parse import quote
+from email.utils import parsedate
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125.0.0.0 Safari/537.36",
@@ -19,7 +20,7 @@ RSS_SOURCES = [
     "https://btvnovinite.bg/rss.xml",
     "https://nova.bg/rss",
     "https://www.dir.bg/rss/news.xml",
-    "https://news.google.com/rss/search?q="+quote("МВР пътна обстановка катастрофи")+"&hl=bg&gl=BG&ceid=BG:bg",
+    "https://news.google.com/rss/search?q=" + quote("МВР пътна обстановка катастрофи") + "&hl=bg&gl=BG&ceid=BG:bg",
 ]
 
 def fetch(url, hdrs=None):
@@ -56,7 +57,6 @@ def parse_accidents(text):
             "total": light+serious if light and serious else light}
 
 def try_mvr_direct():
-    """Try MVR website directly"""
     urls = [
         "https://www.mvr.bg/press/%D0%B0%D0%BA%D1%82%D1%83%D0%B0%D0%BB%D0%BD%D0%B0-%D0%B8%D0%BD%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%86%D0%B8%D1%8F/%D0%B0%D0%BA%D1%82%D1%83%D0%B0%D0%BB%D0%BD%D0%B0-%D0%B8%D0%BD%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%86%D0%B8%D1%8F/%D0%BF%D1%8A%D1%82%D0%BD%D0%B0-%D0%BE%D0%B1%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0",
         "https://www.mvr.bg/press",
@@ -69,20 +69,17 @@ def try_mvr_direct():
     return None
 
 def try_rss_sources(existing_dates):
-    """Parse Bulgarian news RSS for accident reports"""
     days = []
     for rss_url in RSS_SOURCES:
         html = fetch(rss_url, {"User-Agent": "Mozilla/5.0", "Accept": "application/rss+xml,*/*"})
         if not html:
             continue
-        print(f"  RSS OK: {rss_url[:50]}")
+        print(f"  RSS OK: {rss_url[:60]}")
         items = re.findall(r"<item>(.*?)</item>", html, re.DOTALL)
+        kws = ["катастроф","пътен инцидент","пострадал","произшествие","загинал","ранени","ПТП"]
         for item in items:
-            # Check if accident-related
-            kws = ["катастроф","пътен инцидент","пострадал","произшествие","загинал","ранени","ПТП"]
             if not any(k.lower() in item.lower() for k in kws):
                 continue
-            # Get title and link
             title_m = re.search(r"<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>", item, re.DOTALL)
             link_m  = re.search(r"<link>([^<]+)</link>", item)
             date_m  = re.search(r"<pubDate>(.*?)</pubDate>", item)
@@ -90,12 +87,9 @@ def try_rss_sources(existing_dates):
                 continue
             title = title_m.group(1).strip()
             link  = link_m.group(1).strip()
-            # Parse date
             date_str = None
             if date_m:
-                # RSS date format: Mon, 28 Jun 2026 10:00:00 +0000
                 try:
-                    from email.utils import parsedate
                     pd = parsedate(date_m.group(1))
                     if pd: date_str = f"{pd[0]:04d}-{pd[1]:02d}-{pd[2]:02d}"
                 except: pass
@@ -103,7 +97,6 @@ def try_rss_sources(existing_dates):
                 date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
             if date_str in existing_dates:
                 continue
-            # Fetch full article for numbers
             article = fetch(link)
             acc = parse_accidents(article or item)
             if acc.get("dead") is not None or acc.get("light") is not None:
@@ -132,7 +125,6 @@ def main():
     existing_dates = {d["date"] for d in existing.get("days", [])}
     new_days = []
 
-    # 1. Try MVR direct
     print("\n1. Trying MVR direct...")
     mvr_html = try_mvr_direct()
     if mvr_html:
@@ -151,12 +143,10 @@ def main():
             existing_dates.add(date)
             print(f"  MVR: {date} light={acc['light']} dead={acc['dead']}")
 
-    # 2. Try news RSS if MVR gave nothing
     if not new_days:
         print("\n2. Trying Bulgarian news RSS...")
         new_days += try_rss_sources(existing_dates)
 
-    # Merge and save
     all_days = existing.get("days", []) + new_days
     all_days.sort(key=lambda x: x["date"], reverse=True)
     cutoff = (datetime.now()-timedelta(days=90)).strftime("%Y-%m-%d")
