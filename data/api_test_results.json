@@ -1,0 +1,28 @@
+{
+  "tested_at": "2026-06-28T06:29:41.241057+00:00",
+  "sources": {
+    "worldbank": {
+      "status": "ok",
+      "size": 1302,
+      "preview": "[{'page': 1, 'pages': 1, 'per_page': 50, 'total': 5, 'sourceid': '2', 'lastupdated': '2026-04-08'}, [{'indicator': {'id': 'SH.STA.TRAF.P5', 'value': 'Mortality caused by road traffic injury (per 100,000 population)'}, 'country': {'id': 'BG', 'value': 'Bulgaria'}, 'countryiso3code': 'BGR', 'date': '2019', 'value': 9.2, 'unit': '', 'obs_status': '', 'decimal': 0}, {'indicator': {'id': 'SH.STA.TRAF.P5', 'value': 'Mortality caused by road traffic injury (per 100,000 population)'}, 'country': {'id': "
+    },
+    "who_gho": {
+      "status": "ok",
+      "size": 628,
+      "preview": "{'@odata.context': 'https://ghoapi.azureedge.net/api/$metadata#RS_198', 'value': [{'Id': 6601697, 'IndicatorCode': 'RS_198', 'SpatialDimType': 'COUNTRY', 'SpatialDim': 'BGR', 'ParentLocationCode': 'EUR', 'TimeDimType': 'YEAR', 'ParentLocation': 'Europe', 'Dim1Type': None, 'TimeDim': 2021, 'Dim1': None, 'Dim2Type': None, 'Dim2': None, 'Dim3Type': None, 'Dim3': None, 'DataSourceDimType': None, 'DataSourceDim': None, 'Value': '8.4', 'NumericValue': 8.4, 'Low': None, 'High': None, 'Comments': None, "
+    },
+    "eurostat_road": {
+      "status": "ok",
+      "size": 12443,
+      "preview": "{'version': '2.0', 'class': 'dataset', 'label': 'Persons killed in road accidents by age, sex and category of persons involved', 'source': 'ESTAT', 'updated': '2026-04-27T11:00:00+0200', 'value': {'810': 23, '811': 18, '812': 21, '813': 22, '814': 21, '805': 51, '806': 86, '807': 78, '808': 57, '809': 53, '815': 31, '816': 40, '817': 39, '818': 33, '819': 38, '800': 105, '801': 144, '802': 138, '803': 112, '804': 112, '820': 0, '821': 0, '822': 0, '823': 0, '824': 0, '825': 31, '826': 42, '827':"
+    },
+    "eurostat_deaths": {
+      "status": "fail",
+      "error": "HTTP Error 404: Not Found"
+    },
+    "oecd_irtad": {
+      "status": "fail",
+      "error": "HTTP Error 404: Not Found"
+    }
+  }
+}
