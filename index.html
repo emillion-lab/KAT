@@ -294,7 +294,7 @@ bg:{
   factorTitles:['КОС. БУРИ','НАЛЯГАНЕ','ЛУНА','ЗЕМЕТРЕСЕНИЯ','УВ & СЕЗОН','ДЕН'],
   noQuakes:'Няма M>4.5 за 24ч',
   mvrLive:'МВР данни за вчера:',
-  mvrNoData:'МВР данни: очакване на следващия рапорт',
+  mvrNoData:'МВР данни: исторически базис (НСИ)',
   mvrLight:'Леки ПТП',mvrSerious:'Тежки ПТП',mvrDead:'Загинали',mvrInjured:'Ранени',
   tips:{
     calm:['🟢 Добър ден за шофиране.','💧 Хидратирайте се добре.'],
@@ -432,7 +432,8 @@ function renderAll(){
   document.getElementById('signal-box').className = 'signal-box '+['calm','caution','hard','hard'][lv];
   document.getElementById('sl-label').textContent = lang==='bg'?'ОЦЕНКА НА ДЕНЯ':'DAY ASSESSMENT';
   document.getElementById('sl-day').textContent = k.dayNames[dow]+' — '+k.riskDescs[lv];
-  document.getElementById('sl-sub').textContent = (lang==='bg'?'Модел прогнозира ~':'Model forecasts ~')+sc.mid+(lang==='bg'?' катастрофи в София':' accidents in Sofia');
+  const expL=S.expectedLight||sc.mid;
+  document.getElementById('sl-sub').textContent = (lang==='bg'?'Очаквани ~':'Expected ~')+expL+(lang==='bg'?' леки ПТП в София (ист. данни)':' light accidents in Sofia (historical)');
   document.getElementById('sl-score').textContent = sc.riskScore+'/10';
   document.getElementById('sl-score').style.color = lvColors[lv];
   document.getElementById('sl-road').textContent = k.roadLevels[lv];
@@ -753,21 +754,32 @@ function drawHistChart(rows,k){
 
 /* ══════════════ API FETCHES ══════════════ */
 async function fetchMVR(){
+  // Uses static historical data from NSI/MVR annual reports
+  // No daily scraping — historical baselines only
   try{
-    const r=await fetch(MVR_DATA_URL+'?t='+Date.now());
-    if(!r.ok)throw new Error('HTTP '+r.status);
-    const d=await r.json();
-    S.mvrDays=d.days||[];
-    S.mvrLoaded=true;
-    console.log(`MVR: ${S.mvrDays.length} дни заредени, последен: ${S.mvrDays[0]?.date}`);
+    const r=await fetch('data/historical.json');
+    if(r.ok){
+      const h=await r.json();
+      S.historical=h;
+      // Calculate today's expected accidents based on historical avg + weekday/month factors
+      const now=new Date();
+      const dow=now.getDay();
+      const mon=now.getMonth()+1;
+      const avg=h.sofia_daily_avg||{light:8.2,serious:0.9,dead:0.08,injured:9.1};
+      const wd=h.risk_by_weekday||{};
+      const md=h.risk_by_month||{};
+      const wf=wd[Object.keys(wd).find(k=>k.startsWith(dow+'_'))]||1.0;
+      const mf=md[Object.keys(md).find(k=>k.startsWith(mon+'_'))]||1.0;
+      S.expectedLight=Math.round(avg.light*wf*mf*10)/10;
+      S.expectedDead=Math.round(avg.dead*wf*mf*100)/100;
+    }
   }catch(e){
-    console.warn('MVR data not yet available (run GitHub Action first):', e.message);
-    S.mvrLoaded=true; // mark as loaded (with empty data)
+    S.expectedLight=8.2;S.expectedDead=0.08;
   }
+  S.mvrLoaded=true;
   renderMvrBadge(tk());
   if(S.kp!==null) renderAll();
 }
-
 async function fetchGeo(){
   try{
     const r=await fetch('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json');
