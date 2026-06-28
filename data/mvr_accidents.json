@@ -1,8 +1,9 @@
 {
-  "updated": "2026-06-27T22:31:52.749651+00:00",
+  "updated": "2026-06-28T05:30:48.123891+00:00",
   "source": "МВР — Пътна обстановка",
   "note": "Парснато автоматично от mvr.bg.",
   "days_count": 0,
   "new_today": 0,
-  "days": []
+  "days": [],
+  "error": "All sources returned no data"
 }
