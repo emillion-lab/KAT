@@ -1,0 +1,32 @@
+name: Source Probe
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          R="src-probe.txt"; echo "== $(date -u) ==" > $R
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125 Safari/537.36"
+
+          echo "--- katastrofi.bg главна (търсим API calls/JSON endpoints) ---" >> $R
+          curl -s -A "$UA" "https://katastrofi.bg/" -o kat.html -w "HTTP %{http_code} %{size_download}b\n" >> $R
+          grep -oE '(/api/[^"'\'' ]+|https://katastrofi.bg/[^"'\'' ]*\.json|fetch\([^)]+\))' kat.html | sort -u | head -25 >> $R
+
+          echo "--- katastrofi.bg вероятни API пътища ---" >> $R
+          for p in /api/statistics /api/accidents /api/data /api/summary /api/latest /api/stats /api/ptp; do
+            code=$(curl -s -A "$UA" -o /tmp/x -w "%{http_code}" "https://katastrofi.bg$p")
+            sz=$(wc -c < /tmp/x)
+            echo "$p -> $code ($sz b)" >> $R
+            if [ "$code" = "200" ] && [ "$sz" -gt 30 ]; then echo "   SAMPLE: $(head -c 200 /tmp/x)" >> $R; fi
+          done
+
+          echo "--- data.egov.bg CKAN (правилен endpoint) ---" >> $R
+          curl -s -A "$UA" "https://data.egov.bg/api/3/action/package_search?q=%D0%9F%D0%A2%D0%9F&rows=8" -o egov.json -w "HTTP %{http_code} %{size_download}b\n" >> $R
+          head -c 300 egov.json >> $R; echo "" >> $R
+
+          git config user.name ci; git config user.email ci@fish.taxi
+          git add src-probe.txt && git commit -m "src probe [skip ci]" || true
+          git push
