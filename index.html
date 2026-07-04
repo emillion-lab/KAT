@@ -183,6 +183,9 @@ footer{max-width:900px;margin:18px auto 0;padding:10px 20px;border-top:1px solid
     <div class="mvr-nums" id="mvr-nums"></div>
   </div>
 
+  <div style="font-size:.72rem;color:var(--dim);margin:2px 0 8px;line-height:1.5" id="sc-explain">
+    📊 <b style="color:var(--text)">Прогноза за днес</b> — очакван брой ПТП в София-град при три възможни развития на деня. Процентът е вероятността на всеки сценарий според модела (космическо време · налягане · луна · ден · сезон · историческа база 2015–2024).
+  </div>
   <div class="scenarios">
     <div class="scenario s-calm">
       <div class="sc-icon">🟢</div>
@@ -242,12 +245,18 @@ footer{max-width:900px;margin:18px auto 0;padding:10px 20px;border-top:1px solid
   <div class="fc-chart-wrap">
     <div class="fc-chart-title" id="hist-chart-title">ИСТОРИЧЕСКИ ДАННИ — ПОСЛЕДНИТЕ 30 ДНИ</div>
     <canvas id="hist-canvas" height="170"></canvas>
+    <div style="font-size:.7rem;color:var(--dim);margin-top:6px;line-height:1.5">
+      <span style="color:var(--cyan)">━</span> дневен риск индекс на модела (0–10) ·
+      <span style="color:var(--orange)">●</span> реален брой ПТП, когато е наличен от МВР/новини.
+      Живият МВР обмен е спрян от 05.05.2026, затова реалните точки идват от новинарски справки и са частични.
+    </div>
   </div>
   <!-- Correlation stats -->
   <div class="corr-box" id="corr-box" style="display:none;">
     <div class="corr-title">🔬 КОРЕЛАЦИЯ: МВР ДАННИ ↔ РИСК ФАКТОРИ</div>
     <div class="corr-stat-row" id="corr-stats"></div>
   </div>
+  <div id="longterm-analytics"></div>
   <div class="hist-table-wrap">
     <table class="hist-table">
       <thead><tr>
@@ -281,7 +290,7 @@ bg:{
   hsub:'Космическо време · Налягане · МВР данни · 3-сценарийна прогноза',
   scNames:['СПОКОЕН ДЕН','НАПРЕГНАТ ДЕН','ТРУДЕН ДЕН'],
   scDescs:['Благоприятни условия. Нормален трафик.','Леко повишено напрежение. Внимателно шофиране.','Рискови условия. Защитно шофиране.'],
-  scProb:'вероятност',
+  scProb:'шанс',
   dayNames:['Неделя','Понеделник','Вторник','Среда','Четвъртък','Петък','Събота'],
   dayShort:['Нд','Пн','Вт','Ср','Чт','Пт','Сб'],
   roadLevels:['✅ Спокоен ден','⚠️ Повишено внимание','🔶 Труден ден','🛑 Опасен ден'],
@@ -670,6 +679,7 @@ function renderHistoryPanel(){
 
   // Chart
   drawHistChart(rows, k);
+  buildLongTermAnalytics();
 
   // Correlation stats (only if we have MVR data)
   const withMvr = rows.filter(r=>mvTotal(r.mvr)!=null);
@@ -713,6 +723,84 @@ function mvTotal(m){
   if(m.light!=null||m.serious!=null) return (m.light||0)+(m.serious||0);
   return null;
 }
+
+function buildLongTermAnalytics(){
+  const el=document.getElementById('longterm-analytics');
+  const h=S.historical;
+  if(!el||!h) return;
+  const bg = lang==='bg';
+  const wd=h.risk_by_weekday||{}, md=h.risk_by_month||{}, avg=h.sofia_daily_avg||{};
+  const wdNames = bg?['Пн','Вт','Ср','Чт','Пт','Сб','Нд']:['Mo','Tu','We','Th','Fr','Sa','Su'];
+  const wdOrder = ['0_monday','1_tuesday','2_wednesday','3_thursday','4_friday','5_saturday','6_sunday'];
+  const wdVals = wdOrder.map(k=>wd[k]||1);
+  const moNames = bg?['Яну','Фев','Мар','Апр','Май','Юни','Юли','Авг','Сеп','Окт','Ное','Дек']:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const moVals = Array.from({length:12},(_,i)=>md[Object.keys(md).find(k=>k.startsWith((i+1)+'_'))]||1);
+
+  const bar=(v,max,c)=>`<div style="background:${c};height:6px;border-radius:3px;width:${Math.round(v/max*100)}%"></div>`;
+  const wdMax=Math.max(...wdVals), moMax=Math.max(...moVals);
+  const topWd=wdVals.indexOf(wdMax), topMo=moVals.indexOf(moMax);
+  const minWd=wdVals.indexOf(Math.min(...wdVals));
+
+  const nat=(h.national||[]).slice().sort((a,b)=>a.year-b.year);
+  const natRows=nat.map(y=>`<tr>
+    <td style="font-family:'Space Mono',monospace;color:var(--cyan)">${y.year}</td>
+    <td style="font-family:'Space Mono',monospace">${y.total.toLocaleString()}</td>
+    <td style="font-family:'Space Mono',monospace;color:var(--red)">${y.dead}</td>
+    <td style="font-family:'Space Mono',monospace;color:var(--cyan)">${y.injured.toLocaleString()}</td>
+  </tr>`).join('');
+
+  const obsBg=[
+    `<b>${wdNames[topWd]}</b> е най-рисковият ден: +${Math.round((wdMax-1)*100)}% над средното. Най-спокоен е <b>${wdNames[minWd]}</b> (${Math.round((wdVals[minWd]-1)*100)}%).`,
+    `Сезонен пик: <b>${moNames[topMo]}</b> (+${Math.round((moMax-1)*100)}%) — отпускарски трафик и умора. Зимните месеци също са над средното.`,
+    `София-град средно на денонощие: <b>${avg.light}</b> леки · <b>${avg.serious}</b> тежки ПТП · <b>${avg.injured}</b> ранени. Един загинал средно на ~${Math.round(1/(avg.dead||0.08))} дни.`,
+    `Комбинацията от тези базови криви с космическото време и налягането дава дневния риск индекс — точната формула е нашата добавена стойност.`
+  ];
+  const obsEn=[
+    `<b>${wdNames[topWd]}</b> is the riskiest day: +${Math.round((wdMax-1)*100)}% above average. Calmest: <b>${wdNames[minWd]}</b>.`,
+    `Seasonal peak: <b>${moNames[topMo]}</b> (+${Math.round((moMax-1)*100)}%).`,
+    `Sofia daily average: <b>${avg.light}</b> light · <b>${avg.serious}</b> serious crashes · <b>${avg.injured}</b> injured.`,
+    `These baselines combined with space weather and pressure produce the daily risk index — the exact formula is our added value.`
+  ];
+  const obs = (bg?obsBg:obsEn).map(o=>`<div style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.78rem;line-height:1.5">▸ ${o}</div>`).join('');
+
+  el.innerHTML=`
+  <div style="background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px">
+    <div style="font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.08em;color:var(--cyan);margin-bottom:10px">
+      🗄️ ${bg?'МНОГОГОДИШЕН АНАЛИЗ — НСИ/МВР 2015–2024':'LONG-TERM ANALYSIS — NSI/MVR 2015–2024'}
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px">
+      <div>
+        <div style="font-size:.68rem;color:var(--dim);margin-bottom:6px">${bg?'РИСК ПО ДЕН ОТ СЕДМИЦАТА (1.0 = средно)':'RISK BY WEEKDAY (1.0 = avg)'}</div>
+        ${wdVals.map((v,i)=>`<div style="display:grid;grid-template-columns:28px 1fr 34px;gap:6px;align-items:center;margin-bottom:3px">
+          <span style="font-size:.68rem;color:${i===topWd?'var(--orange)':'var(--dim)'}">${wdNames[i]}</span>
+          ${bar(v,wdMax,i===topWd?'var(--orange)':'var(--cyan)')}
+          <span style="font-size:.66rem;font-family:'Space Mono',monospace;color:var(--dim)">${v.toFixed(2)}</span>
+        </div>`).join('')}
+      </div>
+      <div>
+        <div style="font-size:.68rem;color:var(--dim);margin-bottom:6px">${bg?'РИСК ПО МЕСЕЦ':'RISK BY MONTH'}</div>
+        ${moVals.map((v,i)=>`<div style="display:grid;grid-template-columns:28px 1fr 34px;gap:6px;align-items:center;margin-bottom:2px">
+          <span style="font-size:.64rem;color:${i===topMo?'var(--orange)':'var(--dim)'}">${moNames[i]}</span>
+          ${bar(v,moMax,i===topMo?'var(--orange)':'var(--purple)')}
+          <span style="font-size:.62rem;font-family:'Space Mono',monospace;color:var(--dim)">${v.toFixed(2)}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <div style="font-size:.68rem;color:var(--dim);margin:10px 0 6px">${bg?'НАЦИОНАЛНО — ПТП / ЗАГИНАЛИ / РАНЕНИ ПО ГОДИНИ':'NATIONAL BY YEAR'}</div>
+    <div style="overflow:auto"><table class="hist-table" style="min-width:300px">
+      <thead><tr><th>${bg?'ГОДИНА':'YEAR'}</th><th>${bg?'ПТП':'CRASHES'}</th><th>${bg?'ЗАГИНАЛИ':'DEAD'}</th><th>${bg?'РАНЕНИ':'INJURED'}</th></tr></thead>
+      <tbody>${natRows}</tbody>
+    </table></div>
+
+    <div style="margin-top:12px">
+      <div style="font-size:.68rem;color:var(--dim);margin-bottom:4px">${bg?'НАБЛЮДЕНИЯ':'OBSERVATIONS'}</div>
+      ${obs}
+    </div>
+  </div>`;
+}
+
 function pearsonR(xs,ys){
   const n=xs.length; if(n<2)return 0;
   const mx=xs.reduce((a,b)=>a+b)/n, my=ys.reduce((a,b)=>a+b)/n;
