@@ -252,7 +252,7 @@ footer{max-width:900px;margin:18px auto 0;padding:10px 20px;border-top:1px solid
     <table class="hist-table">
       <thead><tr>
         <th>ДАТА</th><th>ДЕН</th><th>Kp</th><th>ΔhPa</th><th>РИСК</th>
-        <th>МВР ЛЕКИ</th><th>МВР ТЕЖКИ</th><th>МВР РАНЕНИ</th><th>МОДЕЛ (ср.)</th>
+        <th>МВР ПТП</th><th>ЗАГИНАЛИ</th><th>РАНЕНИ</th><th>МОДЕЛ (ср.)</th>
       </tr></thead>
       <tbody id="hist-tbody">
         <tr><td colspan="9" style="color:var(--muted);text-align:center;padding:20px;">Зареждане…</td></tr>
@@ -672,13 +672,13 @@ function renderHistoryPanel(){
   drawHistChart(rows, k);
 
   // Correlation stats (only if we have MVR data)
-  const withMvr = rows.filter(r=>r.mvr&&r.mvr.light!==null);
+  const withMvr = rows.filter(r=>mvTotal(r.mvr)!=null);
   if(withMvr.length>=3){
     document.getElementById('corr-box').style.display='block';
     document.getElementById('corr-title').textContent = k.corrTitle;
-    const corrKp   = pearsonR(withMvr.map(r=>r.kp), withMvr.map(r=>r.mvr.light||0));
-    const corrDP   = pearsonR(withMvr.map(r=>r.dp), withMvr.map(r=>r.mvr.light||0));
-    const corrRisk = pearsonR(withMvr.map(r=>r.sc.riskScore), withMvr.map(r=>(r.mvr.light||0)+(r.mvr.serious||0)));
+    const corrKp   = pearsonR(withMvr.map(r=>r.kp), withMvr.map(r=>mvTotal(r.mvr)||0));
+    const corrDP   = pearsonR(withMvr.map(r=>r.dp), withMvr.map(r=>mvTotal(r.mvr)||0));
+    const corrRisk = pearsonR(withMvr.map(r=>r.sc.riskScore), withMvr.map(r=>mvTotal(r.mvr)||0));
     document.getElementById('corr-stats').innerHTML=[
       {v:'r='+corrKp.toFixed(2),  l:lang==='bg'?'Kp ↔ Леки ПТП':'Kp ↔ Minor acc.', bar:Math.abs(corrKp),c:C.orange},
       {v:'r='+corrDP.toFixed(2),  l:lang==='bg'?'ΔP ↔ Леки ПТП':'ΔP ↔ Minor acc.',  bar:Math.abs(corrDP), c:C.cyan},
@@ -700,13 +700,19 @@ function renderHistoryPanel(){
       <td style="font-family:'Space Mono',monospace;color:${r.kp>=5?C.orange:r.kp>=3?C.yellow:C.dim}">${r.kp.toFixed(1)}</td>
       <td style="font-family:'Space Mono',monospace;color:${r.dp>=10?C.red:r.dp>=5?C.orange:C.dim}">${r.dp.toFixed(1)}</td>
       <td><span class="badge ${lvClass[r.lv]}">${r.sc.riskScore}/10</span></td>
-      <td style="color:${r.mvr?.light!=null?C.yellow:C.muted};font-family:'Space Mono',monospace">${r.mvr?.light??'—'}</td>
-      <td style="color:${r.mvr?.serious!=null?C.orange:C.muted};font-family:'Space Mono',monospace">${r.mvr?.serious??'—'}</td>
+      <td style="color:${mvTotal(r.mvr)!=null?C.yellow:C.muted};font-family:'Space Mono',monospace">${mvTotal(r.mvr)??'—'}</td>
+      <td style="color:${r.mvr?.dead!=null?C.red:C.muted};font-family:'Space Mono',monospace">${r.mvr?.dead??'—'}</td>
       <td style="color:${r.mvr?.injured!=null?C.cyan:C.muted};font-family:'Space Mono',monospace">${r.mvr?.injured??'—'}</td>
       <td style="font-family:'Space Mono',monospace;color:var(--dim)">${r.sc.calm}–${r.sc.hard}</td>
     </tr>`).join('');
 }
 
+function mvTotal(m){
+  if(!m) return null;
+  if(m.ptp!=null) return m.ptp;
+  if(m.light!=null||m.serious!=null) return (m.light||0)+(m.serious||0);
+  return null;
+}
 function pearsonR(xs,ys){
   const n=xs.length; if(n<2)return 0;
   const mx=xs.reduce((a,b)=>a+b)/n, my=ys.reduce((a,b)=>a+b)/n;
@@ -739,10 +745,10 @@ function drawHistChart(rows,k){
   rows.forEach((r,i)=>{const x=xs(i),y=ys(r.sc.riskScore);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
   ctx.strokeStyle=C.cyan;ctx.lineWidth=1.5;ctx.stroke();
   // MVR dots (if available)
-  const mvrMax=Math.max(...rows.map(r=>r.mvr?(r.mvr.light||0)+(r.mvr.serious||0):0))||40;
+  const mvrMax=Math.max(...rows.map(r=>mvTotal(r.mvr)||0))||40;
   rows.forEach((r,i)=>{
-    if(r.mvr&&r.mvr.light!==null){
-      const total=(r.mvr.light||0)+(r.mvr.serious||0);
+    if(mvTotal(r.mvr)!=null){
+      const total=mvTotal(r.mvr);
       const yMvr=ys(Math.min(10,total/mvrMax*10));
       ctx.beginPath();ctx.arc(xs(i),yMvr,4,0,Math.PI*2);
       ctx.fillStyle=C.orange+'cc';ctx.fill();
