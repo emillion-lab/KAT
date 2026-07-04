@@ -469,22 +469,26 @@ function renderMvrBadge(k){
   const nums  = document.getElementById('mvr-nums');
 
   if(!S.mvrLoaded){
-    txt.textContent = lang==='bg'?'Зареждане на МВР данни…':'Loading MVR data…';
+    txt.textContent = lang==='bg'?'Зареждане…':'Loading…';
     return;
   }
 
-  // Find yesterday's data
-  const yesterday = new Date(Date.now()-86400000).toISOString().split('T')[0];
-  const todayStr  = new Date().toISOString().split('T')[0];
-  const entry = S.mvrDays.find(d=>d.date===yesterday||d.date===todayStr);
+  // Най-скорошният ден с реален брой (news source), до 4 дни назад
+  const recent = (S.mvrDays||[])
+    .filter(d=>d && d.date && (d.ptp!=null||d.dead!=null||d.injured!=null))
+    .sort((a,b)=>b.date.localeCompare(a.date));
+  const entry = recent[0];
+  const daysAgo = entry ? Math.round((Date.now()-new Date(entry.date))/86400000) : 99;
 
-  if(entry && (entry.light!==null||entry.serious!==null)){
+  if(entry && daysAgo<=4){
     badge.className='mvr-badge live';
     dot.className='mvr-dot live';
-    txt.innerHTML = `<strong style="color:var(--green)">${k.mvrLive}</strong> <span style="color:var(--dim);font-size:.72rem">${entry.date}</span>`;
+    const ago = daysAgo<=0?(lang==='bg'?'днес':'today')
+              : daysAgo===1?(lang==='bg'?'вчера':'yesterday')
+              : daysAgo+(lang==='bg'?' дни':' days ago');
+    txt.innerHTML = `<strong style="color:var(--green)">${lang==='bg'?'📰 От новини':'📰 From news'}</strong> <span style="color:var(--dim);font-size:.72rem">${entry.date} · ${ago}</span>`;
     const items = [
-      {v:entry.light??'—',  l:k.mvrLight,   c:C.yellow},
-      {v:entry.serious??'—',l:k.mvrSerious,  c:C.orange},
+      {v:entry.ptp??'—',    l:lang==='bg'?'ПТП':'crashes',  c:C.yellow},
       {v:entry.dead??'—',   l:k.mvrDead,     c:C.red},
       {v:entry.injured??'—',l:k.mvrInjured,  c:C.cyan},
     ];
@@ -494,9 +498,13 @@ function renderMvrBadge(k){
         <div class="mvr-num-lbl">${i.l}</div>
       </div>`).join('');
   } else {
+    // Честен frozen режим
     badge.className='mvr-badge stale';
     dot.className='mvr-dot';
-    txt.textContent = k.mvrNoData;
+    const frozenBg = 'МВР спря публичните ПТП данни (05.05.2026). Рискът се смята от история 2015–2024 + космическо време.';
+    const frozenEn = 'MVR froze public crash data (05.05.2026). Risk computed from 2015–2024 history + space weather.';
+    txt.innerHTML = `<span style="color:var(--orange)">⚠️ ${lang==='bg'?frozenBg:frozenEn}</span>`
+      + (S.mvrNewsUrl?` <a href="${S.mvrNewsUrl}" target="_blank" style="color:var(--cyan);font-size:.72rem">${lang==='bg'?'(защо?)':'(why?)'}</a>`:'');
     nums.innerHTML = '';
   }
 }
@@ -776,6 +784,16 @@ async function fetchMVR(){
   }catch(e){
     S.expectedLight=8.2;S.expectedDead=0.08;
   }
+  // Дневни ПТП от news scraper (mvr_accidents.json)
+  try{
+    const rr=await fetch(MVR_DATA_URL+'?v='+Date.now());
+    if(rr.ok){
+      const md=await rr.json();
+      S.mvrDays=md.days||[];
+      S.mvrStatus=md.status||'frozen';
+      S.mvrNewsUrl=md.mvr_news_url||'';
+    }
+  }catch(e){ S.mvrDays=[]; }
   S.mvrLoaded=true;
   renderMvrBadge(tk());
   if(S.kp!==null) renderAll();
