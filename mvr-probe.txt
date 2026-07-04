@@ -1,0 +1,8 @@
+== MVR ArcGIS probe Sat Jul  4 05:22:25 UTC 2026 ==
+--- dashboard item data ---
+HTTP 403, 5556 bytes
+--- feature service URLs found ---
+--- portal search за ПТП услуги ---
+parse err Expecting value: line 1 column 1 (char 0)
+--- data.egov.bg CKAN ПТП datasets ---
+parse err Expecting value: line 1 column 1 (char 0)
