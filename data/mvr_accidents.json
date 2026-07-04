@@ -1,9 +1,21 @@
 {
-  "updated": "2026-06-28T05:30:48.123891+00:00",
-  "source": "МВР — Пътна обстановка",
-  "note": "Парснато автоматично от mvr.bg.",
-  "days_count": 0,
-  "new_today": 0,
-  "days": [],
-  "error": "All sources returned no data"
+  "updated": "2026-07-04T08:28:55.383555+03:00",
+  "status": "live_news",
+  "source": "news_rss",
+  "note": "Дневен брой от новинарски RSS (МВР справка), автоматично парснат.",
+  "mvr_frozen_since": "2026-05-05",
+  "mvr_news_url": "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp",
+  "days_count": 1,
+  "days": [
+    {
+      "date": "2026-06-29",
+      "source": "news",
+      "ptp": 22,
+      "dead": null,
+      "injured": 24,
+      "serious": null,
+      "light": null,
+      "headline": "Един загинал и 24 ранени при 22 катастрофи за денонощие - Евроком"
+    }
+  ]
 }
