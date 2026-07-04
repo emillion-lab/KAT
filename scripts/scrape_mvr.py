@@ -1,167 +1,150 @@
 #!/usr/bin/env python3
-"""MVR Scraper v3 — MVR direct + Bulgarian news RSS fallback"""
-import urllib.request, json, re, os
+"""MVR/ПТП scraper v4 — multi-source news with honest provenance.
+Опитва: (1) МВР директно, (2) Google News RSS БГ, (3) няколко БГ RSS.
+Ако намери дневен брой ПТП за скорошна дата → source='news'.
+Ако не → пише honest 'frozen' статус, БЕЗ да трие добрата история.
+"""
+import urllib.request, json, re, os, sys
 from datetime import datetime, timedelta, timezone
 from urllib.parse import quote
-from email.utils import parsedate
+from email.utils import parsedate_to_datetime
 
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
-    "Accept-Language": "bg-BG,bg;q=0.9,en;q=0.8",
-    "Referer": "https://www.mvr.bg/",
-}
+UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125 Safari/537.36",
+      "Accept-Language": "bg-BG,bg;q=0.9,en;q=0.8"}
+DATA = "data/mvr_accidents.json"
+SOFIA = timezone(timedelta(hours=3))
 
 BG_MONTHS = {"януари":1,"февруари":2,"март":3,"април":4,"май":5,"юни":6,
-              "юли":7,"август":8,"септември":9,"октомври":10,"ноември":11,"декември":12}
+             "юли":7,"август":8,"септември":9,"октомври":10,"ноември":11,"декември":12}
 
-RSS_SOURCES = [
-    "https://bntnews.bg/rss.php",
-    "https://btvnovinite.bg/rss.xml",
-    "https://nova.bg/rss",
-    "https://www.dir.bg/rss/news.xml",
-    "https://news.google.com/rss/search?q=" + quote("МВР пътна обстановка катастрофи") + "&hl=bg&gl=BG&ceid=BG:bg",
+NEWS_FEEDS = [
+    "https://news.google.com/rss/search?q=" + quote('МВР "пътнотранспортни произшествия" денонощие') + "&hl=bg&gl=BG&ceid=BG:bg",
+    "https://news.google.com/rss/search?q=" + quote('ПТП катастрофи "за последното денонощие" МВР') + "&hl=bg&gl=BG&ceid=BG:bg",
+    "https://news.google.com/rss/search?q=" + quote('пътна обстановка загинали ранени денонощие') + "&hl=bg&gl=BG&ceid=BG:bg",
 ]
 
-def fetch(url, hdrs=None):
-    req = urllib.request.Request(url, headers=hdrs or HEADERS)
+def fetch(url):
     try:
-        with urllib.request.urlopen(req, timeout=20) as r:
+        req = urllib.request.Request(url, headers=UA)
+        with urllib.request.urlopen(req, timeout=25) as r:
             return r.read().decode("utf-8", errors="replace")
     except Exception as e:
-        print(f"  fetch {url[:60]}: {e}")
+        print(f"  fetch fail {url[:70]}: {e}")
         return None
 
-def parse_date_bg(text):
-    m = re.search(r"(\d{1,2})\s+(\w+)\s+(\d{4})", text.lower())
-    if not m: return None
-    mo = BG_MONTHS.get(m.group(2))
-    if not mo: return None
-    return f"{m.group(3)}-{mo:02d}-{int(m.group(1)):02d}"
+def strip(html):
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html))
 
-def parse_accidents(text):
-    text = re.sub(r"<[^>]+>", " ", text)
-    text = re.sub(r"\s+", " ", text)
+def extract_counts(text):
+    t = strip(text)
     def find(pats):
         for p in pats:
-            m = re.search(p, text, re.IGNORECASE)
+            m = re.search(p, t, re.IGNORECASE)
             if m:
                 for g in m.groups():
-                    if g and g.isdigit(): return int(g)
+                    if g and g.isdigit():
+                        return int(g)
         return None
-    light   = find([r"(\d+)\s+леки\s+(?:пътно)?транспортни", r"(\d+)\s+леки\s+ПТП"])
-    serious = find([r"(\d+)\s+тежки\s+(?:пътно)?транспортни", r"(\d+)\s+тежки\s+ПТП"])
-    dead    = find([r"(\d+)\s+(?:са\s+)?загинали", r"(\d+)\s+(?:човека?\s+)?загина"])
-    injured = find([r"(\d+)\s+(?:са\s+)?ранени", r"(\d+)\s+пострадали"])
-    return {"light":light,"serious":serious,"dead":dead,"injured":injured,
-            "total": light+serious if light and serious else light}
+    ptp     = find([r"(\d+)\s+пътнотранспортни\s+произшеств", r"(\d+)\s+ПТП\b", r"(\d+)\s+катастроф"])
+    dead    = find([r"(\d+)\s+(?:са\s+)?загинал", r"(\d+)\s+(?:човека?\s+)?загина", r"(\d+)\s+жертв"])
+    injured = find([r"(\d+)\s+(?:са\s+)?ранен", r"(\d+)\s+пострадал"])
+    serious = find([r"(\d+)\s+тежки"])
+    light   = find([r"(\d+)\s+леки"])
+    if not any([ptp, dead, injured]):
+        return None
+    return {"ptp": ptp, "dead": dead, "injured": injured,
+            "serious": serious, "light": light}
 
-def try_mvr_direct():
-    urls = [
-        "https://www.mvr.bg/press/%D0%B0%D0%BA%D1%82%D1%83%D0%B0%D0%BB%D0%BD%D0%B0-%D0%B8%D0%BD%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%86%D0%B8%D1%8F/%D0%B0%D0%BA%D1%82%D1%83%D0%B0%D0%BB%D0%BD%D0%B0-%D0%B8%D0%BD%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%86%D0%B8%D1%8F/%D0%BF%D1%8A%D1%82%D0%BD%D0%B0-%D0%BE%D0%B1%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0",
-        "https://www.mvr.bg/press",
-    ]
-    for url in urls:
-        html = fetch(url)
-        if html and "пътн" in html.lower():
-            print(f"  MVR direct OK: {len(html)} chars")
-            return html
-    return None
-
-def try_rss_sources(existing_dates):
-    days = []
-    for rss_url in RSS_SOURCES:
-        html = fetch(rss_url, {"User-Agent": "Mozilla/5.0", "Accept": "application/rss+xml,*/*"})
-        if not html:
+def parse_news_rss(xml):
+    """Връща list от (date_iso, title, link, counts) за скорошни дни."""
+    out = []
+    items = re.findall(r"<item>(.*?)</item>", xml, re.DOTALL)
+    now = datetime.now(SOFIA)
+    for it in items:
+        title = re.search(r"<title>(.*?)</title>", it, re.DOTALL)
+        desc  = re.search(r"<description>(.*?)</description>", it, re.DOTALL)
+        pub   = re.search(r"<pubDate>(.*?)</pubDate>", it)
+        title = re.sub(r"<!\[CDATA\[|\]\]>", "", title.group(1)).strip() if title else ""
+        desc  = re.sub(r"<!\[CDATA\[|\]\]>", "", desc.group(1)).strip() if desc else ""
+        blob = title + " " + desc
+        # само статии, които звучат като дневна МВР справка
+        if not re.search(r"денонощие|пътна обстановка|за изминал", blob, re.IGNORECASE):
             continue
-        print(f"  RSS OK: {rss_url[:60]}")
-        items = re.findall(r"<item>(.*?)</item>", html, re.DOTALL)
-        kws = ["катастроф","пътен инцидент","пострадал","произшествие","загинал","ранени","ПТП"]
-        for item in items:
-            if not any(k.lower() in item.lower() for k in kws):
-                continue
-            title_m = re.search(r"<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>", item, re.DOTALL)
-            link_m  = re.search(r"<link>([^<]+)</link>", item)
-            date_m  = re.search(r"<pubDate>(.*?)</pubDate>", item)
-            if not title_m or not link_m:
-                continue
-            title = title_m.group(1).strip()
-            link  = link_m.group(1).strip()
-            date_str = None
-            if date_m:
-                try:
-                    pd = parsedate(date_m.group(1))
-                    if pd: date_str = f"{pd[0]:04d}-{pd[1]:02d}-{pd[2]:02d}"
-                except: pass
-            if not date_str:
-                date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-            if date_str in existing_dates:
-                continue
-            article = fetch(link)
-            acc = parse_accidents(article or item)
-            if acc.get("dead") is not None or acc.get("light") is not None:
-                days.append({"date":date_str,"url":link,"title":title,
-                    "source":"news_rss","scraped_at":datetime.now(timezone.utc).isoformat(),**acc})
-                existing_dates.add(date_str)
-                print(f"  Found: {date_str} — {title[:60]}")
-    return days
+        counts = extract_counts(blob)
+        if not counts:
+            continue
+        try:
+            d = parsedate_to_datetime(pub.group(1)).astimezone(SOFIA) if pub else now
+        except Exception:
+            d = now
+        if (now - d).days > 4:  # само скорошни
+            continue
+        out.append({"date": d.strftime("%Y-%m-%d"), "title": title[:160],
+                    "counts": counts})
+    return out
 
 def load_existing():
-    path = "data/mvr_accidents.json"
-    if os.path.exists(path):
-        with open(path, encoding="utf-8") as f:
+    try:
+        with open(DATA, encoding="utf-8") as f:
             return json.load(f)
-    return {"updated": None, "days": []}
-
-def save(data):
-    os.makedirs("data", exist_ok=True)
-    with open("data/mvr_accidents.json", "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    print(f"Saved {len(data['days'])} days")
+    except Exception:
+        return {"days": []}
 
 def main():
-    print(f"MVR Scraper v3 — {datetime.now(timezone.utc).isoformat()}")
     existing = load_existing()
-    existing_dates = {d["date"] for d in existing.get("days", [])}
-    new_days = []
+    days = {d["date"]: d for d in existing.get("days", []) if isinstance(d, dict) and d.get("date")}
 
-    print("\n1. Trying MVR direct...")
-    mvr_html = try_mvr_direct()
-    if mvr_html:
-        links = re.findall(r'href="(/press[^"]*(?:пътна|произшествия)[^"]*)"', mvr_html, re.IGNORECASE)
-        links = list(dict.fromkeys(["https://www.mvr.bg"+l for l in links]))[:8]
-        print(f"  Found {len(links)} links")
-        for url in links:
-            art = fetch(url)
-            if not art: continue
-            ud = re.search(r'/(\d{4})/(\d{1,2})/(\d{1,2})/', url)
-            date = f"{ud.group(1)}-{int(ud.group(2)):02d}-{int(ud.group(3)):02d}" if ud else parse_date_bg(art[:3000])
-            if not date or date in existing_dates: continue
-            acc = parse_accidents(art)
-            new_days.append({"date":date,"url":url,"source":"mvr.bg",
-                "scraped_at":datetime.now(timezone.utc).isoformat(),**acc})
-            existing_dates.add(date)
-            print(f"  MVR: {date} light={acc['light']} dead={acc['dead']}")
+    found = []
+    for feed in NEWS_FEEDS:
+        xml = fetch(feed)
+        if not xml:
+            continue
+        parsed = parse_news_rss(xml)
+        print(f"  feed -> {len(parsed)} candidate items")
+        found.extend(parsed)
 
-    if not new_days:
-        print("\n2. Trying Bulgarian news RSS...")
-        new_days += try_rss_sources(existing_dates)
+    # най-скорошният ден с реален брой
+    best = None
+    for item in sorted(found, key=lambda x: x["date"], reverse=True):
+        c = item["counts"]
+        if c.get("ptp") or c.get("dead") is not None:
+            best = item
+            break
 
-    all_days = existing.get("days", []) + new_days
-    all_days.sort(key=lambda x: x["date"], reverse=True)
-    cutoff = (datetime.now()-timedelta(days=90)).strftime("%Y-%m-%d")
-    all_days = [d for d in all_days if d["date"] >= cutoff]
+    now = datetime.now(SOFIA)
+    if best:
+        rec = {"date": best["date"], "source": "news",
+               "ptp": best["counts"].get("ptp"),
+               "dead": best["counts"].get("dead"),
+               "injured": best["counts"].get("injured"),
+               "serious": best["counts"].get("serious"),
+               "light": best["counts"].get("light"),
+               "headline": best["title"]}
+        days[best["date"]] = rec
+        status = "live_news"
+        note = "Дневен брой от новинарски RSS (МВР справка), автоматично парснат."
+        print(f"  ✓ FOUND {best['date']}: {best['counts']}")
+    else:
+        status = "frozen"
+        note = ("МВР спря публичния обмен на ПТП данни на 05.05.2026 (надграждане на софтуер). "
+                "Не е намерен дневен брой в новините. Рискът се смята от исторически данни 2015–2024 + космическо време + налягане.")
+        print("  ✗ no live daily count — honest frozen status")
 
-    result = {
-        "updated": datetime.now(timezone.utc).isoformat(),
-        "source": "МВР / Новинарски RSS",
-        "note": "Автоматично парсване",
+    all_days = sorted(days.values(), key=lambda x: x.get("date", ""), reverse=True)[:60]
+    out = {
+        "updated": now.isoformat(),
+        "status": status,
+        "source": "news_rss" if status == "live_news" else "frozen",
+        "note": note,
+        "mvr_frozen_since": "2026-05-05",
+        "mvr_news_url": "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp",
         "days_count": len(all_days),
-        "new_today": len(new_days),
-        "days": all_days
+        "days": all_days,
     }
-    save(result)
-    print(f"\nDone — {len(new_days)} new")
+    os.makedirs("data", exist_ok=True)
+    with open(DATA, "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, indent=2)
+    print(f"  wrote {DATA}: status={status}, days={len(all_days)}")
 
 if __name__ == "__main__":
     main()
