@@ -1,0 +1,69 @@
+== Sat Jul  4 05:24:19 UTC 2026 ==
+--- katastrofi.bg главна (търсим API calls/JSON endpoints) ---
+HTTP 200 45584b
+--- katastrofi.bg вероятни API пътища ---
+/api/statistics -> 200 (45584 b)
+   SAMPLE: <!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>Анали�
+/api/accidents -> 200 (45584 b)
+   SAMPLE: <!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>Анали�
+/api/data -> 200 (45584 b)
+   SAMPLE: <!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>Анали�
+/api/summary -> 200 (45584 b)
+   SAMPLE: <!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>Анали�
+/api/latest -> 200 (45584 b)
+   SAMPLE: <!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>Анали�
+/api/stats -> 200 (45584 b)
+   SAMPLE: <!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>Анали�
+/api/ptp -> 500 (0 b)
+--- data.egov.bg CKAN (правилен endpoint) ---
+HTTP 403 199b
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>403 Forbidden</title>
+</head><body>
+<h1>Forbidden</h1>
+<p>You don't have permission to access this resource.</p>
+</body></html>
+
