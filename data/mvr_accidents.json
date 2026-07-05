@@ -1,11 +1,11 @@
 {
-  "updated": "2026-07-05T12:18:13.501642+03:00",
+  "updated": "2026-07-06T00:23:58.021310+03:00",
   "status": "live_news",
-  "source": "news_rss",
+  "source": "Google News RSS — дневни МВР справки (backfill v5)",
   "note": "Дневен брой от новинарски RSS (МВР справка), автоматично парснат.",
   "mvr_frozen_since": "2026-05-05",
   "mvr_news_url": "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp",
-  "days_count": 2,
+  "days_count": 21,
   "days": [
     {
       "date": "2026-07-04",
@@ -18,14 +18,223 @@
       "headline": "Статистика на МВР: 20 пострадали при 17 катастрофи в страната за денонощието - BurgasMedia"
     },
     {
+      "date": "2026-07-03",
+      "source": "news",
+      "ptp": 17,
+      "dead": null,
+      "injured": 20,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Статистика на МВР: 20 пострадали при 17 катастрофи в страната за денонощието - BurgasMedia"
+    },
+    {
+      "date": "2026-07-02",
+      "source": "news",
+      "ptp": null,
+      "dead": null,
+      "injured": 19,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "19 ранени при тежки катастрофи в страната за последното денонощие - BurgasMedia"
+    },
+    {
+      "date": "2026-07-01",
+      "source": "news",
+      "ptp": null,
+      "dead": 2,
+      "injured": null,
+      "serious": 21,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Двама души са загинали, а 22-ма са ранени при катастрофи в страната през изминалото денонощие - Про Нюз Добрич"
+    },
+    {
       "date": "2026-06-29",
       "source": "news",
       "ptp": 22,
-      "dead": null,
+      "dead": 1,
       "injured": 24,
       "serious": null,
       "light": null,
       "headline": "Един загинал и 24 ранени при 22 катастрофи за денонощие - Евроком"
+    },
+    {
+      "date": "2026-06-28",
+      "source": "news",
+      "ptp": 22,
+      "dead": 1,
+      "injured": 24,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Пътна обстановка: Един загинал и 24 пострадали при катастрофи през изминалото денонощие - Dir.bg"
+    },
+    {
+      "date": "2026-06-27",
+      "source": "news",
+      "ptp": null,
+      "dead": 3,
+      "injured": 17,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Трима души са загинали при пътни произшествия в страната през изминалото денонощие, съобщават от МВР - Дебати БГ"
+    },
+    {
+      "date": "2026-06-24",
+      "source": "news",
+      "ptp": null,
+      "dead": 6,
+      "injured": 25,
+      "serious": 24,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Черна статистика: Шест жертви на пътя за последните 24 часа - Bgonair"
+    },
+    {
+      "date": "2026-06-23",
+      "source": "news",
+      "ptp": 32,
+      "dead": null,
+      "injured": null,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "При 32 катастрофи през изминалото денонощие в страната са ранени 43 души, един е загинал - Про Нюз Добрич"
+    },
+    {
+      "date": "2026-06-19",
+      "source": "news",
+      "ptp": 25,
+      "dead": null,
+      "injured": null,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "През изминалото денонощие в страната са станали 25 пътнотранспортни произшествия, - novini247.com"
+    },
+    {
+      "date": "2026-06-17",
+      "source": "news",
+      "ptp": null,
+      "dead": 1,
+      "injured": 30,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Трагедия на пътя: Един загинал и 30 ранени при катастрофи за денонощие - BurgasMedia"
+    },
+    {
+      "date": "2026-06-15",
+      "source": "news",
+      "ptp": null,
+      "dead": 2,
+      "injured": 32,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Двама души са загинали, а 32-ма са ранени при катастрофи през последното денонощие в страната - Утро Русе"
+    },
+    {
+      "date": "2026-06-13",
+      "source": "news",
+      "ptp": 16,
+      "dead": 3,
+      "injured": 28,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "3 жертви и 28 ранени в 16 катастрофи за денонощие - offnews.bg"
+    },
+    {
+      "date": "2026-06-12",
+      "source": "news",
+      "ptp": null,
+      "dead": 3,
+      "injured": null,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Трагедия на пътя: Трима загинали и десетки ранени за денонощие - BurgasMedia"
+    },
+    {
+      "date": "2026-06-10",
+      "source": "news",
+      "ptp": 18,
+      "dead": 1,
+      "injured": 18,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Един загинал и 18 ранени при катастрофи през изминалото денонощие - Таралеж: Истината има значение"
+    },
+    {
+      "date": "2026-06-09",
+      "source": "news",
+      "ptp": 22,
+      "dead": 3,
+      "injured": null,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Три жертви и 23-ма ранени при катастрофи за денонощието - БНР Новините"
+    },
+    {
+      "date": "2026-06-08",
+      "source": "news",
+      "ptp": 29,
+      "dead": 2,
+      "injured": 39,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "29 катастрофи с две жертви за денонощие - offnews.bg"
+    },
+    {
+      "date": "2026-06-07",
+      "source": "news",
+      "ptp": null,
+      "dead": 2,
+      "injured": 28,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Две жертви и 28 пострадали за денонощие - offnews.bg"
+    },
+    {
+      "date": "2026-06-04",
+      "source": "news",
+      "ptp": 17,
+      "dead": null,
+      "injured": 26,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "През изминалото денонощие в страната са станали 17 катастрофи с 26 ранени, няма загинали - Про Нюз Добрич"
+    },
+    {
+      "date": "2026-06-02",
+      "source": "news",
+      "ptp": null,
+      "dead": null,
+      "injured": 6,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Двайсет и шестима души са ранени при катастрофи в страната през изминалото денонощие, съобщиха от МВР - БТА"
+    },
+    {
+      "date": "2026-05-31",
+      "source": "news",
+      "ptp": null,
+      "dead": null,
+      "injured": 19,
+      "serious": 15,
+      "light": null,
+      "sofia_light": null,
+      "headline": "19 души са ранени при 15 тежки катастрофи за денонощие - Пловдив Нюз"
     }
   ]
 }
