@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
-"""MVR/ПТП scraper v4 — multi-source news with honest provenance.
-Опитва: (1) МВР директно, (2) Google News RSS БГ, (3) няколко БГ RSS.
-Ако намери дневен брой ПТП за скорошна дата → source='news'.
-Ако не → пише honest 'frozen' статус, БЕЗ да трие добрата история.
+"""MVR/ПТП scraper v5 — news backfill edition.
+Ново спрямо v4:
+  • BACKFILL_DAYS (env) — обхожда Google News RSS с after:/before: прозорци назад във времето
+  • Чете и ТЯЛОТО на статията (следва линка), не само заглавието
+  • Разбира словесни числа: "Четирима са загинали" → 4
+  • Извлича и София-специфичния брой: "В София са регистрирани N леки пътни инцидента" → sofia_light
+  • Датата на данните = денят ПРЕДИ публикацията ("за изминалото денонощие")
+Никога не трие стари дни — само добавя/обогатява.
 """
-import urllib.request, json, re, os, sys
+import urllib.request, json, re, os
 from datetime import datetime, timedelta, timezone
 from urllib.parse import quote
 from email.utils import parsedate_to_datetime
@@ -13,15 +17,24 @@ UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.3
       "Accept-Language": "bg-BG,bg;q=0.9,en;q=0.8"}
 DATA = "data/mvr_accidents.json"
 SOFIA = timezone(timedelta(hours=3))
+BACKFILL_DAYS = int(os.environ.get("BACKFILL_DAYS", "3"))
 
-BG_MONTHS = {"януари":1,"февруари":2,"март":3,"април":4,"май":5,"юни":6,
-             "юли":7,"август":8,"септември":9,"октомври":10,"ноември":11,"декември":12}
-
-NEWS_FEEDS = [
-    "https://news.google.com/rss/search?q=" + quote('МВР "пътнотранспортни произшествия" денонощие') + "&hl=bg&gl=BG&ceid=BG:bg",
-    "https://news.google.com/rss/search?q=" + quote('ПТП катастрофи "за последното денонощие" МВР') + "&hl=bg&gl=BG&ceid=BG:bg",
-    "https://news.google.com/rss/search?q=" + quote('пътна обстановка загинали ранени денонощие') + "&hl=bg&gl=BG&ceid=BG:bg",
+QUERIES = [
+    'МВР катастрофи денонощие пострадали',
+    '"за денонощието" катастрофи загинали',
+    'статистика МВР катастрофи "леки пътни инцидента"',
+    'пътнотранспортни произшествия "изминалото денонощие"',
 ]
+
+WORD_NUM = {"един":1,"една":1,"едно":1,"двама":2,"два":2,"две":2,"трима":3,"три":3,
+            "четирима":4,"четири":4,"петима":5,"пет":5,"шестима":6,"шест":6,
+            "седмина":7,"седем":7,"осмина":8,"осем":8,"деветима":9,"девет":9,
+            "десетима":10,"десет":10,"единадесет":11,"дванадесет":12}
+NUM_RE = r"(\d+|" + "|".join(WORD_NUM.keys()) + r")"
+
+def to_int(s):
+    s = s.strip().lower()
+    return int(s) if s.isdigit() else WORD_NUM.get(s)
 
 def fetch(url):
     try:
@@ -32,119 +45,128 @@ def fetch(url):
         print(f"  fetch fail {url[:70]}: {e}")
         return None
 
-def strip(html):
+def strip_html(html):
+    html = re.sub(r"<script.*?</script>|<style.*?</style>", " ", html, flags=re.DOTALL|re.IGNORECASE)
     return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html))
 
+def find_num(t, pats):
+    for p in pats:
+        m = re.search(p, t, re.IGNORECASE)
+        if m:
+            for g in m.groups():
+                if g:
+                    v = to_int(g)
+                    if v is not None:
+                        return v
+    return None
+
 def extract_counts(text):
-    t = strip(text)
-    def find(pats):
-        for p in pats:
-            m = re.search(p, t, re.IGNORECASE)
-            if m:
-                for g in m.groups():
-                    if g and g.isdigit():
-                        return int(g)
-        return None
-    ptp     = find([r"(\d+)\s+пътнотранспортни\s+произшеств", r"(\d+)\s+ПТП\b", r"(\d+)\s+катастроф"])
-    dead    = find([r"(\d+)\s+(?:са\s+)?загинал", r"(\d+)\s+(?:човека?\s+)?загина", r"(\d+)\s+жертв"])
-    injured = find([r"(\d+)\s+(?:са\s+)?ранен", r"(\d+)\s+пострадал"])
-    serious = find([r"(\d+)\s+тежки"])
-    light   = find([r"(\d+)\s+леки"])
-    if not any([ptp, dead, injured]):
+    t = strip_html(text)
+    ptp     = find_num(t, [NUM_RE + r"\s+пътнотранспортни\s+произшеств",
+                           r"при\s+" + NUM_RE + r"\s+катастроф",
+                           NUM_RE + r"\s+катастроф", NUM_RE + r"\s+ПТП\b"])
+    dead    = find_num(t, [NUM_RE + r"\s+(?:души\s+)?(?:са\s+)?загинал",
+                           NUM_RE + r"\s+(?:човека?\s+)?загина", NUM_RE + r"\s+жертв"])
+    injured = find_num(t, [NUM_RE + r"\s+(?:души\s+)?(?:са\s+)?(?:ранен|пострадал)"])
+    serious = find_num(t, [r"[Тт]ежките\s+(?:пътнотранспортни\s+произшествия|ПТП|катастрофи)[^.]{0,40}?са\s+" + NUM_RE,
+                           NUM_RE + r"\s+тежки"])
+    sofia_light = find_num(t, [r"[Вв]\s+София\s+са\s+регистрирани\s+" + NUM_RE + r"\s+леки",
+                               r"[Нн]а\s+територията\s+на\s+СДВР[^.]{0,60}?" + NUM_RE + r"\s+(?:леки|ПТП|инцидент)",
+                               r"[Вв]\s+София[^.]{0,60}?" + NUM_RE + r"\s+(?:леки\s+)?(?:пътни\s+)?инцидент"])
+    if not any(v is not None for v in [ptp, dead, injured, sofia_light]):
         return None
     return {"ptp": ptp, "dead": dead, "injured": injured,
-            "serious": serious, "light": light}
+            "serious": serious, "light": None, "sofia_light": sofia_light}
 
-def parse_news_rss(xml):
-    """Връща list от (date_iso, title, link, counts) за скорошни дни."""
+def looks_like_daily(blob):
+    return re.search(r"денонощие|пътна обстановка|за изминал|черна статистика", blob, re.IGNORECASE)
+
+def rss_items(xml):
     out = []
-    items = re.findall(r"<item>(.*?)</item>", xml, re.DOTALL)
-    now = datetime.now(SOFIA)
-    for it in items:
-        title = re.search(r"<title>(.*?)</title>", it, re.DOTALL)
-        desc  = re.search(r"<description>(.*?)</description>", it, re.DOTALL)
-        pub   = re.search(r"<pubDate>(.*?)</pubDate>", it)
-        title = re.sub(r"<!\[CDATA\[|\]\]>", "", title.group(1)).strip() if title else ""
-        desc  = re.sub(r"<!\[CDATA\[|\]\]>", "", desc.group(1)).strip() if desc else ""
-        blob = title + " " + desc
-        # само статии, които звучат като дневна МВР справка
-        if not re.search(r"денонощие|пътна обстановка|за изминал", blob, re.IGNORECASE):
-            continue
-        counts = extract_counts(blob)
-        if not counts:
-            continue
-        try:
-            d = parsedate_to_datetime(pub.group(1)).astimezone(SOFIA) if pub else now
-        except Exception:
-            d = now
-        if (now - d).days > 4:  # само скорошни
-            continue
-        out.append({"date": d.strftime("%Y-%m-%d"), "title": title[:160],
-                    "counts": counts})
+    for it in re.findall(r"<item>(.*?)</item>", xml, re.DOTALL):
+        g = lambda tag: (re.search(rf"<{tag}>(.*?)</{tag}>", it, re.DOTALL) or [None,""])[1] if re.search(rf"<{tag}>", it) else ""
+        title = re.sub(r"<!\[CDATA\[|\]\]>", "", g("title")).strip()
+        desc  = re.sub(r"<!\[CDATA\[|\]\]>", "", g("description")).strip()
+        link  = re.sub(r"<!\[CDATA\[|\]\]>", "", g("link")).strip()
+        pub   = g("pubDate")
+        out.append((title, desc, link, pub))
     return out
 
-def load_existing():
-    try:
-        with open(DATA, encoding="utf-8") as f:
-            return json.load(f)
-    except Exception:
-        return {"days": []}
+def better(new, old):
+    """Обогати old запис с полета от new, без да губиш нищо."""
+    merged = dict(old)
+    for k, v in new.items():
+        if v is not None and merged.get(k) is None:
+            merged[k] = v
+    return merged
 
 def main():
-    existing = load_existing()
-    days = {d["date"]: d for d in existing.get("days", []) if isinstance(d, dict) and d.get("date")}
-
-    found = []
-    for feed in NEWS_FEEDS:
-        xml = fetch(feed)
-        if not xml:
-            continue
-        parsed = parse_news_rss(xml)
-        print(f"  feed -> {len(parsed)} candidate items")
-        found.extend(parsed)
-
-    # най-скорошният ден с реален брой
-    best = None
-    for item in sorted(found, key=lambda x: x["date"], reverse=True):
-        c = item["counts"]
-        if c.get("ptp") or c.get("dead") is not None:
-            best = item
-            break
-
+    try:
+        data = json.load(open(DATA, encoding="utf-8"))
+    except Exception:
+        data = {"days": []}
+    days = {d["date"]: d for d in data.get("days", []) if d.get("date")}
     now = datetime.now(SOFIA)
-    if best:
-        rec = {"date": best["date"], "source": "news",
-               "ptp": best["counts"].get("ptp"),
-               "dead": best["counts"].get("dead"),
-               "injured": best["counts"].get("injured"),
-               "serious": best["counts"].get("serious"),
-               "light": best["counts"].get("light"),
-               "headline": best["title"]}
-        days[best["date"]] = rec
-        status = "live_news"
-        note = "Дневен брой от новинарски RSS (МВР справка), автоматично парснат."
-        print(f"  ✓ FOUND {best['date']}: {best['counts']}")
-    else:
-        status = "frozen"
-        note = ("МВР спря публичния обмен на ПТП данни на 05.05.2026 (надграждане на софтуер). "
-                "Не е намерен дневен брой в новините. Рискът се смята от исторически данни 2015–2024 + космическо време + налягане.")
-        print("  ✗ no live daily count — honest frozen status")
+    found = 0
 
-    all_days = sorted(days.values(), key=lambda x: x.get("date", ""), reverse=True)[:60]
-    out = {
-        "updated": now.isoformat(),
-        "status": status,
-        "source": "news_rss" if status == "live_news" else "frozen",
-        "note": note,
-        "mvr_frozen_since": "2026-05-05",
-        "mvr_news_url": "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp",
-        "days_count": len(all_days),
-        "days": all_days,
-    }
-    os.makedirs("data", exist_ok=True)
-    with open(DATA, "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, indent=2)
-    print(f"  wrote {DATA}: status={status}, days={len(all_days)}")
+    # Прозорци: последните BACKFILL_DAYS, на стъпки от 5 дни
+    windows = []
+    end = now.date() + timedelta(days=1)
+    start_limit = now.date() - timedelta(days=BACKFILL_DAYS)
+    cur = end
+    while cur > start_limit:
+        w_start = max(start_limit, cur - timedelta(days=5))
+        windows.append((w_start, cur))
+        cur = w_start
+    print(f"Backfill: {BACKFILL_DAYS} дни, {len(windows)} прозореца, {len(QUERIES)} заявки")
+
+    seen_links = set()
+    for (w1, w2) in windows:
+        for q in QUERIES:
+            full_q = f"{q} after:{w1.isoformat()} before:{w2.isoformat()}"
+            url = "https://news.google.com/rss/search?q=" + quote(full_q) + "&hl=bg&gl=BG&ceid=BG:bg"
+            xml = fetch(url)
+            if not xml:
+                continue
+            for title, desc, link, pub in rss_items(xml):
+                if link in seen_links:
+                    continue
+                seen_links.add(link)
+                blob = title + " " + desc
+                if not looks_like_daily(blob):
+                    continue
+                counts = extract_counts(blob)
+                # ако заглавието няма достатъчно числа — пробвай тялото на статията
+                if not counts or counts.get("sofia_light") is None:
+                    body = fetch(link)
+                    if body:
+                        body_counts = extract_counts(body[:40000])
+                        if body_counts:
+                            counts = better(body_counts, counts or {})
+                if not counts:
+                    continue
+                try:
+                    d = parsedate_to_datetime(pub).astimezone(SOFIA)
+                except Exception:
+                    d = now
+                date_iso = (d - timedelta(days=1)).date().isoformat()  # данните са за предния ден
+                entry = {"date": date_iso, "source": "news", **counts,
+                         "headline": title[:160]}
+                if date_iso in days:
+                    days[date_iso] = better(entry, days[date_iso])
+                else:
+                    days[date_iso] = entry
+                    found += 1
+                    print(f"  + {date_iso}: ПТП={counts.get('ptp')} София_леки={counts.get('sofia_light')} загинали={counts.get('dead')} | {title[:70]}")
+
+    data["days"] = sorted(days.values(), key=lambda x: x["date"], reverse=True)
+    data["updated"] = now.isoformat()
+    data["days_count"] = len(data["days"])
+    data["status"] = "live_news" if found or data["days"] else "frozen"
+    data["source"] = "Google News RSS — дневни МВР справки (backfill v5)"
+    data.setdefault("mvr_news_url", "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp")
+    json.dump(data, open(DATA, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    print(f"Готово: {found} нови дни, общо {len(data['days'])}")
 
 if __name__ == "__main__":
     main()
