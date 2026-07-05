@@ -153,7 +153,7 @@ footer{max-width:900px;margin:18px auto 0;padding:10px 20px;border-top:1px solid
 <div class="page-head">
   <div>
     <h1 id="h1">🛣️ Пътен Монитор — София</h1>
-    <p id="h-sub">Космическо време · Налягане · МВР данни · 3-сценарийна прогноза</p>
+    <p id="h-sub">Космическо време · Метео · Празници · История 2015–2024</p>
   </div>
   <button class="lang-btn" onclick="toggleLang()">EN / БГ</button>
 </div>
@@ -184,39 +184,19 @@ footer{max-width:900px;margin:18px auto 0;padding:10px 20px;border-top:1px solid
   </div>
 
   <div style="font-size:.72rem;color:var(--dim);margin:2px 0 8px;line-height:1.5" id="sc-explain">
-    📊 <b style="color:var(--text)">Прогноза за днес</b> — очакван брой ПТП в София-град при три възможни развития на деня. Процентът е вероятността на всеки сценарий според модела (космическо време · налягане · луна · ден · сезон · историческа база 2015–2024).
-  </div>
-  <div class="scenarios">
-    <div class="scenario s-calm">
-      <div class="sc-icon">🟢</div>
-      <div class="sc-name" id="sc-name-0">СПОКОЕН ДЕН</div>
-      <div class="sc-ptp" id="sc-ptp-0" style="color:var(--green)">—</div>
-      <div class="sc-desc" id="sc-desc-0">Благоприятни условия.</div>
-      <div class="sc-prob" id="sc-prob-0">—%</div>
-    </div>
-    <div class="scenario s-mid">
-      <div class="sc-icon">🟡</div>
-      <div class="sc-name" id="sc-name-1">НАПРЕГНАТ ДЕН</div>
-      <div class="sc-ptp" id="sc-ptp-1" style="color:var(--yellow)">—</div>
-      <div class="sc-desc" id="sc-desc-1">Леко повишено напрежение.</div>
-      <div class="sc-prob" id="sc-prob-1">—%</div>
-    </div>
-    <div class="scenario s-hard">
-      <div class="sc-icon">🔴</div>
-      <div class="sc-name" id="sc-name-2">ТРУДЕН ДЕН</div>
-      <div class="sc-ptp" id="sc-ptp-2" style="color:var(--red)">—</div>
-      <div class="sc-desc" id="sc-desc-2">Рискови условия.</div>
-      <div class="sc-prob" id="sc-prob-2">—%</div>
-    </div>
+    📊 Очакван брой ПТП в София-град според модела: историческа база 2015–2024 (ден · месец) × среда (космическо време · дъжд/сняг · лед · вятър · налягане · луна · празници).
   </div>
 
   <div class="factors" id="factors-grid">
-    <div class="factor"><div class="factor-head"><span class="factor-title">КОС. БУРИ</span><span>🌐</span></div><div class="shimmer"></div></div>
-    <div class="factor"><div class="factor-head"><span class="factor-title">НАЛЯГАНЕ</span><span>🌡️</span></div><div class="shimmer"></div></div>
-    <div class="factor"><div class="factor-head"><span class="factor-title">ЛУНА</span><span>🌙</span></div><div class="shimmer"></div></div>
-    <div class="factor"><div class="factor-head"><span class="factor-title">ЗЕМЕТРЕСЕНИЯ</span><span>📡</span></div><div class="shimmer"></div></div>
-    <div class="factor"><div class="factor-head"><span class="factor-title">УВ & СЕЗОН</span><span>☀️</span></div><div class="shimmer"></div></div>
-    <div class="factor"><div class="factor-head"><span class="factor-title">ДЕН</span><span>📅</span></div><div class="shimmer"></div></div>
+    <div class="factor"><div class="shimmer"></div></div>
+    <div class="factor"><div class="shimmer"></div></div>
+    <div class="factor"><div class="shimmer"></div></div>
+    <div class="factor"><div class="shimmer"></div></div>
+    <div class="factor"><div class="shimmer"></div></div>
+    <div class="factor"><div class="shimmer"></div></div>
+    <div class="factor"><div class="shimmer"></div></div>
+    <div class="factor"><div class="shimmer"></div></div>
+    <div class="factor"><div class="shimmer"></div></div>
   </div>
 
   <div class="tips-box">
@@ -229,7 +209,7 @@ footer{max-width:900px;margin:18px auto 0;padding:10px 20px;border-top:1px solid
 <!-- FORECAST -->
 <div class="panel" id="panel-forecast">
   <div class="fc-chart-wrap">
-    <div class="fc-chart-title">ПРОГНОЗА — 3 СЦЕНАРИЯ ЗА СЛЕДВАЩИТЕ ДНИ</div>
+    <div class="fc-chart-title" id="fc-chart-title">ПРОГНОЗА — ОЧАКВАНИ ПТП / ДЕН</div>
     <canvas id="fc-canvas" height="180"></canvas>
   </div>
   <div id="fc-days-container"></div>
@@ -237,49 +217,42 @@ footer{max-width:900px;margin:18px auto 0;padding:10px 20px;border-top:1px solid
 
 <!-- HISTORY -->
 <div class="panel" id="panel-history">
-  <div class="hist-controls">
-    <button class="hist-btn active" onclick="setHistMode('combined')" id="hbtn-combined">МВР + Модел</button>
-    <button class="hist-btn" onclick="setHistMode('mvr')" id="hbtn-mvr">Само МВР</button>
-    <button class="hist-btn" onclick="setHistMode('model')" id="hbtn-model">Само Модел</button>
-  </div>
+  <div id="longterm-analytics"><div style="color:var(--muted);font-size:.83rem;padding:10px 0">Зареждане на историческите данни…</div></div>
   <div class="fc-chart-wrap">
-    <div class="fc-chart-title" id="hist-chart-title">ИСТОРИЧЕСКИ ДАННИ — ПОСЛЕДНИТЕ 30 ДНИ</div>
+    <div class="fc-chart-title" id="hist-chart-title">ПОСЛЕДНИТЕ 30 ДНИ — РЕАЛНИ ДАННИ</div>
     <canvas id="hist-canvas" height="170"></canvas>
-    <div style="font-size:.7rem;color:var(--dim);margin-top:6px;line-height:1.5">
-      <span style="color:var(--cyan)">━</span> дневен риск индекс на модела (0–10) ·
+    <div style="font-size:.7rem;color:var(--dim);margin-top:6px;line-height:1.5" id="hist-legend-note">
+      <span style="color:var(--cyan)">━</span> дневен риск индекс (реални Kp от NOAA · реално налягане и валежи от Open-Meteo) ·
       <span style="color:var(--orange)">●</span> реален брой ПТП, когато е наличен от МВР/новини.
-      Живият МВР обмен е спрян от 05.05.2026, затова реалните точки идват от новинарски справки и са частични.
     </div>
   </div>
   <!-- Correlation stats -->
   <div class="corr-box" id="corr-box" style="display:none;">
-    <div class="corr-title">🔬 КОРЕЛАЦИЯ: МВР ДАННИ ↔ РИСК ФАКТОРИ</div>
+    <div class="corr-title" id="corr-title">🔬 КОРЕЛАЦИЯ: МВР ДАННИ ↔ РИСК ФАКТОРИ</div>
     <div class="corr-stat-row" id="corr-stats"></div>
   </div>
-  <div id="longterm-analytics"></div>
   <div class="hist-table-wrap">
     <table class="hist-table">
-      <thead><tr>
-        <th>ДАТА</th><th>ДЕН</th><th>Kp</th><th>ΔhPa</th><th>РИСК</th>
-        <th>МВР ПТП</th><th>ЗАГИНАЛИ</th><th>РАНЕНИ</th><th>МОДЕЛ (ср.)</th>
+      <thead id="hist-thead"><tr>
+        <th>ДАТА</th><th>ДЕН</th><th>Kp</th><th>ΔhPa</th><th>ДЪЖД</th><th>РИСК</th>
+        <th>МВР ПТП</th><th>МОДЕЛ</th>
       </tr></thead>
       <tbody id="hist-tbody">
-        <tr><td colspan="9" style="color:var(--muted);text-align:center;padding:20px;">Зареждане…</td></tr>
+        <tr><td colspan="8" style="color:var(--muted);text-align:center;padding:20px;">Зареждане…</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
 <footer>
-  <span>NOAA SWPC · Open-Meteo · USGS · МВР (auto-scrape)</span>
+  <span>NOAA SWPC · Open-Meteo · USGS · НСИ/МВР 2015–2024</span>
   <span id="updated-at">—</span>
 </footer>
 
 <script>
 /* ══════════════ CONFIG ══════════════ */
-// Смени с твоя GitHub username и repo name
 const GITHUB_USER = 'emillion-lab';
-const GITHUB_REPO = 'KAT';  // или каквото наречеш repo-то
+const GITHUB_REPO = 'KAT';
 const MVR_DATA_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/data/mvr_accidents.json`;
 
 /* ══════════════ LANGUAGE ══════════════ */
@@ -287,65 +260,72 @@ let lang = 'bg';
 const L = {
 bg:{
   h1:'🛣️ Пътен Монитор — София',
-  hsub:'Космическо време · Налягане · МВР данни · 3-сценарийна прогноза',
-  scNames:['СПОКОЕН ДЕН','НАПРЕГНАТ ДЕН','ТРУДЕН ДЕН'],
-  scDescs:['Оптимистичен сценарий (най-добър случай). Нормален трафик.','Базов сценарий (най-вероятен). Внимателно шофиране.','Песимистичен сценарий (най-лош случай). Защитно шофиране.'],
-  scProb:'шанс',
+  hsub:'Космическо време · Метео · Празници · История 2015–2024',
   dayNames:['Неделя','Понеделник','Вторник','Среда','Четвъртък','Петък','Събота'],
   dayShort:['Нд','Пн','Вт','Ср','Чт','Пт','Сб'],
   roadLevels:['✅ Спокоен ден','⚠️ Повишено внимание','🔶 Труден ден','🛑 Опасен ден'],
   riskDescs:['Спокойна среда','Леко напрежение','Повишен стрес','Критично'],
-  dayTypes:['Спокоен','Напрегнат','Труден'],
   kpStatus:['Спокойно','Леко активно','Буря','Силна буря'],
   moonPhases:['🌑 Новолуние','🌒','🌓 Първа четвърт','🌔','🌕 Пълнолуние','🌖','🌗 Последна четвърт','🌘'],
   seasons:['Зима','Пролет','Лято','Есен'],
   uvRisks:['Нисък','Умерен','Висок','Много висок'],
-  factorTitles:['КОС. БУРИ','НАЛЯГАНЕ','ЛУНА','ЗЕМЕТРЕСЕНИЯ','УВ & СЕЗОН','ДЕН'],
+  factorTitles:['КОС. БУРИ','НАЛЯГАНЕ','ДЪЖД/СНЯГ','ТЕМП. & ЛЕД','ВЯТЪР','ЛУНА','ДЕН & ПРАЗНИК','УВ & СЕЗОН','ЗЕМЕТРЕСЕНИЯ'],
   noQuakes:'Няма M>4.5 за 24ч',
-  mvrLive:'МВР данни за вчера:',
-  mvrNoData:'МВР данни: исторически базис (НСИ)',
-  mvrLight:'Леки ПТП',mvrSerious:'Тежки ПТП',mvrDead:'Загинали',mvrInjured:'Ранени',
+  mvrDead:'Загинали',mvrInjured:'Ранени',
+  holiday:'Празник',preHoliday:'Ден преди празник',workday:'Работен ден',weekend:'Уикенд',
+  noRain:'Сухо',ice:'Опасност от лед!',frost:'Възможен мраз',
   tips:{
     calm:['🟢 Добър ден за шофиране.','💧 Хидратирайте се добре.'],
     caution:['🟡 Малко повече внимание.','😤 Хората може да са по-нервни.','☕ Ограничете кофеина.'],
     hard:['🟠 Шофирайте защитно.','💊 Мигренозни — превантивна мярка.','🚗 Голяма дистанция.','⏰ Тръгнете по-рано.'],
     danger:['🔴 Карайте само ако трябва.','🛑 Максимална дистанция.','🏠 Ако може — останете вкъщи.'],
   },
+  tipRain:'🌧️ Мокра настилка — двойна дистанция.',
+  tipSnow:'❄️ Сняг — зимни гуми, плавно спиране.',
+  tipIce:'🧊 Лед по пътя — минимална скорост в сенчести участъци и мостове.',
+  tipWind:'💨 Силен вятър — внимание при камиони и открити участъци.',
+  tipHoliday:'🎉 Празничен трафик — повече коли, повече бързащи.',
   updated:'Обновено',ptpLabel:'очаквани ПТП',
   corrTitle:'КОРЕЛАЦИЯ: МВР ДАННИ ↔ РИСК ФАКТОРИ',
+  expected:'Очаквани',expSub:'ПТП в София (модел, средно)',
 },
 en:{
   h1:'🛣️ Road Monitor — Sofia',
-  hsub:'Space weather · Pressure · MVR data · 3-scenario forecast',
-  scNames:['CALM DAY','TENSE DAY','HARD DAY'],
-  scDescs:['Optimistic (best case). Normal traffic.','Base case (most likely). Drive carefully.','Pessimistic (worst case). Drive defensively.'],
-  scProb:'probability',
+  hsub:'Space weather · Meteo · Holidays · History 2015–2024',
   dayNames:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
   dayShort:['Su','Mo','Tu','We','Th','Fr','Sa'],
   roadLevels:['✅ Calm day','⚠️ Extra caution','🔶 Difficult','🛑 Dangerous'],
   riskDescs:['Calm','Mild tension','Elevated','Critical'],
-  dayTypes:['Calm','Tense','Hard'],
   kpStatus:['Quiet','Mildly active','Storm','Strong storm'],
   moonPhases:['🌑 New Moon','🌒','🌓 First Qtr','🌔','🌕 Full Moon','🌖','🌗 Last Qtr','🌘'],
   seasons:['Winter','Spring','Summer','Autumn'],
   uvRisks:['Low','Moderate','High','Very high'],
-  factorTitles:['SPACE WEATHER','PRESSURE','MOON','SEISMICS','UV & SEASON','DAY'],
+  factorTitles:['SPACE WEATHER','PRESSURE','RAIN/SNOW','TEMP & ICE','WIND','MOON','DAY & HOLIDAY','UV & SEASON','SEISMICS'],
   noQuakes:'No M>4.5 in 24h',
-  mvrLive:'MVR data for yesterday:',
-  mvrNoData:'MVR data: waiting for next report',
-  mvrLight:'Minor acc.',mvrSerious:'Serious acc.',mvrDead:'Deaths',mvrInjured:'Injured',
+  mvrDead:'Deaths',mvrInjured:'Injured',
+  holiday:'Holiday',preHoliday:'Pre-holiday',workday:'Workday',weekend:'Weekend',
+  noRain:'Dry',ice:'Ice danger!',frost:'Frost possible',
   tips:{
     calm:['🟢 Good day for driving.','💧 Stay hydrated.'],
     caution:['🟡 A bit more attention.','😤 People may be more irritable.','☕ Limit caffeine.'],
     hard:['🟠 Drive defensively.','💊 Migraine sufferers — preventive measures.','🚗 Greater distance.','⏰ Leave earlier.'],
     danger:['🔴 Drive only if necessary.','🛑 Maximum distance.','🏠 Stay home if possible.'],
   },
+  tipRain:'🌧️ Wet road — double the distance.',
+  tipSnow:'❄️ Snow — winter tires, smooth braking.',
+  tipIce:'🧊 Ice on road — minimum speed on bridges and shaded sections.',
+  tipWind:'💨 Strong wind — caution near trucks and open sections.',
+  tipHoliday:'🎉 Holiday traffic — more cars, more people in a hurry.',
   updated:'Updated',ptpLabel:'expected crashes',
   corrTitle:'CORRELATION: MVR DATA ↔ RISK FACTORS',
+  expected:'Expected',expSub:'crashes in Sofia (model, mean)',
 }};
 const tk = () => L[lang];
 
-function toggleLang(){ lang = lang==='bg'?'en':'bg'; applyLang(); renderAll(); }
+function toggleLang(){ lang = lang==='bg'?'en':'bg'; applyLang(); renderAll();
+  if(document.getElementById('panel-forecast').classList.contains('active')) renderForecastPanel();
+  if(document.getElementById('panel-history').classList.contains('active')) renderHistoryPanel();
+}
 
 function applyLang(){
   const k = tk();
@@ -354,11 +334,15 @@ function applyLang(){
   document.getElementById('tab-today').textContent = lang==='bg'?'ДНЕС':'TODAY';
   document.getElementById('tab-forecast').textContent = lang==='bg'?'3 ДНИ':'3 DAYS';
   document.getElementById('tab-history').textContent = lang==='bg'?'ИСТОРИЯ':'HISTORY';
-  [0,1,2].forEach(i=>{
-    document.getElementById('sc-name-'+i).textContent = k.scNames[i];
-    document.getElementById('sc-desc-'+i).textContent = k.scDescs[i];
-  });
-  document.getElementById('tips-title').textContent = k.tipsTitle || (lang==='bg'?'ПРЕПОРЪКИ':'TIPS');
+  document.getElementById('tips-title').textContent = lang==='bg'?'ПРЕПОРЪКИ ЗА ШОФЬОРА':'DRIVER TIPS';
+  document.getElementById('fc-chart-title').textContent = lang==='bg'?'ПРОГНОЗА — ОЧАКВАНИ ПТП / ДЕН':'FORECAST — EXPECTED CRASHES / DAY';
+  document.getElementById('hist-chart-title').textContent = lang==='bg'?'ПОСЛЕДНИТЕ 30 ДНИ — РЕАЛНИ ДАННИ':'LAST 30 DAYS — REAL DATA';
+  document.getElementById('sc-explain').innerHTML = lang==='bg'
+    ? '📊 Очакван брой ПТП в София-град според модела: историческа база 2015–2024 (ден · месец) × среда (космическо време · дъжд/сняг · лед · вятър · налягане · луна · празници).'
+    : '📊 Expected crashes in Sofia per the model: 2015–2024 historical baseline (weekday · month) × environment (space weather · rain/snow · ice · wind · pressure · moon · holidays).';
+  document.getElementById('hist-thead').innerHTML = lang==='bg'
+    ? '<tr><th>ДАТА</th><th>ДЕН</th><th>Kp</th><th>ΔhPa</th><th>ДЪЖД</th><th>РИСК</th><th>МВР ПТП</th><th>МОДЕЛ</th></tr>'
+    : '<tr><th>DATE</th><th>DAY</th><th>Kp</th><th>ΔhPa</th><th>RAIN</th><th>RISK</th><th>MVR</th><th>MODEL</th></tr>';
 }
 
 /* ══════════════ TABS ══════════════ */
@@ -373,13 +357,42 @@ function showTab(name){
 
 /* ══════════════ STORE ══════════════ */
 const S = {
-  kp:null, // will render with default 2 after timeout pressNow:null, pressYest:null, temp:null,
+  kp:null, pressNow:null, pressYest:null, temp:null,
   moonAge:null, quakes:[], uv:null,
-  fcKp:[], fcPress:[],
-  mvrDays: [],   // ← реални МВР данни от GitHub
-  mvrLoaded: false,
-  histMode: 'combined',
+  rainNow:0, snowNow:0, windNow:0, visNow:null,
+  fcKp:[], fcDaily:[],          // fcDaily: [{dp,rain,snow,wind,tmin,tmax}] за следващите 3 дни
+  histDaily:[],                 // реални дневни метео стойности за последните 30 дни
+  kpHist:{},                    // 'YYYY-MM-DD' -> {avg,max} от NOAA
+  mvrDays: [], mvrLoaded: false,
+  historical:null, histLoading:false,
 };
+
+/* ══════════════ BG HOLIDAYS ══════════════ */
+/* Фиксирани + Православен Великден (Петък–Понеделник) */
+const ORTHODOX_EASTER = {2025:'2025-04-20',2026:'2026-04-12',2027:'2027-05-02',2028:'2028-04-16',2029:'2029-04-08',2030:'2030-04-28'};
+function bgHolidaySet(year){
+  const set = new Set([`${year}-01-01`,`${year}-03-03`,`${year}-05-01`,`${year}-05-06`,`${year}-05-24`,`${year}-09-06`,`${year}-09-22`,`${year}-12-24`,`${year}-12-25`,`${year}-12-26`]);
+  const e = ORTHODOX_EASTER[year];
+  if(e){
+    const d = new Date(e+'T12:00:00');
+    [-2,-1,0,1].forEach(off=>{ // Разпети петък, събота, Великден, Велики понеделник
+      const x = new Date(d.getTime()+off*86400000);
+      set.add(x.toISOString().split('T')[0]);
+    });
+  }
+  return set;
+}
+const _holCache = {};
+function isHoliday(date){
+  const y = date.getFullYear();
+  if(!_holCache[y]) _holCache[y] = bgHolidaySet(y);
+  return _holCache[y].has(date.toISOString().split('T')[0]);
+}
+function holidayStatus(date){ // 0=обикновен, 1=ден преди празник, 2=празник
+  if(isHoliday(date)) return 2;
+  if(isHoliday(new Date(date.getTime()+86400000))) return 1;
+  return 0;
+}
 
 /* ══════════════ RISK ENGINE ══════════════ */
 function calcMoonAge(date){
@@ -388,6 +401,7 @@ function calcMoonAge(date){
 }
 function estimateUV(m){ return[1,1,3,5,7,9,10,9,7,4,2,1][m]||3; }
 
+/* Kp — обърната U-крива: при Kp>7.5 хората си стоят вкъщи и ПТП намаляват */
 function kpEffect(kp){
   if(kp>=7.5)return 0.95; if(kp>=6)return 1.08;
   if(kp>=5)return 1.14;   if(kp>=3)return 1.05; return 1.0;
@@ -399,73 +413,127 @@ function moonEffect(age){
   const n=Math.abs(Math.sin((age/29.53)*Math.PI));
   return n>0.85?1.06:n>0.6?1.03:1.0;
 }
-function dowFactor(d){ return[0.82,0.88,0.93,0.98,1.28,1.22,0.78][d]||1.0; }
+function rainEffect(rainMm, snowCm){
+  let f = 1.0;
+  if(rainMm>=10)f=1.25; else if(rainMm>=3)f=1.16; else if(rainMm>=0.5)f=1.08;
+  if(snowCm>=5)f=Math.max(f,1.38); else if(snowCm>0)f=Math.max(f,1.24);
+  return f;
+}
+function iceEffect(tmin, precip){
+  if(tmin==null)return 1.0;
+  if(tmin<=1 && precip>0.2)return 1.30;   // валеж при минусови/около нула → лед
+  if(tmin<=-2)return 1.12;                // сух мраз, заледени участъци сутрин
+  if(tmin<=1)return 1.05;
+  return 1.0;
+}
+function windEffect(kmh){
+  if(kmh==null)return 1.0;
+  if(kmh>=60)return 1.12; if(kmh>=40)return 1.06; return 1.0;
+}
+function fogEffect(visM){
+  if(visM==null)return 1.0;
+  if(visM<200)return 1.20; if(visM<500)return 1.10; if(visM<1000)return 1.04;
+  return 1.0;
+}
+function holidayEffect(st){ return st===2?1.10 : st===1?1.14 : 1.0; } // денят ПРЕДИ празник е най-натоварен (пътуване)
 
-const BASE = 18;
-function calcPTP(kp,dp,moonAge,dow){
-  const inter = (kp>=5&&dp>=10)?1.08:1.0;
-  return BASE*kpEffect(kp)*pressEffect(dp)*moonEffect(moonAge)*dowFactor(dow)*inter;
+/* Базови коефициенти от историческите данни (2015–2024), с fallback */
+function weekdayFactor(dow){
+  const wd = S.historical?.risk_by_weekday;
+  if(wd){
+    const key = Object.keys(wd).find(k=>{
+      // ключове тип '0_monday' (Пн=0) → JS dow (Нд=0)
+      const map = {monday:1,tuesday:2,wednesday:3,thursday:4,friday:5,saturday:6,sunday:0};
+      const name = k.split('_')[1];
+      return map[name]===dow;
+    });
+    if(key) return wd[key];
+  }
+  return [0.82,0.88,0.93,0.98,1.28,1.22,0.78][dow]||1.0;
+}
+function monthFactor(mon1){ // 1–12
+  const md = S.historical?.risk_by_month;
+  if(md){
+    const key = Object.keys(md).find(k=>k.startsWith(mon1+'_'));
+    if(key) return md[key];
+  }
+  return 1.0;
+}
+function baseDaily(){ // средно ПТП/ден в София от историята (леки+тежки)
+  const a = S.historical?.sofia_daily_avg;
+  return a ? (a.light||8.2)+(a.serious||0.9) : 9.1;
 }
 
-function calcScenarios(kp,dp,moonAge,dow){
-  const mid  = calcPTP(kp, dp, moonAge, dow);
-  const calm = calcPTP(Math.max(0,kp*0.6), dp*0.6, moonAge, dow)*0.92;
-  const hard = calcPTP(Math.min(9,kp*1.3+1), dp*1.4, moonAge, dow)*1.08;
-  const riskNow = (kp/9)*0.4+(Math.min(dp,15)/15)*0.4+Math.abs(Math.sin(moonAge/29.53*Math.PI))*0.2;
-  const pCalm = Math.max(10, Math.round((1-riskNow*0.8)*60));
-  const pHard = Math.max(5,  Math.round(riskNow*45));
-  const pMid  = Math.max(5,  100-pCalm-pHard);
-  const riskScore = Math.min(10,Math.round((mid/BASE-0.8)*12));
-  return {calm:Math.round(calm),mid:Math.round(mid),hard:Math.round(hard),pCalm,pMid,pHard,riskScore};
+/* Единна средна прогноза + риск индекс 0–10 */
+function calcRisk(env, date){
+  const dow = date.getDay(), mon = date.getMonth()+1;
+  const hs  = holidayStatus(date);
+  const envMult = Math.min(1.9,
+    kpEffect(env.kp??2) * pressEffect(env.dp??0) * moonEffect(env.moonAge??calcMoonAge(date))
+    * rainEffect(env.rain??0, env.snow??0) * iceEffect(env.tmin, (env.rain??0)+(env.snow??0))
+    * windEffect(env.wind) * fogEffect(env.vis) * holidayEffect(hs)
+    * ((env.kp>=5 && env.dp>=10)?1.06:1.0)
+  );
+  const wf = weekdayFactor(dow), mf = monthFactor(mon);
+  const expected = baseDaily() * wf * mf * envMult;
+  const totalMult = envMult * ((wf*mf)||1);
+  const riskScore = Math.max(0, Math.min(10, Math.round((totalMult-0.8)*11)));
+  return { expected: Math.round(expected*10)/10, riskScore, envMult, wf, mf, hs };
 }
 
 /* ══════════════ RENDER TODAY ══════════════ */
-const C = {bg:'#0d0f14',surf:'#141720',border:'#1e2330',dim:'#7a80a0',text:'#dce1f0',
+const C = {bg:'#0d0f14',surf:'#141720',border:'#1e2330',muted:'#2a3040',dim:'#7a80a0',text:'#dce1f0',
            cyan:'#38bdf8',green:'#4ade80',yellow:'#fbbf24',orange:'#f97316',red:'#f87171',purple:'#a78bfa'};
 const lvColors = [C.green,C.yellow,C.orange,C.red];
 const lvClass  = ['b-calm','b-caution','b-hard','b-danger'];
 const fcClass  = ['fc-calm','fc-caution','fc-hard','fc-danger'];
+const lvOf = s => s<=2?0:s<=5?1:s<=7?2:3;
+
+function envToday(){
+  return {
+    kp:S.kp??2,
+    dp:(S.pressNow&&S.pressYest)?Math.abs(S.pressNow-S.pressYest):0,
+    moonAge:S.moonAge??calcMoonAge(new Date()),
+    rain:S.rainNow, snow:S.snowNow, wind:S.windNow, vis:S.visNow,
+    tmin:S.temp!=null?parseFloat(S.temp):null,
+  };
+}
 
 function renderAll(){
   applyLang();
-  if(S.kp===null) S.kp=2; // use calm default if NOAA not loaded yet
+  if(S.kp===null) S.kp=2;
   const k = tk();
   const now = new Date();
   S.moonAge = S.moonAge ?? calcMoonAge(now);
-  const dp = (S.pressNow&&S.pressYest) ? Math.abs(S.pressNow-S.pressYest) : 0;
+  const env = envToday();
+  const r = calcRisk(env, now);
+  const lv = lvOf(r.riskScore);
   const dow = now.getDay();
-  const sc = calcScenarios(S.kp??2, dp, S.moonAge, dow);
-  const lv = sc.riskScore<=2?0:sc.riskScore<=5?1:sc.riskScore<=7?2:3;
 
-  // Signal box
   document.getElementById('signal-box').className = 'signal-box '+['calm','caution','hard','hard'][lv];
   document.getElementById('sl-label').textContent = lang==='bg'?'ОЦЕНКА НА ДЕНЯ':'DAY ASSESSMENT';
   document.getElementById('sl-day').textContent = k.dayNames[dow]+' — '+k.riskDescs[lv];
-  const expL=S.expectedLight||sc.mid;
-  document.getElementById('sl-sub').textContent = (lang==='bg'?'Очаквани ~':'Expected ~')+expL+(lang==='bg'?' леки ПТП в София (ист. данни)':' light accidents in Sofia (historical)');
-  document.getElementById('sl-score').textContent = sc.riskScore+'/10';
+  document.getElementById('sl-sub').textContent =
+    (lang==='bg'?'Очаквани ~':'Expected ~')+r.expected+(lang==='bg'?' ПТП в София (средна прогноза)':' crashes in Sofia (mean forecast)')
+    + (r.hs===2?(lang==='bg'?' · 🎉 празник':' · 🎉 holiday'):r.hs===1?(lang==='bg'?' · пред-празничен ден':' · pre-holiday'):'');
+  document.getElementById('sl-score').textContent = r.riskScore+'/10';
   document.getElementById('sl-score').style.color = lvColors[lv];
   document.getElementById('sl-road').textContent = k.roadLevels[lv];
   document.getElementById('sl-road').style.color = lvColors[lv];
 
-  // MVR badge
   renderMvrBadge(k);
+  renderFactors(env, r, k);
 
-  // Scenarios
-  [0,1,2].forEach(i=>{
-    const vals = [sc.calm,sc.mid,sc.hard];
-    const probs = [sc.pCalm,sc.pMid,sc.pHard];
-    document.getElementById('sc-ptp-'+i).textContent = vals[i]+' '+k.ptpLabel;
-    document.getElementById('sc-prob-'+i).textContent = k.scProb+' ~'+probs[i]+'%';
-  });
-
-  // Factors
-  renderFactors(dp, S.moonAge, dow, k);
-
-  // Tips
+  // Tips — базови по ниво + динамични според активните фактори
   const tipKey = ['calm','caution','hard','danger'][lv];
+  let tips = [...k.tips[tipKey]];
+  if((env.snow??0)>0) tips.unshift(k.tipSnow);
+  else if((env.rain??0)>=0.5) tips.unshift(k.tipRain);
+  if(env.tmin!=null && env.tmin<=1 && (env.rain+env.snow)>0.2) tips.unshift(k.tipIce);
+  if((env.wind??0)>=40) tips.push(k.tipWind);
+  if(r.hs>0) tips.push(k.tipHoliday);
   document.getElementById('tips-list').innerHTML =
-    k.tips[tipKey].map(t=>`<div class="tip-item">${t}</div>`).join('');
+    tips.map(t=>`<div class="tip-item">${t}</div>`).join('');
 
   document.getElementById('updated-at').textContent =
     k.updated+': '+now.toLocaleTimeString(lang==='bg'?'bg-BG':'en-GB',{hour:'2-digit',minute:'2-digit'});
@@ -476,13 +544,8 @@ function renderMvrBadge(k){
   const dot   = document.getElementById('mvr-dot');
   const txt   = document.getElementById('mvr-status-text');
   const nums  = document.getElementById('mvr-nums');
+  if(!S.mvrLoaded){ txt.textContent = lang==='bg'?'Зареждане…':'Loading…'; return; }
 
-  if(!S.mvrLoaded){
-    txt.textContent = lang==='bg'?'Зареждане…':'Loading…';
-    return;
-  }
-
-  // Най-скорошният ден с реален брой (news source), до 4 дни назад
   const recent = (S.mvrDays||[])
     .filter(d=>d && d.date && (d.ptp!=null||d.dead!=null||d.injured!=null))
     .sort((a,b)=>b.date.localeCompare(a.date));
@@ -507,21 +570,21 @@ function renderMvrBadge(k){
         <div class="mvr-num-lbl">${i.l}</div>
       </div>`).join('');
   } else {
-    // Честен frozen режим
     badge.className='mvr-badge stale';
     dot.className='mvr-dot';
-    const frozenBg = 'МВР спря публичните ПТП данни (05.05.2026). Рискът се смята от история 2015–2024 + космическо време.';
-    const frozenEn = 'MVR froze public crash data (05.05.2026). Risk computed from 2015–2024 history + space weather.';
+    const frozenBg = 'МВР спря публичните ПТП данни (05.05.2026). Рискът се смята от история 2015–2024 + среда.';
+    const frozenEn = 'MVR froze public crash data (05.05.2026). Risk computed from 2015–2024 history + environment.';
     txt.innerHTML = `<span style="color:var(--orange)">⚠️ ${lang==='bg'?frozenBg:frozenEn}</span>`
       + (S.mvrNewsUrl?` <a href="${S.mvrNewsUrl}" target="_blank" style="color:var(--cyan);font-size:.72rem">${lang==='bg'?'(защо?)':'(why?)'}</a>`:'');
     nums.innerHTML = '';
   }
 }
 
-function renderFactors(dp,moonAge,dow,k){
-  const kp = S.kp??2;
+function renderFactors(env, r, k){
+  const kp = env.kp, dp = env.dp, moonAge = env.moonAge;
   const uv = S.uv??estimateUV(new Date().getMonth());
   const month = new Date().getMonth();
+  const dow = new Date().getDay();
   const si = month<=1||month===11?0:month<=4?1:month<=7?2:3;
   const mi = Math.round((moonAge/29.53)*8)%8;
   const kpLv=kp>=7?3:kp>=5?2:kp>=3?1:0;
@@ -530,74 +593,90 @@ function renderFactors(dp,moonAge,dow,k){
   const eqB=S.quakes.filter(q=>q.mag>=6.5).length;
   const eqLv=eqB>=2?3:eqB>=1?2:S.quakes.length>=8?1:0;
   const uvLv=uv>=8?3:uv>=6?2:uv>=3?1:0;
-  const dowLv=[4,5].includes(dow)?2:dow===0?0:1;
-  const moonIcons=['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
+
+  const rain=env.rain??0, snow=env.snow??0;
+  const rainLv = snow>0?3 : rain>=10?3 : rain>=3?2 : rain>=0.5?1 : 0;
+  const rainVal = snow>0 ? '❄️ '+snow.toFixed(1)+' cm' : rain>=0.5 ? '🌧️ '+rain.toFixed(1)+' mm' : k.noRain;
+
+  const t = env.tmin;
+  const iceLv = (t!=null&&t<=1&&(rain+snow)>0.2)?3 : (t!=null&&t<=-2)?2 : (t!=null&&t<=1)?1 : (t!=null&&t>=33)?2 : 0;
+  const iceSub = iceLv===3?k.ice : iceLv===2&&t<=0?k.frost : (t!=null&&t>=33)?(lang==='bg'?'Жега/умора':'Heat/fatigue') : 'OK';
+
+  const wind = env.wind??0;
+  const windLv = wind>=60?3:wind>=40?2:wind>=25?1:0;
+
+  const hs = r.hs;
+  const dayLv = hs===1?2 : (hs===2||[5,6].includes(dow))?2 : dow===0?0:1;
+  const daySub = hs===2?k.holiday : hs===1?k.preHoliday : [0,6].includes(dow)?k.weekend:k.dayNames[dow];
 
   const cards=[
-    {lv:kpLv, val:'Kp '+kp.toFixed(1), sub:k.kpStatus[kpLv], bar:kp/9},
-    {lv:dpLv, val:(S.pressNow?S.pressNow.toFixed(0)+' hPa':'—'),
-     sub:dp>0?(dp>=0?'+':'')+dp.toFixed(1)+' hPa':'—', bar:Math.min(dp/15,1)},
-    {lv:mlv, val:moonIcons[mi], sub:k.moonPhases[mi], bar:Math.abs(Math.sin(moonAge/29.53*Math.PI))},
-    {lv:eqLv, val:S.quakes.length+'', sub:eqB>0?'M>6.5: '+eqB+'⚠️':k.noQuakes, bar:Math.min(eqB/3,1)},
-    {lv:uvLv, val:'UV '+uv, sub:k.seasons[si]+'·'+k.uvRisks[Math.min(uvLv,3)], bar:uv/11},
-    {lv:dowLv, val:k.dayShort[dow], sub:k.dayNames[dow], bar:[0.82,0.88,0.93,0.98,1.28,1.22,0.78][dow]/1.3},
+    {lv:kpLv, val:'Kp '+kp.toFixed(1), sub:k.kpStatus[Math.min(kpLv,3)], bar:kp/9, icon:'🌐'},
+    {lv:dpLv, val:(S.pressNow?S.pressNow.toFixed(0)+' hPa':'—'), sub:dp>0?'Δ '+dp.toFixed(1)+' hPa':'—', bar:Math.min(dp/15,1), icon:'🌡️'},
+    {lv:rainLv, val:rainVal, sub:snow>0?(lang==='bg'?'Снеговалеж':'Snowfall'):rain>=0.5?(lang==='bg'?'Мокра настилка':'Wet road'):'—', bar:Math.min((rain+snow*3)/15,1), icon:'🌧️'},
+    {lv:iceLv, val:(t!=null?t.toFixed(0)+'°C':'—'), sub:iceSub, bar:t!=null?Math.min(Math.max((5-t)/10,0),1):0, icon:'🧊'},
+    {lv:windLv, val:wind?wind.toFixed(0)+' km/h':'—', sub:windLv>=2?(lang==='bg'?'Силен вятър':'Strong wind'):'OK', bar:Math.min(wind/70,1), icon:'💨'},
+    {lv:mlv, val:['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'][mi], sub:k.moonPhases[mi], bar:Math.abs(Math.sin(moonAge/29.53*Math.PI)), icon:'🌙'},
+    {lv:dayLv, val:k.dayShort[dow], sub:daySub, bar:(weekdayFactor(dow)*holidayEffect(hs))/1.4, icon:hs>0?'🎉':'📅'},
+    {lv:uvLv, val:'UV '+uv, sub:k.seasons[si]+' · '+k.uvRisks[Math.min(uvLv,3)], bar:uv/11, icon:'☀️'},
+    {lv:eqLv, val:S.quakes.length+'', sub:eqB>0?'M>6.5: '+eqB+' ⚠️':k.noQuakes, bar:Math.min(eqB/3,1), icon:'📡'},
   ];
-  const icons=['🌐','🌡️','','📡','☀️','📅'];
   document.getElementById('factors-grid').innerHTML = cards.map((c,i)=>`
     <div class="factor ${fcClass[c.lv]}">
       <div class="factor-head">
         <span class="factor-title">${k.factorTitles[i]}</span>
-        <span>${icons[i]||c.val}</span>
+        <span>${c.icon}</span>
       </div>
       <div class="factor-val" style="color:${lvColors[c.lv]}">${c.val}</div>
       <div class="factor-sub">${c.sub}</div>
-      <div class="factor-bar-wrap"><div class="factor-bar" style="width:${Math.round(c.bar*100)}%;background:${lvColors[c.lv]}"></div></div>
+      <div class="factor-bar-wrap"><div class="factor-bar" style="width:${Math.round(Math.min(c.bar,1)*100)}%;background:${lvColors[c.lv]}"></div></div>
     </div>`).join('');
 }
 
-/* ══════════════ FORECAST PANEL ══════════════ */
+/* ══════════════ FORECAST PANEL — една средна прогноза ══════════════ */
 function renderForecastPanel(){
   const k = tk(); const now = new Date();
   const fcDays=[];
   for(let d=0;d<3;d++){
     const date=new Date(now.getTime()+(d+1)*86400000);
-    const dow=date.getDay(), moonAge=calcMoonAge(date);
-    const kpMid=S.fcKp[d]?.mid??Math.max(1,(S.kp??2)*(1-d*0.1));
-    const kpLow=S.fcKp[d]?.low??Math.max(0,kpMid*0.6);
-    const kpHigh=S.fcKp[d]?.high??Math.min(9,kpMid*1.5);
-    const dp=S.fcPress[d]?.dp??(S.pressNow?Math.abs(S.pressNow-1013)*0.7:4);
-    const scC=calcScenarios(kpLow,dp*0.7,moonAge,dow);
-    const scM=calcScenarios(kpMid,dp,moonAge,dow);
-    const scH=calcScenarios(kpHigh,dp*1.4,moonAge,dow);
-    fcDays.push({date,dow,kpMid,kpLow,kpHigh,dp,moonAge,
-      calm:scC.calm,mid:scM.mid,hard:scH.hard,riskScore:scM.riskScore,
-      pCalm:scM.pCalm,pMid:scM.pMid,pHard:scM.pHard});
+    const daily=S.fcDaily[d]||{};
+    const env={
+      kp: S.fcKp[d]?.mid ?? Math.max(1,(S.kp??2)*(1-d*0.1)),
+      dp: daily.dp ?? 4,
+      moonAge: calcMoonAge(date),
+      rain: daily.rain??0, snow: daily.snow??0,
+      wind: daily.wind, tmin: daily.tmin, vis:null,
+    };
+    const r=calcRisk(env,date);
+    fcDays.push({date,env,r});
   }
   drawForecastChart(document.getElementById('fc-canvas'),fcDays,k);
-  const lv=i=>i<=2?0:i<=5?1:i<=7?2:3;
   document.getElementById('fc-days-container').innerHTML=fcDays.map(fc=>{
-    const l=lv(fc.riskScore);
+    const l=lvOf(fc.r.riskScore);
     const ds=fc.date.toLocaleDateString(lang==='bg'?'bg-BG':'en-GB',{weekday:'long',month:'long',day:'numeric'});
-    const mi=Math.round((fc.moonAge/29.53)*8)%8;
+    const mi=Math.round((fc.env.moonAge/29.53)*8)%8;
+    const daily=fc.env;
+    const chips=[
+      `Kp <span>${(S.fcKp[fcDays.indexOf(fc)]?.low??daily.kp*0.7).toFixed(1)}–${(S.fcKp[fcDays.indexOf(fc)]?.high??daily.kp*1.3).toFixed(1)}</span>`,
+      `ΔP <span>~${daily.dp.toFixed(1)} hPa</span>`,
+      daily.snow>0?`❄️ <span>${daily.snow.toFixed(1)} cm</span>`:`🌧️ <span>${(daily.rain||0).toFixed(1)} mm</span>`,
+      daily.tmin!=null?`🌡️ <span>${daily.tmin.toFixed(0)}°C min</span>`:null,
+      daily.wind!=null?`💨 <span>${daily.wind.toFixed(0)} km/h</span>`:null,
+      `${k.moonPhases[mi]}`,
+      fc.r.hs===2?`🎉 <span>${k.holiday}</span>`:fc.r.hs===1?`🎉 <span>${k.preHoliday}</span>`:null,
+    ].filter(Boolean);
     return`<div class="forecast-day">
       <div class="fc-day-head">
         <div>
           <div class="fc-date">${fc.date.toISOString().split('T')[0]}</div>
           <div class="fc-weekday" style="color:${lvColors[l]}">${ds}</div>
         </div>
-        <span class="badge ${lvClass[l]}">${k.riskDescs[l]} · ${fc.riskScore}/10</span>
+        <span class="badge ${lvClass[l]}">${k.riskDescs[l]} · ${fc.r.riskScore}/10</span>
       </div>
-      <div class="fc-scenarios-mini">
-        <div class="fc-sc fs-calm"><div class="fc-sc-label">${k.scNames[0]}</div><div class="fc-sc-val" style="color:var(--green)">${fc.calm}</div><div class="fc-sc-road" style="color:var(--dim)">~${fc.pCalm}%</div></div>
-        <div class="fc-sc fs-mid"><div class="fc-sc-label">${k.scNames[1]}</div><div class="fc-sc-val" style="color:var(--yellow)">${fc.mid}</div><div class="fc-sc-road" style="color:var(--dim)">~${fc.pMid}%</div></div>
-        <div class="fc-sc fs-hard"><div class="fc-sc-label">${k.scNames[2]}</div><div class="fc-sc-val" style="color:var(--red)">${fc.hard}</div><div class="fc-sc-road" style="color:var(--dim)">~${fc.pHard}%</div></div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:8px 0 4px">
+        <span style="font-family:'Space Mono',monospace;font-size:1.7rem;font-weight:700;color:${lvColors[l]}">${fc.r.expected}</span>
+        <span style="font-size:.75rem;color:var(--dim)">${k.ptpLabel}</span>
       </div>
-      <div class="fc-factors-row">
-        <div class="fc-chip">Kp <span>${fc.kpLow.toFixed(1)}–${fc.kpHigh.toFixed(1)}</span></div>
-        <div class="fc-chip">ΔP <span>~${fc.dp.toFixed(1)} hPa</span></div>
-        <div class="fc-chip">${k.dayNames[fc.dow]}</div>
-        <div class="fc-chip">${k.moonPhases[mi]}</div>
-      </div>
+      <div class="fc-factors-row">${chips.map(c=>`<div class="fc-chip">${c}</div>`).join('')}</div>
     </div>`;}).join('');
 }
 
@@ -605,95 +684,108 @@ function drawForecastChart(canvas,fcDays,k){
   const W=canvas.width=canvas.offsetWidth||400,H=180;
   canvas.height=H;
   const ctx=canvas.getContext('2d');
-  const pad={l:34,r:14,t:18,b:36};
+  const pad={l:34,r:14,t:18,b:28};
   ctx.clearRect(0,0,W,H);
-  const now=new Date(),moonAge0=calcMoonAge(now);
-  const dp0=(S.pressNow&&S.pressYest)?Math.abs(S.pressNow-S.pressYest):3;
-  const sc0=calcScenarios(S.kp??2,dp0,moonAge0,now.getDay());
-  const all=[{label:lang==='bg'?'Днес':'Today',calm:sc0.calm,mid:sc0.mid,hard:sc0.hard,isFc:false},
-             ...fcDays.map(d=>({label:k.dayShort[d.dow],calm:d.calm,mid:d.mid,hard:d.hard,isFc:true}))];
-  const maxV=Math.max(...all.map(d=>d.hard))+4;
+  const now=new Date();
+  const r0=calcRisk(envToday(),now);
+  const all=[{label:lang==='bg'?'Днес':'Today',v:r0.expected,score:r0.riskScore,isFc:false},
+             ...fcDays.map(d=>({label:k.dayShort[d.date.getDay()],v:d.r.expected,score:d.r.riskScore,isFc:true}))];
+  const maxV=Math.max(...all.map(d=>d.v))*1.25+2;
   const xs=i=>pad.l+(W-pad.l-pad.r)*(i+0.5)/all.length;
   const ys=v=>pad.t+(H-pad.t-pad.b)*(1-v/maxV);
-  [10,15,20,25,30].filter(v=>v<maxV).forEach(v=>{
+  const gridStep=maxV>20?5:2;
+  for(let v=gridStep;v<maxV;v+=gridStep){
     const y=ys(v); ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y);
     ctx.strokeStyle=C.border; ctx.lineWidth=1; ctx.stroke();
     ctx.fillStyle=C.dim; ctx.font='8px Space Mono,monospace'; ctx.textAlign='right';
     ctx.fillText(v,pad.l-3,y+3);
-  });
-  // forecast shade
+  }
   ctx.fillStyle=C.cyan+'0a'; ctx.fillRect(xs(0.5),pad.t,W-pad.r-xs(0.5),H-pad.t-pad.b);
-  // band
   ctx.beginPath();
-  all.forEach((d,i)=>{const x=xs(i),y=ys(d.hard);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
-  all.slice().reverse().forEach((d,i,a)=>ctx.lineTo(xs(a.length-1-i),ys(d.calm)));
-  ctx.closePath(); ctx.fillStyle='#fbbf2412'; ctx.fill();
-  // lines
-  [[C.red,'hard',true],[C.green,'calm',true],[C.yellow,'mid',false]].forEach(([c,key,dashed])=>{
-    ctx.beginPath();
-    all.forEach((d,i)=>{const x=xs(i),y=ys(d[key]);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
-    ctx.strokeStyle=c; ctx.lineWidth=key==='mid'?2:1.2;
-    if(dashed)ctx.setLineDash([3,3]); ctx.stroke(); ctx.setLineDash([]);
-    if(key==='mid') all.forEach((d,i)=>{
-      ctx.beginPath(); ctx.arc(xs(i),ys(d[key]),3,0,Math.PI*2);
-      ctx.fillStyle=c; ctx.fill();
-      ctx.fillStyle=C.text; ctx.font='bold 9px Space Mono'; ctx.textAlign='center';
-      ctx.fillText(d[key],xs(i),ys(d[key])-7);
-    });
+  all.forEach((d,i)=>{const x=xs(i),y=ys(d.v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.strokeStyle=C.yellow; ctx.lineWidth=2; ctx.stroke();
+  all.forEach((d,i)=>{
+    const col=lvColors[lvOf(d.score)];
+    ctx.beginPath(); ctx.arc(xs(i),ys(d.v),4,0,Math.PI*2);
+    ctx.fillStyle=col; ctx.fill();
+    ctx.fillStyle=C.text; ctx.font='bold 10px Space Mono'; ctx.textAlign='center';
+    ctx.fillText(d.v,xs(i),ys(d.v)-9);
   });
   ctx.fillStyle=C.dim; ctx.font='9px Space Grotesk'; ctx.textAlign='center';
   all.forEach((d,i)=>ctx.fillText(d.label,xs(i),H-pad.b+12));
-  [[C.green,k.scNames[0]],[C.yellow,k.scNames[1]],[C.red,k.scNames[2]]].forEach(([c,l],i)=>{
-    ctx.fillStyle=c; ctx.fillRect(pad.l+i*100,H-pad.b+22,8,3);
-    ctx.fillStyle=C.dim; ctx.font='7px Space Grotesk'; ctx.textAlign='left';
-    ctx.fillText(l,pad.l+i*100+12,H-pad.b+25);
-  });
 }
 
-/* ══════════════ HISTORY PANEL ══════════════ */
-let histMode='combined';
-function setHistMode(m){
-  histMode=m;
-  ['combined','mvr','model'].forEach(x=>{
-    document.getElementById('hbtn-'+x).classList.toggle('active',x===m);
-  });
-  renderHistoryPanel();
+/* ══════════════ HISTORY PANEL — реални данни ══════════════ */
+async function ensureHistorySources(){
+  const jobs=[];
+  if(!S.historical && !S.histLoading){
+    S.histLoading=true;
+    jobs.push(fetch('data/historical.json').then(r=>r.ok?r.json():null).then(h=>{if(h)S.historical=h;}).catch(()=>{}));
+  }
+  if(!Object.keys(S.kpHist).length){
+    jobs.push(fetch('https://services.swpc.noaa.gov/text/daily-geomagnetic-indices.txt')
+      .then(r=>r.text()).then(txt=>{
+        txt.split('\n').forEach(line=>{
+          const m=line.match(/^\s*(\d{4})\s+(\d{2})\s+(\d{2})\s+(.*)$/);
+          if(!m)return;
+          const nums=m[4].trim().split(/\s+/).map(Number).filter(n=>!isNaN(n));
+          if(nums.length<9)return;
+          const kps=nums.slice(-8).filter(v=>v>=0&&v<=9); // планетарните 8 K-стойности
+          if(!kps.length)return;
+          const key=`${m[1]}-${m[2]}-${m[3]}`;
+          S.kpHist[key]={avg:kps.reduce((a,b)=>a+b)/kps.length, max:Math.max(...kps)};
+        });
+      }).catch(()=>{}));
+  }
+  if(!S.histDaily.length){
+    jobs.push(fetch('https://api.open-meteo.com/v1/forecast?latitude=42.6975&longitude=23.3242&daily=surface_pressure_max,surface_pressure_min,precipitation_sum,snowfall_sum,wind_speed_10m_max,temperature_2m_min&past_days=31&forecast_days=1&timezone=auto')
+      .then(r=>r.ok?r.json():null).then(d=>{
+        if(d&&d.daily) S.histDaily = d.daily.time.map((t,i)=>({
+          date:t, press:(d.daily.surface_pressure_max?.[i]!=null&&d.daily.surface_pressure_min?.[i]!=null)?(d.daily.surface_pressure_max[i]+d.daily.surface_pressure_min[i])/2:null,
+          rain:d.daily.precipitation_sum?.[i]??0, snow:d.daily.snowfall_sum?.[i]??0,
+          wind:d.daily.wind_speed_10m_max?.[i], tmin:d.daily.temperature_2m_min?.[i],
+        }));
+      }).catch(()=>{}));
+  }
+  await Promise.all(jobs);
 }
+function isoDaysAgo(n){ return new Date(Date.now()-n*86400000).toISOString().split('T')[0]; }
 
-function renderHistoryPanel(){
+async function renderHistoryPanel(){
+  await ensureHistorySources();
+  buildLongTermAnalytics();
   const k=tk(); const now=new Date();
   const rows=[];
   for(let d=29;d>=0;d--){
     const date=new Date(now.getTime()-d*86400000);
     const dateStr=date.toISOString().split('T')[0];
-    const moonAge=calcMoonAge(date); const dow=date.getDay();
-    const seed=date.getTime()/86400000;
-    const kp=Math.max(0,Math.min(9,2.5+Math.sin(seed*0.3)*1.5+Math.abs(Math.sin(seed*2.1))*2));
-    const dp=Math.max(0,Math.min(20,4+Math.abs(Math.sin(seed*0.7))*8));
-    const sc=calcScenarios(kp,dp,moonAge,dow);
-    const lv=sc.riskScore<=2?0:sc.riskScore<=5?1:sc.riskScore<=7?2:3;
+    const met=S.histDaily.find(x=>x.date===dateStr)||{};
+    const prev=S.histDaily.find(x=>x.date===isoDaysAgo(d+1))||{};
+    const dp=(met.press!=null&&prev.press!=null)?Math.abs(met.press-prev.press):null;
+    const kpE=S.kpHist[dateStr];
+    const env={kp:kpE?kpE.max:null, dp:dp??0, moonAge:calcMoonAge(date),
+               rain:met.rain??0, snow:met.snow??0, wind:met.wind, tmin:met.tmin, vis:null};
+    const r=calcRisk({...env,kp:env.kp??2},date);
     const mvrEntry=S.mvrDays.find(e=>e.date===dateStr)||null;
-    rows.push({date,dateStr,kp,dp,moonAge,dow,sc,lv,mvr:mvrEntry,
+    rows.push({date,dateStr,env,dp,kpE,r,lv:lvOf(r.riskScore),mvr:mvrEntry,real:!!(kpE||met.press!=null),
       dateLabel:date.toLocaleDateString(lang==='bg'?'bg-BG':'en-GB',{day:'2-digit',month:'2-digit'})});
   }
 
-  // Chart
-  drawHistChart(rows, k);
-  buildLongTermAnalytics();
+  drawHistChart(rows,k);
 
-  // Correlation stats (only if we have MVR data)
   const withMvr = rows.filter(r=>mvTotal(r.mvr)!=null);
   if(withMvr.length>=3){
     document.getElementById('corr-box').style.display='block';
-    document.getElementById('corr-title').textContent = k.corrTitle;
-    const corrKp   = pearsonR(withMvr.map(r=>r.kp), withMvr.map(r=>mvTotal(r.mvr)||0));
-    const corrDP   = pearsonR(withMvr.map(r=>r.dp), withMvr.map(r=>mvTotal(r.mvr)||0));
-    const corrRisk = pearsonR(withMvr.map(r=>r.sc.riskScore), withMvr.map(r=>mvTotal(r.mvr)||0));
+    document.getElementById('corr-title').textContent='🔬 '+k.corrTitle;
+    const corrKp   = pearsonR(withMvr.map(r=>r.env.kp??2), withMvr.map(r=>mvTotal(r.mvr)||0));
+    const corrDP   = pearsonR(withMvr.map(r=>r.dp||0), withMvr.map(r=>mvTotal(r.mvr)||0));
+    const corrRain = pearsonR(withMvr.map(r=>(r.env.rain||0)+(r.env.snow||0)*3), withMvr.map(r=>mvTotal(r.mvr)||0));
+    const corrRisk = pearsonR(withMvr.map(r=>r.r.riskScore), withMvr.map(r=>mvTotal(r.mvr)||0));
     document.getElementById('corr-stats').innerHTML=[
-      {v:'r='+corrKp.toFixed(2),  l:lang==='bg'?'Kp ↔ Леки ПТП':'Kp ↔ Minor acc.', bar:Math.abs(corrKp),c:C.orange},
-      {v:'r='+corrDP.toFixed(2),  l:lang==='bg'?'ΔP ↔ Леки ПТП':'ΔP ↔ Minor acc.',  bar:Math.abs(corrDP), c:C.cyan},
-      {v:'r='+corrRisk.toFixed(2),l:lang==='bg'?'Риск ↔ Общо ПТП':'Risk ↔ Total',   bar:Math.abs(corrRisk),c:C.purple},
-      {v:withMvr.length+'',       l:lang==='bg'?'Дни с МВР данни':'Days with MVR data',bar:withMvr.length/30,c:C.green},
+      {v:'r='+corrKp.toFixed(2),  l:'Kp ↔ ПТП', bar:Math.abs(corrKp),c:C.orange},
+      {v:'r='+corrDP.toFixed(2),  l:'ΔP ↔ ПТП',  bar:Math.abs(corrDP), c:C.cyan},
+      {v:'r='+corrRain.toFixed(2),l:lang==='bg'?'Валежи ↔ ПТП':'Precip ↔ crashes', bar:Math.abs(corrRain),c:C.purple},
+      {v:'r='+corrRisk.toFixed(2),l:lang==='bg'?'Риск ↔ ПТП':'Risk ↔ crashes',   bar:Math.abs(corrRisk),c:C.green},
     ].map(s=>`<div class="corr-stat">
       <div class="corr-val" style="color:${s.c}">${s.v}</div>
       <div class="corr-lbl">${s.l}</div>
@@ -701,20 +793,19 @@ function renderHistoryPanel(){
     </div>`).join('');
   }
 
-  // Table
-  const moonIcons=['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
-  document.getElementById('hist-tbody').innerHTML=rows.slice().reverse().map(r=>`
-    <tr>
+  document.getElementById('hist-tbody').innerHTML=rows.slice().reverse().map(r=>{
+    const rain=(r.env.rain||0), snow=(r.env.snow||0);
+    const rainTxt = snow>0?'❄'+snow.toFixed(1):rain>=0.1?rain.toFixed(1):'—';
+    return `<tr>
       <td style="font-family:'Space Mono',monospace;font-size:.72rem;color:var(--cyan)">${r.dateLabel}</td>
-      <td style="color:var(--dim);font-size:.78rem">${k.dayShort[r.dow]}</td>
-      <td style="font-family:'Space Mono',monospace;color:${r.kp>=5?C.orange:r.kp>=3?C.yellow:C.dim}">${r.kp.toFixed(1)}</td>
-      <td style="font-family:'Space Mono',monospace;color:${r.dp>=10?C.red:r.dp>=5?C.orange:C.dim}">${r.dp.toFixed(1)}</td>
-      <td><span class="badge ${lvClass[r.lv]}">${r.sc.riskScore}/10</span></td>
+      <td style="color:var(--dim);font-size:.78rem">${k.dayShort[r.date.getDay()]}</td>
+      <td style="font-family:'Space Mono',monospace;color:${(r.env.kp??0)>=5?C.orange:(r.env.kp??0)>=3?C.yellow:C.dim}">${r.env.kp!=null?r.env.kp.toFixed(1):'—'}</td>
+      <td style="font-family:'Space Mono',monospace;color:${(r.dp??0)>=10?C.red:(r.dp??0)>=5?C.orange:C.dim}">${r.dp!=null?r.dp.toFixed(1):'—'}</td>
+      <td style="font-family:'Space Mono',monospace;color:${snow>0?C.cyan:rain>=3?C.orange:C.dim}">${rainTxt}</td>
+      <td><span class="badge ${lvClass[r.lv]}">${r.r.riskScore}/10</span></td>
       <td style="color:${mvTotal(r.mvr)!=null?C.yellow:C.muted};font-family:'Space Mono',monospace">${mvTotal(r.mvr)??'—'}</td>
-      <td style="color:${r.mvr?.dead!=null?C.red:C.muted};font-family:'Space Mono',monospace">${r.mvr?.dead??'—'}</td>
-      <td style="color:${r.mvr?.injured!=null?C.cyan:C.muted};font-family:'Space Mono',monospace">${r.mvr?.injured??'—'}</td>
-      <td style="font-family:'Space Mono',monospace;color:var(--dim)">${r.sc.calm}–${r.sc.hard}</td>
-    </tr>`).join('');
+      <td style="font-family:'Space Mono',monospace;color:var(--dim)">${r.r.expected}</td>
+    </tr>`;}).join('');
 }
 
 function mvTotal(m){
@@ -727,8 +818,13 @@ function mvTotal(m){
 function buildLongTermAnalytics(){
   const el=document.getElementById('longterm-analytics');
   const h=S.historical;
-  if(!el||!h) return;
   const bg = lang==='bg';
+  if(!el) return;
+  if(!h){
+    el.innerHTML=`<div style="background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;color:var(--orange);font-size:.78rem">
+      ⚠️ ${bg?'Историческите данни (data/historical.json) не се заредиха. Провери дали файлът е в repo-то.':'Historical data (data/historical.json) failed to load. Check the file exists in the repo.'}</div>`;
+    return;
+  }
   const wd=h.risk_by_weekday||{}, md=h.risk_by_month||{}, avg=h.sofia_daily_avg||{};
   const wdNames = bg?['Пн','Вт','Ср','Чт','Пт','Сб','Нд']:['Mo','Tu','We','Th','Fr','Sa','Su'];
   const wdOrder = ['0_monday','1_tuesday','2_wednesday','3_thursday','4_friday','5_saturday','6_sunday'];
@@ -751,15 +847,15 @@ function buildLongTermAnalytics(){
 
   const obsBg=[
     `<b>${wdNames[topWd]}</b> е най-рисковият ден: +${Math.round((wdMax-1)*100)}% над средното. Най-спокоен е <b>${wdNames[minWd]}</b> (${Math.round((wdVals[minWd]-1)*100)}%).`,
-    `Сезонен пик: <b>${moNames[topMo]}</b> (+${Math.round((moMax-1)*100)}%) — отпускарски трафик и умора. Зимните месеци също са над средното.`,
-    `София-град средно на денонощие: <b>${avg.light}</b> леки · <b>${avg.serious}</b> тежки ПТП · <b>${avg.injured}</b> ранени. Един загинал средно на ~${Math.round(1/(avg.dead||0.08))} дни.`,
-    `Комбинацията от тези базови криви с космическото време и налягането дава дневния риск индекс — точната формула е нашата добавена стойност.`
+    `Сезонен пик: <b>${moNames[topMo]}</b> (+${Math.round((moMax-1)*100)}%) — отпускарски трафик и умора.`,
+    `София-град средно на денонощие: <b>${avg.light}</b> леки · <b>${avg.serious}</b> тежки ПТП · <b>${avg.injured}</b> ранени.`,
+    `Тези базови криви (ден · месец) са основата на модела; средата (космическо време, валежи, лед, вятър, празници) я модулира.`
   ];
   const obsEn=[
     `<b>${wdNames[topWd]}</b> is the riskiest day: +${Math.round((wdMax-1)*100)}% above average. Calmest: <b>${wdNames[minWd]}</b>.`,
     `Seasonal peak: <b>${moNames[topMo]}</b> (+${Math.round((moMax-1)*100)}%).`,
     `Sofia daily average: <b>${avg.light}</b> light · <b>${avg.serious}</b> serious crashes · <b>${avg.injured}</b> injured.`,
-    `These baselines combined with space weather and pressure produce the daily risk index — the exact formula is our added value.`
+    `These baselines (weekday · month) anchor the model; environment (space weather, precipitation, ice, wind, holidays) modulates it.`
   ];
   const obs = (bg?obsBg:obsEn).map(o=>`<div style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.78rem;line-height:1.5">▸ ${o}</div>`).join('');
 
@@ -768,7 +864,6 @@ function buildLongTermAnalytics(){
     <div style="font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.08em;color:var(--cyan);margin-bottom:10px">
       🗄️ ${bg?'МНОГОГОДИШЕН АНАЛИЗ — НСИ/МВР 2015–2024':'LONG-TERM ANALYSIS — NSI/MVR 2015–2024'}
     </div>
-
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px">
       <div>
         <div style="font-size:.68rem;color:var(--dim);margin-bottom:6px">${bg?'РИСК ПО ДЕН ОТ СЕДМИЦАТА (1.0 = средно)':'RISK BY WEEKDAY (1.0 = avg)'}</div>
@@ -787,13 +882,11 @@ function buildLongTermAnalytics(){
         </div>`).join('')}
       </div>
     </div>
-
     <div style="font-size:.68rem;color:var(--dim);margin:10px 0 6px">${bg?'НАЦИОНАЛНО — ПТП / ЗАГИНАЛИ / РАНЕНИ ПО ГОДИНИ':'NATIONAL BY YEAR'}</div>
     <div style="overflow:auto"><table class="hist-table" style="min-width:300px">
       <thead><tr><th>${bg?'ГОДИНА':'YEAR'}</th><th>${bg?'ПТП':'CRASHES'}</th><th>${bg?'ЗАГИНАЛИ':'DEAD'}</th><th>${bg?'РАНЕНИ':'INJURED'}</th></tr></thead>
       <tbody>${natRows}</tbody>
     </table></div>
-
     <div style="margin-top:12px">
       <div style="font-size:.68rem;color:var(--dim);margin-bottom:4px">${bg?'НАБЛЮДЕНИЯ':'OBSERVATIONS'}</div>
       ${obs}
@@ -819,7 +912,6 @@ function drawHistChart(rows,k){
   const n=rows.length;
   const xs=i=>pad.l+(W-pad.l-pad.r)*(i/(n-1));
   const ys=v=>pad.t+(H-pad.t-pad.b)*(1-v/10);
-  // zone colors
   [[0,2,C.green],[2,5,C.yellow],[5,7,C.orange],[7,10,C.red]].forEach(([lo,hi,c])=>{
     ctx.fillStyle=c+'10';ctx.fillRect(pad.l,ys(hi),W-pad.l-pad.r,ys(lo)-ys(hi));
   });
@@ -828,57 +920,47 @@ function drawHistChart(rows,k){
     ctx.strokeStyle=C.border;ctx.lineWidth=1;ctx.stroke();
     ctx.fillStyle=C.dim;ctx.font='8px Space Mono';ctx.textAlign='right';ctx.fillText(v,pad.l-3,y+3);
   });
-  // model line
+  // валежи като стълбчета отдолу
+  const maxRain=Math.max(...rows.map(r=>(r.env.rain||0)+(r.env.snow||0)*3),1);
+  rows.forEach((r,i)=>{
+    const pr=(r.env.rain||0)+(r.env.snow||0)*3;
+    if(pr>0.1){
+      const bh=Math.min(pr/maxRain,1)*30;
+      ctx.fillStyle=(r.env.snow>0?C.cyan:C.purple)+'55';
+      ctx.fillRect(xs(i)-2,H-pad.b-bh,4,bh);
+    }
+  });
+  // риск линия
   ctx.beginPath();
-  rows.forEach((r,i)=>{const x=xs(i),y=ys(r.sc.riskScore);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  rows.forEach((r,i)=>{const x=xs(i),y=ys(r.r.riskScore);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
   ctx.strokeStyle=C.cyan;ctx.lineWidth=1.5;ctx.stroke();
-  // MVR dots (if available)
+  // МВР точки
   const mvrMax=Math.max(...rows.map(r=>mvTotal(r.mvr)||0))||40;
   rows.forEach((r,i)=>{
     if(mvTotal(r.mvr)!=null){
-      const total=mvTotal(r.mvr);
-      const yMvr=ys(Math.min(10,total/mvrMax*10));
+      const yMvr=ys(Math.min(10,mvTotal(r.mvr)/mvrMax*10));
       ctx.beginPath();ctx.arc(xs(i),yMvr,4,0,Math.PI*2);
       ctx.fillStyle=C.orange+'cc';ctx.fill();
       ctx.strokeStyle=C.bg;ctx.lineWidth=1.5;ctx.stroke();
     }
   });
-  // x labels
   ctx.fillStyle=C.dim;ctx.font='8px Space Mono';ctx.textAlign='center';
   rows.forEach((r,i)=>{if(i%7===0||i===n-1)ctx.fillText(r.dateLabel,xs(i),H-pad.b+11);});
-  // legend
   ctx.fillStyle=C.cyan;ctx.fillRect(pad.l,H-pad.b+18,10,2);
   ctx.fillStyle=C.dim;ctx.font='7px Space Grotesk';ctx.textAlign='left';
   ctx.fillText(lang==='bg'?'Риск модел':'Risk model',pad.l+14,H-pad.b+21);
   ctx.beginPath();ctx.arc(pad.l+80,H-pad.b+19,3.5,0,Math.PI*2);ctx.fillStyle=C.orange+'cc';ctx.fill();
-  ctx.fillStyle=C.dim;ctx.fillText((lang==='bg'?'МВР данни':'MVR data'),pad.l+94,H-pad.b+21);
+  ctx.fillStyle=C.dim;ctx.fillText(lang==='bg'?'МВР данни':'MVR data',pad.l+94,H-pad.b+21);
+  ctx.fillStyle=C.purple+'88';ctx.fillRect(pad.l+150,H-pad.b+17,4,5);
+  ctx.fillStyle=C.dim;ctx.fillText(lang==='bg'?'Валежи':'Precip',pad.l+158,H-pad.b+21);
 }
 
 /* ══════════════ API FETCHES ══════════════ */
 async function fetchMVR(){
-  // Uses static historical data from NSI/MVR annual reports
-  // No daily scraping — historical baselines only
   try{
     const r=await fetch('data/historical.json');
-    if(r.ok){
-      const h=await r.json();
-      S.historical=h;
-      // Calculate today's expected accidents based on historical avg + weekday/month factors
-      const now=new Date();
-      const dow=now.getDay();
-      const mon=now.getMonth()+1;
-      const avg=h.sofia_daily_avg||{light:8.2,serious:0.9,dead:0.08,injured:9.1};
-      const wd=h.risk_by_weekday||{};
-      const md=h.risk_by_month||{};
-      const wf=wd[Object.keys(wd).find(k=>k.startsWith(dow+'_'))]||1.0;
-      const mf=md[Object.keys(md).find(k=>k.startsWith(mon+'_'))]||1.0;
-      S.expectedLight=Math.round(avg.light*wf*mf*10)/10;
-      S.expectedDead=Math.round(avg.dead*wf*mf*100)/100;
-    }
-  }catch(e){
-    S.expectedLight=8.2;S.expectedDead=0.08;
-  }
-  // Дневни ПТП от news scraper (mvr_accidents.json)
+    if(r.ok) S.historical=await r.json();
+  }catch(e){}
   try{
     const rr=await fetch(MVR_DATA_URL+'?v='+Date.now());
     if(rr.ok){
@@ -892,6 +974,7 @@ async function fetchMVR(){
   renderMvrBadge(tk());
   if(S.kp!==null) renderAll();
 }
+
 async function fetchGeo(){
   try{
     const r=await fetch('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json');
@@ -917,7 +1000,10 @@ async function fetchGeo(){
 
 async function fetchWeather(){
   try{
-    const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=42.6975&longitude=23.3242&hourly=surface_pressure,temperature_2m,uv_index&daily=surface_pressure_max,surface_pressure_min&timezone=auto&past_days=1&forecast_days=4');
+    const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=42.6975&longitude=23.3242'
+      +'&hourly=surface_pressure,temperature_2m,uv_index,precipitation,snowfall,wind_speed_10m,visibility'
+      +'&daily=surface_pressure_max,surface_pressure_min,precipitation_sum,snowfall_sum,wind_speed_10m_max,temperature_2m_min'
+      +'&timezone=auto&past_days=1&forecast_days=4');
     const d=await r.json();
     const times=d.hourly.time,press=d.hourly.surface_pressure,temps=d.hourly.temperature_2m,uvs=d.hourly.uv_index;
     const now=new Date();
@@ -925,9 +1011,24 @@ async function fetchWeather(){
     const ni=fi(now),yi=fi(new Date(now-86400000));
     S.pressNow=press[ni];S.pressYest=press[yi];S.temp=temps[ni]?.toFixed(1);
     S.uv=Math.round(uvs[ni]??estimateUV(now.getMonth()));
+    // текущи метео фактори: валеж/сняг за последните 3 часа, вятър, видимост
+    const last3=[ni,ni-1,ni-2].filter(i=>i>=0);
+    S.rainNow=last3.reduce((a,i)=>a+(d.hourly.precipitation?.[i]||0),0);
+    S.snowNow=last3.reduce((a,i)=>a+(d.hourly.snowfall?.[i]||0),0);
+    S.windNow=d.hourly.wind_speed_10m?.[ni]??0;
+    S.visNow=d.hourly.visibility?.[ni]??null;
     if(d.daily){
       const dm=d.daily.surface_pressure_max,dn=d.daily.surface_pressure_min;
-      for(let i=0;i<3;i++){const idx=i+2;if(dm[idx]&&dn[idx])S.fcPress[i]={dp:Math.abs(dm[idx]-dn[idx])};}
+      for(let i=0;i<3;i++){
+        const idx=i+2; // past_days=1, така че [0]=вчера,[1]=днес,[2..4]=прогноза
+        S.fcDaily[i]={
+          dp:(dm?.[idx]!=null&&dn?.[idx]!=null)?Math.abs(dm[idx]-dn[idx]):4,
+          rain:d.daily.precipitation_sum?.[idx]??0,
+          snow:d.daily.snowfall_sum?.[idx]??0,
+          wind:d.daily.wind_speed_10m_max?.[idx],
+          tmin:d.daily.temperature_2m_min?.[idx],
+        };
+      }
     }
   }catch{S.pressNow=S.pressNow??1013;S.pressYest=S.pressYest??1013;}
   renderAll();
@@ -950,10 +1051,9 @@ fetchMVR();
 fetchGeo();
 fetchWeather();
 fetchQuakes();
-// Fallback render after 4s - show what we have even if some APIs are slow
 setTimeout(()=>{ if(S.kp===null){S.kp=2;} renderAll(); }, 4000);
 setInterval(()=>{fetchGeo();fetchWeather();fetchQuakes();},15*60*1000);
-setInterval(fetchMVR, 60*60*1000); // MVR check hourly
+setInterval(fetchMVR, 60*60*1000);
 </script>
 </body>
 </html>
