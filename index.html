@@ -219,6 +219,15 @@ footer{max-width:900px;margin:18px auto 0;padding:10px 20px;border-top:1px solid
 <div class="panel" id="panel-history">
   <div id="longterm-analytics"><div style="color:var(--muted);font-size:.83rem;padding:10px 0">Зареждане на историческите данни…</div></div>
   <div class="fc-chart-wrap">
+    <div class="fc-chart-title" id="curve-title">КРИВИ НА МОДЕЛА — Kp (обърната U) срещу реалните данни</div>
+    <canvas id="curve-canvas" height="190"></canvas>
+    <div style="font-size:.7rem;color:var(--dim);margin-top:6px;line-height:1.5" id="curve-note">
+      <span style="color:var(--yellow)">━</span> kpEffect — коефициентът на модела ·
+      <span style="color:var(--orange)">●</span> реален ден: ПТП спрямо базата за този ден/месец, при измереното Kp.
+      Ако точките лягат на кривата — коефициентите са верни. Хипотезата: над Kp≈7.5 хората си стоят вкъщи и ПТП падат.
+    </div>
+  </div>
+  <div class="fc-chart-wrap">
     <div class="fc-chart-title" id="hist-chart-title">ПОСЛЕДНИТЕ 30 ДНИ — РЕАЛНИ ДАННИ</div>
     <canvas id="hist-canvas" height="170"></canvas>
     <div style="font-size:.7rem;color:var(--dim);margin-top:6px;line-height:1.5" id="hist-legend-note">
@@ -772,6 +781,7 @@ async function renderHistoryPanel(){
   }
 
   drawHistChart(rows,k);
+  drawModelCurves(rows);
 
   const withMvr = rows.filter(r=>mvTotal(r.mvr)!=null);
   if(withMvr.length>=3){
@@ -810,6 +820,7 @@ async function renderHistoryPanel(){
 
 function mvTotal(m){
   if(!m) return null;
+  if(m.sofia_light!=null) return m.sofia_light; // София-специфичен брой — нашата серия
   if(m.ptp!=null) return m.ptp;
   if(m.light!=null||m.serious!=null) return (m.light||0)+(m.serious||0);
   return null;
@@ -892,6 +903,68 @@ function buildLongTermAnalytics(){
       ${obs}
     </div>
   </div>`;
+}
+
+/* Крива на модела (kpEffect, обърната U) + реални точки върху нея */
+function drawModelCurves(rows){
+  const canvas=document.getElementById('curve-canvas');
+  if(!canvas) return;
+  const W=canvas.width=canvas.offsetWidth||400,H=190;
+  canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  const pad={l:40,r:14,t:16,b:34};
+  ctx.clearRect(0,0,W,H);
+  const yMin=0.6,yMax=1.6;
+  const xs=kp=>pad.l+(W-pad.l-pad.r)*(kp/9);
+  const ys=v=>pad.t+(H-pad.t-pad.b)*(1-(v-yMin)/(yMax-yMin));
+  // grid
+  [0.8,1.0,1.2,1.4].forEach(v=>{
+    const y=ys(v);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);
+    ctx.strokeStyle=v===1.0?C.dim+'66':C.border;ctx.lineWidth=1;ctx.stroke();
+    ctx.fillStyle=C.dim;ctx.font='8px Space Mono';ctx.textAlign='right';
+    ctx.fillText('×'+v.toFixed(1),pad.l-4,y+3);
+  });
+  [0,1,2,3,4,5,6,7,8,9].forEach(kp=>{
+    ctx.fillStyle=C.dim;ctx.font='8px Space Mono';ctx.textAlign='center';
+    ctx.fillText(kp,xs(kp),H-pad.b+12);
+  });
+  ctx.fillStyle=C.dim;ctx.font='8px Space Grotesk';ctx.textAlign='center';
+  ctx.fillText('Kp индекс',(pad.l+W-pad.r)/2,H-6);
+  // зона на хипотезата (Kp>7.5)
+  ctx.fillStyle=C.purple+'12';
+  ctx.fillRect(xs(7.5),pad.t,xs(9)-xs(7.5),H-pad.t-pad.b);
+  ctx.fillStyle=C.purple;ctx.font='7px Space Grotesk';ctx.textAlign='center';
+  ctx.fillText(lang==='bg'?'стоят вкъщи':'stay home',(xs(7.5)+xs(9))/2,pad.t+10);
+  // крива kpEffect (стъпаловидна по дефиниция — рисуваме плавно през стъпките)
+  ctx.beginPath();
+  for(let kp=0;kp<=9;kp+=0.05){
+    const y=ys(kpEffect(kp));
+    kp===0?ctx.moveTo(xs(kp),y):ctx.lineTo(xs(kp),y);
+  }
+  ctx.strokeStyle=C.yellow;ctx.lineWidth=2;ctx.stroke();
+  // реални точки: ratio = реални ПТП / (база × ден × месец) при Kp на деня
+  const pts=[];
+  rows.forEach(r=>{
+    const real=mvTotal(r.mvr);
+    if(real==null||r.env.kp==null) return;
+    const denom=baseDaily()*weekdayFactor(r.date.getDay())*monthFactor(r.date.getMonth()+1);
+    if(!denom) return;
+    pts.push({kp:r.env.kp, ratio:real/denom, date:r.dateStr});
+  });
+  // ако точките са с друг мащаб (напр. национални ПТП), нормализирай към медианата
+  if(pts.length>=3){
+    const sorted=pts.map(p=>p.ratio).sort((a,b)=>a-b);
+    const median=sorted[Math.floor(sorted.length/2)];
+    if(median>2||median<0.5) pts.forEach(p=>p.ratio=p.ratio/median);
+  }
+  pts.forEach(p=>{
+    const y=ys(Math.max(yMin,Math.min(yMax,p.ratio)));
+    ctx.beginPath();ctx.arc(xs(Math.min(9,p.kp)),y,4,0,Math.PI*2);
+    ctx.fillStyle=C.orange+'cc';ctx.fill();
+    ctx.strokeStyle=C.bg;ctx.lineWidth=1.5;ctx.stroke();
+  });
+  ctx.fillStyle=C.dim;ctx.font='8px Space Grotesk';ctx.textAlign='left';
+  ctx.fillText((lang==='bg'?'Точки с данни: ':'Data points: ')+pts.length,pad.l+4,pad.t+10);
 }
 
 function pearsonR(xs,ys){
