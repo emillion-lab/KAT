@@ -1,12 +1,22 @@
 {
-  "updated": "2026-07-04T11:47:40.640386+03:00",
-  "status": "frozen",
-  "source": "frozen",
-  "note": "МВР спря публичния обмен на ПТП данни на 05.05.2026 (надграждане на софтуер). Не е намерен дневен брой в новините. Рискът се смята от исторически данни 2015–2024 + космическо време + налягане.",
+  "updated": "2026-07-05T12:18:13.501642+03:00",
+  "status": "live_news",
+  "source": "news_rss",
+  "note": "Дневен брой от новинарски RSS (МВР справка), автоматично парснат.",
   "mvr_frozen_since": "2026-05-05",
   "mvr_news_url": "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp",
-  "days_count": 1,
+  "days_count": 2,
   "days": [
+    {
+      "date": "2026-07-04",
+      "source": "news",
+      "ptp": 17,
+      "dead": null,
+      "injured": 20,
+      "serious": null,
+      "light": null,
+      "headline": "Статистика на МВР: 20 пострадали при 17 катастрофи в страната за денонощието - BurgasMedia"
+    },
     {
       "date": "2026-06-29",
       "source": "news",
