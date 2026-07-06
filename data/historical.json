@@ -1,6 +1,6 @@
 {
   "source": "НСИ / МВР — Годишна статистика за пътнотранспортни произшествия",
-  "note": "Официални данни. Актуализирай ежегодно.",
+  "note": "Официални данни. Актуализирай ежегодно. | 2008–2014 добавени от официалната МВР статистика (тежки ПТП). 2025: официалната годишна публикация на НСИ предстои; ИПБ отчита 455 загинали (вкл. 55 извън официалния брояч).",
   "national": [
     {
       "year": 2024,
@@ -81,6 +81,55 @@
       "serious": 1558,
       "deaths_per_100k": 10.1,
       "deaths_per_100k_source": "World Bank"
+    },
+    {
+      "year": 2014,
+      "total": 7012,
+      "dead": 660,
+      "injured": 8640,
+      "serious": null
+    },
+    {
+      "year": 2013,
+      "total": 7016,
+      "dead": 601,
+      "injured": 8774,
+      "serious": null
+    },
+    {
+      "year": 2012,
+      "total": 6717,
+      "dead": 601,
+      "injured": 8193,
+      "serious": null
+    },
+    {
+      "year": 2011,
+      "total": 6698,
+      "dead": 657,
+      "injured": 8303,
+      "serious": null
+    },
+    {
+      "year": 2010,
+      "total": 6610,
+      "dead": 775,
+      "injured": 8080,
+      "serious": null
+    },
+    {
+      "year": 2009,
+      "total": null,
+      "dead": 901,
+      "injured": null,
+      "serious": null
+    },
+    {
+      "year": 2008,
+      "total": null,
+      "dead": 1061,
+      "injured": null,
+      "serious": null
     }
   ],
   "sofia_daily_avg": {
@@ -115,7 +164,7 @@
     "11_nov": 1.06,
     "12_dec": 1.1
   },
-  "updated": "2026-07-01T09:34:25.751881+00:00",
+  "updated": "2026-07-05",
   "last_complete_year": 2024,
   "api_sources": {
     "worldbank": {
