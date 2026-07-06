@@ -1,10 +1,10 @@
-Backfill: 6 дни, 2 прозореца, 4 заявки
+Backfill: 4 дни, 1 прозореца, 4 заявки
   via mvr-proxy: https://www.mvr.bg/sofia/%D0%B8%D0%BD%D1%84%D0%BE%D1%80%D0%B
 SDVR: 12 бюлетина в листинга
   via mvr-proxy: https://www.mvr.bg/sofia/%D0%B8%D0%BD%D1%84%D0%BE%D1%80%D0%B
-  SDVR no-parse 2026-07-02: len=177406 hits=0 url=D0%B1%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0/140525
-  via mvr-proxy: https://www.mvr.bg/sofia/%D0%B8%D0%BD%D1%84%D0%BE%D1%80%D0%B
-  SDVR no-parse 2026-07-01: len=182169 hits=0 url=D0%B1%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0/140500
-  via mvr-proxy: https://www.mvr.bg/sofia/%D0%B8%D0%BD%D1%84%D0%BE%D1%80%D0%B
-  SDVR no-parse 2026-06-30: len=182297 hits=0 url=D0%B1%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0/140471
+  SDVR no-parse 2026-07-02: len=177406 occ=5
+    TAIL: обстановка 03-07-2026 Информация от АПИ за състоянието на републиканските пътища към 17:30 часа на 02.07.2026 г. &nbsp; МЕТЕОРОЛОГИЧНА ОБСТАНОВКА: През нощта явленията в повечето райони ще отслабват и стихват, а облачността ще се разкъсва и ще намалява, най-късно към сутринта в Централна Северна България. В Дунавската равнина ще духа слаб западен вятър. Утре остава неустойчиво. Ще се развива купеста и купесто-дъждовна облачност. На много места ще има краткотрайни валежи и гръмотевични бури. В от
+    ATTACH: /upload/210391/Logo_MVR_transparent.png
+    IFRAME: /maps/index.html?lat=42.68275660443&amp;lng=23.368463468189&amp;zoom=17
+    IFRAME: https:/maps/index.html?lat=42.68275660443&amp;lng=23.368463468189&amp;zoom=17
 Готово: 0 нови дни, общо 22
