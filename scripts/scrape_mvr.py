@@ -36,6 +36,26 @@ def to_int(s):
     s = s.strip().lower()
     return int(s) if s.isdigit() else WORD_NUM.get(s)
 
+
+def decode_gnews(link):
+    """news.google.com/rss/articles/CBMi... → оригиналният URL е base64-кодиран в id-то."""
+    import base64 as b64
+    m = re.search(r"articles/([^?/]+)", link)
+    if not m:
+        return None
+    tok = m.group(1)
+    try:
+        pad = tok + "=" * (-len(tok) % 4)
+        rawb = b64.urlsafe_b64decode(pad)
+        urls = re.findall(rb"https?://[\x20-\x7e]+?(?=[\x00-\x1f\xd2\x01]|$)", rawb)
+        for u in urls:
+            s = u.decode("ascii", "ignore").strip()
+            if "google.com" not in s and len(s) > 12:
+                return s
+    except Exception:
+        pass
+    return None
+
 def fetch(url):
     try:
         req = urllib.request.Request(url, headers=UA)
@@ -138,7 +158,8 @@ def main():
                 counts = extract_counts(blob)
                 # ако заглавието няма достатъчно числа — пробвай тялото на статията
                 if not counts or counts.get("sofia_light") is None:
-                    body = fetch(link)
+                    real_url = decode_gnews(link) or link
+                    body = fetch(real_url)
                     if body:
                         body_counts = extract_counts(body[:40000])
                         if body_counts:
@@ -159,6 +180,21 @@ def main():
                     found += 1
                     print(f"  + {date_iso}: ПТП={counts.get('ptp')} София_леки={counts.get('sofia_light')} загинали={counts.get('dead')} | {title[:70]}")
 
+    # чистка: съседни дни с идентични числа са една и съща статия, препубликувана със закъснение
+    ordered = sorted(days.values(), key=lambda x: x["date"])
+    cleaned = []
+    for d_ in ordered:
+        if cleaned:
+            p = cleaned[-1]
+            from datetime import date as _date
+            d1 = _date.fromisoformat(p["date"]); d2 = _date.fromisoformat(d_["date"])
+            same = all(p.get(k) == d_.get(k) for k in ("ptp","dead","injured"))
+            has_num = any(d_.get(k) is not None for k in ("ptp","dead","injured"))
+            if (d2 - d1).days == 1 and same and has_num:
+                print(f"  – дубликат: {d_['date']} == {p['date']} (препубликация), пропускам")
+                continue
+        cleaned.append(d_)
+    days = {d_["date"]: d_ for d_ in cleaned}
     data["days"] = sorted(days.values(), key=lambda x: x["date"], reverse=True)
     data["updated"] = now.isoformat()
     data["days_count"] = len(data["days"])
