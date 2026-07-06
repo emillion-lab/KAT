@@ -184,7 +184,7 @@ footer{max-width:900px;margin:18px auto 0;padding:10px 20px;border-top:1px solid
   </div>
 
   <div style="font-size:.72rem;color:var(--dim);margin:2px 0 8px;line-height:1.5" id="sc-explain">
-    📊 Очакван брой ПТП в София-град според модела: историческа база 2015–2024 (ден · месец) × среда (космическо време · дъжд/сняг · лед · вятър · налягане · луна · празници).
+    📊 Очакван брой ПТП в София-град според модела: историческа база 2015–2024 (ден · месец) × среда (космическо време · дъжд/сняг · градушка/буря · лед · вятър · налягане · луна · празници).
   </div>
 
   <div class="factors" id="factors-grid">
@@ -347,7 +347,7 @@ function applyLang(){
   document.getElementById('fc-chart-title').textContent = lang==='bg'?'ПРОГНОЗА — ОЧАКВАНИ ПТП / ДЕН':'FORECAST — EXPECTED CRASHES / DAY';
   document.getElementById('hist-chart-title').textContent = lang==='bg'?'ПОСЛЕДНИТЕ 30 ДНИ — РЕАЛНИ ДАННИ':'LAST 30 DAYS — REAL DATA';
   document.getElementById('sc-explain').innerHTML = lang==='bg'
-    ? '📊 Очакван брой ПТП в София-град според модела: историческа база 2015–2024 (ден · месец) × среда (космическо време · дъжд/сняг · лед · вятър · налягане · луна · празници).'
+    ? '📊 Очакван брой ПТП в София-град според модела: историческа база 2015–2024 (ден · месец) × среда (космическо време · дъжд/сняг · градушка/буря · лед · вятър · налягане · луна · празници).'
     : '📊 Expected crashes in Sofia per the model: 2015–2024 historical baseline (weekday · month) × environment (space weather · rain/snow · ice · wind · pressure · moon · holidays).';
   document.getElementById('hist-thead').innerHTML = lang==='bg'
     ? '<tr><th>ДАТА</th><th>ДЕН</th><th>Kp</th><th>ΔhPa</th><th>ДЪЖД</th><th>РИСК</th><th>МВР ПТП</th><th>МОДЕЛ</th></tr>'
@@ -444,6 +444,12 @@ function fogEffect(visM){
   if(visM<200)return 1.20; if(visM<500)return 1.10; if(visM<1000)return 1.04;
   return 1.0;
 }
+function hailEffect(wcode){
+  if(wcode==null)return 1.0;
+  if(wcode===96||wcode===99)return 1.30; // гръмотевична буря с градушка
+  if(wcode===95)return 1.15;             // гръмотевична буря
+  return 1.0;
+}
 function holidayEffect(st){ return st===2?1.10 : st===1?1.14 : 1.0; } // денят ПРЕДИ празник е най-натоварен (пътуване)
 
 /* Базови коефициенти от историческите данни (2015–2024), с fallback */
@@ -480,7 +486,7 @@ function calcRisk(env, date){
   const envMult = Math.min(1.9,
     kpEffect(env.kp??2) * pressEffect(env.dp??0) * moonEffect(env.moonAge??calcMoonAge(date))
     * rainEffect(env.rain??0, env.snow??0) * iceEffect(env.tmin, (env.rain??0)+(env.snow??0))
-    * windEffect(env.wind) * fogEffect(env.vis) * holidayEffect(hs)
+    * windEffect(env.wind) * fogEffect(env.vis) * holidayEffect(hs) * hailEffect(env.wcode)
     * ((env.kp>=5 && env.dp>=10)?1.06:1.0)
   );
   const wf = weekdayFactor(dow), mf = monthFactor(mon);
@@ -653,7 +659,7 @@ function renderForecastPanel(){
       dp: daily.dp ?? 4,
       moonAge: calcMoonAge(date),
       rain: daily.rain??0, snow: daily.snow??0,
-      wind: daily.wind, tmin: daily.tmin, vis:null,
+      wind: daily.wind, tmin: daily.tmin, vis:null, wcode: daily.wcode,
     };
     const r=calcRisk(env,date);
     fcDays.push({date,env,r});
@@ -747,12 +753,13 @@ async function ensureHistorySources(){
       }).catch(()=>{}));
   }
   if(!S.histDaily.length){
-    jobs.push(fetch('https://api.open-meteo.com/v1/forecast?latitude=42.6975&longitude=23.3242&daily=surface_pressure_max,surface_pressure_min,precipitation_sum,snowfall_sum,wind_speed_10m_max,temperature_2m_min&past_days=31&forecast_days=1&timezone=auto')
+    jobs.push(fetch('https://api.open-meteo.com/v1/forecast?latitude=42.6975&longitude=23.3242&daily=surface_pressure_max,surface_pressure_min,precipitation_sum,snowfall_sum,wind_speed_10m_max,temperature_2m_min,weather_code&past_days=31&forecast_days=1&timezone=auto')
       .then(r=>r.ok?r.json():null).then(d=>{
         if(d&&d.daily) S.histDaily = d.daily.time.map((t,i)=>({
           date:t, press:(d.daily.surface_pressure_max?.[i]!=null&&d.daily.surface_pressure_min?.[i]!=null)?(d.daily.surface_pressure_max[i]+d.daily.surface_pressure_min[i])/2:null,
           rain:d.daily.precipitation_sum?.[i]??0, snow:d.daily.snowfall_sum?.[i]??0,
           wind:d.daily.wind_speed_10m_max?.[i], tmin:d.daily.temperature_2m_min?.[i],
+          wcode:d.daily.weather_code?.[i],
         }));
       }).catch(()=>{}));
   }
@@ -773,7 +780,7 @@ async function renderHistoryPanel(){
     const dp=(met.press!=null&&prev.press!=null)?Math.abs(met.press-prev.press):null;
     const kpE=S.kpHist[dateStr];
     const env={kp:kpE?kpE.max:null, dp:dp??0, moonAge:calcMoonAge(date),
-               rain:met.rain??0, snow:met.snow??0, wind:met.wind, tmin:met.tmin, vis:null};
+               rain:met.rain??0, snow:met.snow??0, wind:met.wind, tmin:met.tmin, vis:null, wcode:met.wcode};
     const r=calcRisk({...env,kp:env.kp??2},date);
     const mvrEntry=S.mvrDays.find(e=>e.date===dateStr)||null;
     rows.push({date,dateStr,env,dp,kpE,r,lv:lvOf(r.riskScore),mvr:mvrEntry,real:!!(kpE||met.press!=null),
@@ -851,9 +858,9 @@ function buildLongTermAnalytics(){
   const nat=(h.national||[]).slice().sort((a,b)=>a.year-b.year);
   const natRows=nat.map(y=>`<tr>
     <td style="font-family:'Space Mono',monospace;color:var(--cyan)">${y.year}</td>
-    <td style="font-family:'Space Mono',monospace">${y.total.toLocaleString()}</td>
-    <td style="font-family:'Space Mono',monospace;color:var(--red)">${y.dead}</td>
-    <td style="font-family:'Space Mono',monospace;color:var(--cyan)">${y.injured.toLocaleString()}</td>
+    <td style="font-family:'Space Mono',monospace">${y.total!=null?y.total.toLocaleString():'—'}</td>
+    <td style="font-family:'Space Mono',monospace;color:var(--red)">${y.dead??'—'}</td>
+    <td style="font-family:'Space Mono',monospace;color:var(--cyan)">${y.injured!=null?y.injured.toLocaleString():'—'}</td>
   </tr>`).join('');
 
   const obsBg=[
@@ -1075,7 +1082,7 @@ async function fetchWeather(){
   try{
     const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=42.6975&longitude=23.3242'
       +'&hourly=surface_pressure,temperature_2m,uv_index,precipitation,snowfall,wind_speed_10m,visibility'
-      +'&daily=surface_pressure_max,surface_pressure_min,precipitation_sum,snowfall_sum,wind_speed_10m_max,temperature_2m_min'
+      +'&daily=surface_pressure_max,surface_pressure_min,precipitation_sum,snowfall_sum,wind_speed_10m_max,temperature_2m_min,weather_code'
       +'&timezone=auto&past_days=1&forecast_days=4');
     const d=await r.json();
     const times=d.hourly.time,press=d.hourly.surface_pressure,temps=d.hourly.temperature_2m,uvs=d.hourly.uv_index;
@@ -1100,6 +1107,7 @@ async function fetchWeather(){
           snow:d.daily.snowfall_sum?.[idx]??0,
           wind:d.daily.wind_speed_10m_max?.[idx],
           tmin:d.daily.temperature_2m_min?.[idx],
+          wcode:d.daily.weather_code?.[idx],
         };
       }
     }
