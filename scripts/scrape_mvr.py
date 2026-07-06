@@ -169,11 +169,16 @@ def scrape_sdvr(days, cutoff_date):
         counts = extract_counts(body)
         if not counts:
             snippet = strip_html(body)
-            hits = [m.start() for m in re.finditer(r"ПТП|произшеств|катастроф|изминал", snippet)]
-            print(f"  SDVR no-parse {date_iso}: len={len(body)} hits={len(hits)} url={url[-60:]}")
-            if hits:
-                p = hits[-1]
-                print(f"    ...{snippet[max(0,p-150):p+250]}")
+            occ = [m.start() for m in re.finditer(r"[Оо]бстановка", snippet)]
+            print(f"  SDVR no-parse {date_iso}: len={len(body)} occ={len(occ)}")
+            if occ:
+                p = occ[-1]
+                print(f"    TAIL: {snippet[p:p+500]}")
+            # има ли прикачени файлове/iframe?
+            for att in re.findall(r'(?:href|src)="([^"]+\.(?:pdf|docx?|jpe?g|png))"', body, re.IGNORECASE)[:5]:
+                print(f"    ATTACH: {att[-90:]}")
+            for ifr in re.findall(r'<iframe[^>]+src="([^"]+)"', body)[:3]:
+                print(f"    IFRAME: {ifr[-90:]}")
             continue
         entry = {"date": date_iso, "source": "sdvr", **counts,
                  "headline": f"СДВР Пътна обстановка {dd}-{mm}-{yyyy}", "url": url}
