@@ -91,6 +91,8 @@ def extract_counts(text):
     serious = find_num(t, [r"[Тт]ежките\s+(?:пътнотранспортни\s+произшествия|ПТП|катастрофи)[^.]{0,40}?са\s+" + NUM_RE,
                            NUM_RE + r"\s+тежки"])
     sofia_light = find_num(t, [r"[Вв]\s+София\s+са\s+регистрирани\s+" + NUM_RE + r"\s+леки",
+                               r"[Рр]егистрирани\s+(?:са\s+)?" + NUM_RE + r"\s+леки\s+(?:пътнотранспортни\s+)?(?:произшествия|ПТП|инцидента)",
+                               NUM_RE + r"\s+леки\s+(?:пътнотранспортни\s+)?(?:произшествия|ПТП|инцидента)",
                                r"[Нн]а\s+територията\s+на\s+СДВР[^.]{0,60}?" + NUM_RE + r"\s+(?:леки|ПТП|инцидент)",
                                r"[Вв]\s+София[^.]{0,60}?" + NUM_RE + r"\s+(?:леки\s+)?(?:пътни\s+)?инцидент"])
     if not any(v is not None for v in [ptp, dead, injured, sofia_light]):
@@ -120,6 +122,50 @@ def better(new, old):
             merged[k] = v
     return merged
 
+
+SDVR_LIST = "https://www.mvr.bg/sofia/%D0%B8%D0%BD%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%B5%D0%BD-%D1%86%D0%B5%D0%BD%D1%82%D1%8A%D1%80/%D0%BF%D1%80%D0%B5%D1%81%D1%86%D0%B5%D0%BD%D1%82%D1%8A%D1%80/%D0%BF%D1%8A%D1%82%D0%BD%D0%B0-%D0%BE%D0%B1%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0"
+
+def scrape_sdvr(days, cutoff_date):
+    """СДВР ежедневни бюлетини 'Пътна обстановка DD-MM-YYYY' — първичен източник за София."""
+    found = 0
+    listing = fetch(SDVR_LIST)
+    if not listing:
+        print("SDVR: листингът не се зареди")
+        return 0
+    # линкове + дати от заглавията
+    links = re.findall(r'href="([^"]+)"[^>]*>[^<]*[Пп]ътна\s+обстановка\s+(\d{2})-(\d{2})-(\d{4})', listing)
+    if not links:
+        # дати в текста + близкия href
+        links = [(m.group(1), m.group(2), m.group(3), m.group(4)) for m in
+                 re.finditer(r'<a[^>]+href="([^"]+)"[^>]*>(?:(?!</a>).)*?(\d{2})-(\d{2})-(\d{4})', listing, re.DOTALL)]
+    print(f"SDVR: {len(links)} бюлетина в листинга")
+    for href, dd, mm, yyyy in links[:40]:
+        try:
+            bull_date = datetime(int(yyyy), int(mm), int(dd), tzinfo=SOFIA)
+        except ValueError:
+            continue
+        date_iso = (bull_date - timedelta(days=1)).date().isoformat()  # бюлетинът описва изминалото денонощие
+        if date_iso < cutoff_date:
+            continue
+        existing = days.get(date_iso, {})
+        if existing.get("source") == "sdvr":
+            continue  # вече имаме първичен запис
+        url = href if href.startswith("http") else "https://www.mvr.bg" + href
+        body = fetch(url)
+        if not body:
+            continue
+        counts = extract_counts(body[:60000])
+        if not counts:
+            continue
+        entry = {"date": date_iso, "source": "sdvr", **counts,
+                 "headline": f"СДВР Пътна обстановка {dd}-{mm}-{yyyy}", "url": url}
+        # СДВР е по-достоверен от news — замества, но пази полета, които СДВР не дава
+        days[date_iso] = better(entry, existing) if existing else entry
+        days[date_iso]["source"] = "sdvr"
+        found += 1
+        print(f"  SDVR + {date_iso}: ПТП={counts.get('ptp')} София={counts.get('sofia_light')} загинали={counts.get('dead')}")
+    return found
+
 def main():
     try:
         data = json.load(open(DATA, encoding="utf-8"))
@@ -139,6 +185,10 @@ def main():
         windows.append((w_start, cur))
         cur = w_start
     print(f"Backfill: {BACKFILL_DAYS} дни, {len(windows)} прозореца, {len(QUERIES)} заявки")
+
+    cutoff = (now - timedelta(days=BACKFILL_DAYS)).date().isoformat()
+    sdvr_found = scrape_sdvr(days, cutoff)
+    found += sdvr_found
 
     seen_links = set()
     for (w1, w2) in windows:
