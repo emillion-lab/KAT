@@ -166,12 +166,14 @@ def scrape_sdvr(days, cutoff_date):
         body = fetch(url)
         if not body:
             continue
-        counts = extract_counts(body[:60000])
+        counts = extract_counts(body)
         if not counts:
             snippet = strip_html(body)
-            # покажи зоната около "денонощие"/"регистрирани" за дебъг
-            m = re.search(r".{80}(?:денонощие|регистрирани).{300}", snippet)
-            print(f"  SDVR no-parse {date_iso}: {(m.group(0) if m else snippet[1500:1900])[:380]}")
+            hits = [m.start() for m in re.finditer(r"ПТП|произшеств|катастроф|изминал", snippet)]
+            print(f"  SDVR no-parse {date_iso}: len={len(body)} hits={len(hits)} url={url[-60:]}")
+            if hits:
+                p = hits[-1]
+                print(f"    ...{snippet[max(0,p-150):p+250]}")
             continue
         entry = {"date": date_iso, "source": "sdvr", **counts,
                  "headline": f"СДВР Пътна обстановка {dd}-{mm}-{yyyy}", "url": url}
