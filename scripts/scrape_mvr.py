@@ -56,12 +56,24 @@ def decode_gnews(link):
         pass
     return None
 
+PROXY = "https://mvr-proxy.mihov-emil.workers.dev/mvrfetch?u="
+
 def fetch(url):
     try:
         req = urllib.request.Request(url, headers=UA)
         with urllib.request.urlopen(req, timeout=25) as r:
             return r.read().decode("utf-8", errors="replace")
     except Exception as e:
+        if "mvr.bg" in url:
+            # МВР блокира datacenter IP — през Cloudflare Worker-а
+            try:
+                req = urllib.request.Request(PROXY + quote(url, safe=""), headers=UA)
+                with urllib.request.urlopen(req, timeout=30) as r:
+                    print(f"  via mvr-proxy: {url[:60]}")
+                    return r.read().decode("utf-8", errors="replace")
+            except Exception as e2:
+                print(f"  proxy fail {url[:60]}: {e2}")
+                return None
         print(f"  fetch fail {url[:70]}: {e}")
         return None
 
