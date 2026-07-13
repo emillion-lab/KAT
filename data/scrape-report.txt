@@ -1,8 +1,11 @@
 Backfill: 3 дни, 1 прозореца, 4 заявки
-  proxy fail https://www.mvr.bg/sofia/%D0%B8%D0%BD%D1%84%D0%BE%D1%80%D0%B: HTTP Error 403: Forbidden
-SDVR: листингът не се зареди
-  fetch fail https://news.google.com/rss/search?q=%D0%9C%D0%92%D0%A0%20%D0%BA%D0%B0: HTTP Error 503: Service Unavailable
-  fetch fail https://news.google.com/rss/search?q=%22%D0%B7%D0%B0%20%D0%B4%D0%B5%D0: HTTP Error 503: Service Unavailable
-  fetch fail https://news.google.com/rss/search?q=%D1%81%D1%82%D0%B0%D1%82%D0%B8%D1: HTTP Error 503: Service Unavailable
-  fetch fail https://news.google.com/rss/search?q=%D0%BF%D1%8A%D1%82%D0%BD%D0%BE%D1: HTTP Error 503: Service Unavailable
-Готово: 0 нови дни, общо 27
+SDVR: 12 бюлетина в листинга
+  SDVR no-parse 2026-07-12: len=169952 occ=5
+    TAIL: обстановка 13-07-2026 Информация от АПИ за състоянието на републиканските пътища към 17:30 часа на 12.07.2026 г. &nbsp; МЕТЕОРОЛОГИЧНА ОБСТАНОВКА: През нощта над Западна България облачността ще намалее до ясно време, докато над Централна и Източна ще бъде предимно значителна, на много места с валежи. Ще има и гръмотевици. Ще духа слаб вятър от запад-северозапад. Утре над Западна България ще бъде предимно слънчево, докато над Източна, а след обяд и над планинските и централните северни райони ще 
+    ATTACH: /upload/210391/Logo_MVR_transparent.png
+    IFRAME: /maps/index.html?lat=42.68275660443&amp;lng=23.368463468189&amp;zoom=17
+    IFRAME: https:/maps/index.html?lat=42.68275660443&amp;lng=23.368463468189&amp;zoom=17
+  + 2026-07-12: ПТП=None София_леки=None загинали=2 | Двама души са загинали, а 27 са ранени при 23 тежки катастрофи в стран
+  + 2026-07-10: ПТП=31 София_леки=None загинали=1 | Черна статистика: 31 катастрофи и един загинал за последното денонощие
+  + 2026-07-11: ПТП=26 София_леки=None загинали=2 | Пътна обстановка: Двама загинали и 33 ранени при 26 катастрофи за дено
+Готово: 3 нови дни, общо 30

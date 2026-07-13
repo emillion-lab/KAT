@@ -1,12 +1,45 @@
 {
-  "updated": "2026-07-12T11:28:07.938345+03:00",
+  "updated": "2026-07-13T12:41:33.654260+03:00",
   "status": "live_news",
   "source": "Google News RSS — дневни МВР справки (backfill v5)",
   "note": "Дневен брой от новинарски RSS (МВР справка), автоматично парснат.",
   "mvr_frozen_since": "2026-05-05",
   "mvr_news_url": "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp",
-  "days_count": 27,
+  "days_count": 30,
   "days": [
+    {
+      "date": "2026-07-12",
+      "source": "news",
+      "ptp": null,
+      "dead": 2,
+      "injured": 27,
+      "serious": 23,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Двама души са загинали, а 27 са ранени при 23 тежки катастрофи в страната през изминалото денонощие - nrd.bg"
+    },
+    {
+      "date": "2026-07-11",
+      "source": "news",
+      "ptp": 26,
+      "dead": 2,
+      "injured": 33,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Пътна обстановка: Двама загинали и 33 ранени при 26 катастрофи за денонощие - novini247.com"
+    },
+    {
+      "date": "2026-07-10",
+      "source": "news",
+      "ptp": 31,
+      "dead": 1,
+      "injured": null,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Черна статистика: 31 катастрофи и един загинал за последното денонощие - BurgasMedia"
+    },
     {
       "date": "2026-07-09",
       "source": "news",
