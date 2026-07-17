@@ -1,12 +1,23 @@
 {
-  "updated": "2026-07-16T11:26:08.030888+03:00",
+  "updated": "2026-07-17T11:22:17.623869+03:00",
   "status": "live_news",
   "source": "Google News RSS — дневни МВР справки (backfill v5)",
   "note": "Дневен брой от новинарски RSS (МВР справка), автоматично парснат.",
   "mvr_frozen_since": "2026-05-05",
   "mvr_news_url": "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp",
-  "days_count": 33,
+  "days_count": 34,
   "days": [
+    {
+      "date": "2026-07-16",
+      "source": "news",
+      "ptp": null,
+      "dead": null,
+      "injured": 2,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Двама души са пострадали при пожари в страната през последното денонощие, угасени са 97 пожара - Утро Русе"
+    },
     {
       "date": "2026-07-15",
       "source": "news",
@@ -22,7 +33,7 @@
       "date": "2026-07-14",
       "source": "news",
       "ptp": 28,
-      "dead": null,
+      "dead": 1,
       "injured": 39,
       "serious": null,
       "light": null,
