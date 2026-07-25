@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-24T11:37:02.637679+03:00",
+  "updated": "2026-07-25T11:18:07.798560+03:00",
   "status": "live_news",
   "source": "Google News RSS — дневни МВР справки (backfill v5)",
   "note": "Дневен брой от новинарски RSS (МВР справка), автоматично парснат.",
@@ -10,7 +10,7 @@
     {
       "date": "2026-07-23",
       "source": "news",
-      "ptp": null,
+      "ptp": 3,
       "dead": 2,
       "injured": 32,
       "serious": null,
