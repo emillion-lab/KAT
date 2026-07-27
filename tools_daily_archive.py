@@ -28,6 +28,21 @@ if raw and isinstance(raw, list) and len(raw) > 1:
                 kp_max, kp_avg = max(vals), sum(vals) / len(vals)
         except (ValueError, IndexError) as e:
             print('Kp parse issue:', e)
+    elif isinstance(hdr, dict):
+        # алтернативен формат: списък от обекти {time_tag, kp_index/Kp}
+        vals = []
+        for row in raw:
+            if not isinstance(row, dict): continue
+            tt = row.get('time_tag', '')
+            if str(tt)[:10] != today: continue
+            v = row.get('kp_index', row.get('Kp', row.get('kp')))
+            try:
+                if v is not None: vals.append(float(v))
+            except (TypeError, ValueError): pass
+        if vals:
+            kp_max, kp_avg = max(vals), sum(vals) / len(vals)
+        else:
+            print('unexpected Kp format, sample:', str(raw[:1])[:200])
     else:
         print('unexpected Kp format:', type(hdr))
 
