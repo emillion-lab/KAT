@@ -5,11 +5,11 @@
       "date": "2026-07-27",
       "kp_max": null,
       "kp_avg": null,
-      "pressure_hpa": null,
+      "pressure_hpa": 952.3,
       "moon_age_days": 12.47,
       "dow": 0,
       "accidents": null
     }
   ],
-  "updated": "2026-07-27T06:18:32.091632"
+  "updated": "2026-07-27T06:23:21.029865+00:00"
 }

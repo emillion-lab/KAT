@@ -1,7 +1,2 @@
-/home/runner/work/KAT/KAT/tools_daily_archive.py:12: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
-  today = (datetime.datetime.utcnow() + datetime.timedelta(hours=3)).strftime('%Y-%m-%d')
-Traceback (most recent call last):
-  File "/home/runner/work/KAT/KAT/tools_daily_archive.py", line 18, in <module>
-    ti = hdr.index('time_tag')
-         ^^^^^^^^^
-AttributeError: 'dict' object has no attribute 'index'
+unexpected Kp format: <class 'dict'>
+записан ред: {'date': '2026-07-27', 'kp_max': None, 'kp_avg': None, 'pressure_hpa': 952.3, 'moon_age_days': 12.47, 'dow': 0, 'accidents': None}
