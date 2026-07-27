@@ -68,13 +68,25 @@ def fetch(url, timeout=25, binary=False):
 def scan_egov():
     """Обхожда националния портал и връща наборите, свързани с ПТП."""
     found = []
-    raw = fetch('https://data.egov.bg/api/getDataSetList')
+    endpoints = [
+        "https://data.egov.bg/api/getDataSetList",
+        "https://data.egov.bg/api/v1/datasets",
+        "https://data.egov.bg/api/getOrganisationDataSets",
+        "https://data.egov.bg/data/search?q=%D0%9F%D0%A2%D0%9F&format=json",
+    ]
+    raw = None
+    used = None
+    for ep in endpoints:
+        raw = fetch(ep)
+        if raw and raw.strip()[:1] in ("{", "["):
+            used = ep
+            break
     if not raw:
-        return found, 'няма отговор от портала'
+        return found, "нито един от %d известни адреса не отговаря" % len(endpoints)
     try:
         data = json.loads(raw)
     except Exception:
-        return found, 'отговорът не е валиден JSON'
+        return found, "отговорът от %s не е валиден JSON" % used
 
     items = data if isinstance(data, list) else data.get('data', data.get('result', []))
     if not isinstance(items, list):
@@ -90,7 +102,7 @@ def scan_egov():
                 'uri': it.get('uri') or it.get('id') or '',
                 'org': it.get('org_name') or it.get('organisation') or '',
             })
-    return found, f'прегледани {len(items)} набора'
+    return found, "прегледани %d набора през %s" % (len(items), used)
 
 
 def scan_eu():
