@@ -9,16 +9,27 @@ def get(url):
         print('fetch failed:', url, e)
         return None
 
-today = (datetime.datetime.utcnow() + datetime.timedelta(hours=3)).strftime('%Y-%m-%d')
+today = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=3)).strftime('%Y-%m-%d')
 
 kp_max = kp_avg = None
 raw = get('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json')
-if raw:
+if raw and isinstance(raw, list) and len(raw) > 1:
     hdr = raw[0]
-    ti = hdr.index('time_tag')
-    vals = [float(row[1]) for row in raw[1:] if row[ti][:10] == today]
-    if vals:
-        kp_max, kp_avg = max(vals), sum(vals)/len(vals)
+    if isinstance(hdr, list):
+        try:
+            ti = hdr.index('time_tag')
+            ki = hdr.index('Kp') if 'Kp' in hdr else hdr.index('kp_index') if 'kp_index' in hdr else 1
+            vals = []
+            for row in raw[1:]:
+                if isinstance(row, list) and len(row) > max(ti, ki) and str(row[ti])[:10] == today:
+                    try: vals.append(float(row[ki]))
+                    except (TypeError, ValueError): pass
+            if vals:
+                kp_max, kp_avg = max(vals), sum(vals) / len(vals)
+        except (ValueError, IndexError) as e:
+            print('Kp parse issue:', e)
+    else:
+        print('unexpected Kp format:', type(hdr))
 
 pressure = None
 om = get('https://api.open-meteo.com/v1/forecast?latitude=42.6977&longitude=23.3219&current=surface_pressure')
@@ -27,8 +38,8 @@ if om:
 
 MOON_REF = datetime.datetime(2000, 1, 6, 18, 14)
 SYN = 29.530588853
-now = datetime.datetime.utcnow()
-moon_age = ((now - MOON_REF).total_seconds() / 86400) % SYN
+now = datetime.datetime.now(datetime.timezone.utc)
+moon_age = ((now.replace(tzinfo=None) - MOON_REF).total_seconds() / 86400) % SYN
 
 row = {
     'date': today,
@@ -51,6 +62,6 @@ else:
     }
 data['days'] = [d for d in data['days'] if d['date'] != today] + [row]
 data['days'].sort(key=lambda d: d['date'])
-data['updated'] = datetime.datetime.utcnow().isoformat()
+data['updated'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
 json.dump(data, open(path, 'w'), ensure_ascii=False, indent=2)
 print('записан ред:', row)
