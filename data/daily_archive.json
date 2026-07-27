@@ -3,13 +3,13 @@
   "days": [
     {
       "date": "2026-07-27",
-      "kp_max": null,
-      "kp_avg": null,
+      "kp_max": 1.67,
+      "kp_avg": 1.33,
       "pressure_hpa": 952.3,
       "moon_age_days": 12.47,
       "dow": 0,
       "accidents": null
     }
   ],
-  "updated": "2026-07-27T06:23:21.029865+00:00"
+  "updated": "2026-07-27T06:24:39.106008+00:00"
 }
