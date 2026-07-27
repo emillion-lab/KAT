@@ -1,0 +1,14 @@
+name: PTP Harvest
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools_ptp_harvester.py --download 2>&1 | tee harvest.log
+      - run: |
+          git config user.name ci; git config user.email ci@kat
+          git add -A data/ harvest.log && git commit -m "ptp harvest [skip ci]" || echo "no change"
+          git push
