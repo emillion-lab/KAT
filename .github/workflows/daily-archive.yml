@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: python3 tools_daily_archive.py
+      - run: python3 tools_daily_archive.py 2>&1 | tee run.log
       - run: |
           git config user.name ci; git config user.email ci@kat
-          git add data/daily_archive.json && git commit -m "daily archive [skip ci]" || echo "no change"
+          git add data/daily_archive.json run.log && git commit -m "daily archive [skip ci]" || echo "no change"
           git push
