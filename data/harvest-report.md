@@ -1,0 +1,28 @@
+# Разузнаване за сурови данни за ПТП
+
+Изпълнено: 2026-07-27T06:37:48.293178+00:00
+
+## data.egov.bg — няма отговор от портала
+- нищо намерено по ключовите думи
+
+## EU Open Data — върнати 20 резултата
+- Number of road accidents per hour. Year 2014
+- Number of traffic accidents by gender of driver. Year 2012
+- Number of traffic accidents by gender of driver. Year 2014
+- Road Accidents by Road Name - Year 2008
+- Road Accidents by Road Name - Year 2007
+- Road Accidents by Road Name - Year 2006
+- Road Accidents by Road Name - Year 2005
+- Road accidents by type and by year. Years 2003-2013
+- Vehicles involved in road accidents by type. Year 2014
+- Road Accidents by Daily Time Bands - Year 2005
+- Road Accidents by Daily Time Bands - Year 2007
+- Road Accidents by Daily Time Bands - Year 2014
+- Road Accidents by Road Name - Year 2010
+- Road Accidents by Road Name - Year 2012
+- Road Accidents by Road Name - Year 2011
+
+## Ръчни източници (изискват човек)
+- МВР, месечни бюлетини: https://www.mvr.bg/opp — PDF/XLS по общини
+- НСИ, годишни таблици: https://www.nsi.bg — XLS
+- Заявление по ЗДОИ за дневни данни: отговор до 14 дни, безплатно
