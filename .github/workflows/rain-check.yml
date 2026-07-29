@@ -1,0 +1,13 @@
+name: Rain Check
+on: workflow_dispatch
+permissions: { contents: write }
+jobs:
+  c:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools_rain_check.py 2>&1 | tee rain.log
+      - run: |
+          git config user.name ci; git config user.email ci@kat
+          git add rain.log && git commit -m "rain check [skip ci]" || true
+          git push
