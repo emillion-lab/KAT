@@ -87,35 +87,45 @@
       "total": 7012,
       "dead": 660,
       "injured": 8640,
-      "serious": null
+      "serious": null,
+      "deaths_per_100k": 9.4,
+      "deaths_per_100k_source": "World Bank"
     },
     {
       "year": 2013,
       "total": 7016,
       "dead": 601,
       "injured": 8774,
-      "serious": null
+      "serious": null,
+      "deaths_per_100k": 8.5,
+      "deaths_per_100k_source": "World Bank"
     },
     {
       "year": 2012,
       "total": 6717,
       "dead": 601,
       "injured": 8193,
-      "serious": null
+      "serious": null,
+      "deaths_per_100k": 8.5,
+      "deaths_per_100k_source": "World Bank"
     },
     {
       "year": 2011,
       "total": 6698,
       "dead": 657,
       "injured": 8303,
-      "serious": null
+      "serious": null,
+      "deaths_per_100k": 9.2,
+      "deaths_per_100k_source": "World Bank"
     },
     {
       "year": 2010,
       "total": 6610,
       "dead": 775,
       "injured": 8080,
-      "serious": null
+      "serious": null,
+      "deaths_per_100k": 10.8,
+      "deaths_per_100k_source": "World Bank"
     },
     {
       "year": 2009,
@@ -164,7 +174,7 @@
     "11_nov": 1.06,
     "12_dec": 1.1
   },
-  "updated": "2026-07-05",
+  "updated": "2026-08-01T08:08:40.813204+00:00",
   "last_complete_year": 2024,
   "api_sources": {
     "worldbank": {
