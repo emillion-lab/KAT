@@ -1,12 +1,34 @@
 {
-  "updated": "2026-08-01T11:30:36.052618+03:00",
+  "updated": "2026-08-02T11:33:28.098402+03:00",
   "status": "live_news",
   "source": "Google News RSS — дневни МВР справки (backfill v5)",
   "note": "Дневен брой от новинарски RSS (МВР справка), автоматично парснат.",
   "mvr_frozen_since": "2026-05-05",
   "mvr_news_url": "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp",
-  "days_count": 46,
+  "days_count": 48,
   "days": [
+    {
+      "date": "2026-08-01",
+      "source": "news",
+      "ptp": 3,
+      "dead": null,
+      "injured": null,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "В Разградско през последното денонощие са регистрирани три катастрофи с пострадали - БТА"
+    },
+    {
+      "date": "2026-07-31",
+      "source": "news",
+      "ptp": 21,
+      "dead": null,
+      "injured": 27,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "27 ранени в катастрофи за денонощие: МВР отчита ръст на жертвите - paragraf.bg"
+    },
     {
       "date": "2026-07-30",
       "source": "news",
