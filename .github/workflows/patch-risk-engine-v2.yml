@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'scripts/patch_engine_v2.py'
+      - '.github/workflows/patch-risk-engine-v2.yml'
 
 permissions:
   contents: write
@@ -30,28 +31,30 @@ jobs:
           const fs=require('fs');
           const h=fs.readFileSync('index.html','utf8');
           const js=h.match(/<script>([\s\S]*)<\/script>/)[1];
-          // stub browser globals so the engine can be evaluated headlessly
-          global.document={getElementById:()=>({textContent:'',style:{},innerHTML:'',className:'',classList:{toggle:()=>{},contains:()=>false},appendChild:()=>{},contains:()=>false}),querySelectorAll:()=>[]};
+          const stub=()=>({textContent:'',style:{},innerHTML:'',className:'',
+            classList:{toggle:()=>{},contains:()=>false},appendChild:()=>{},contains:()=>false,
+            addEventListener:()=>{},getContext:()=>null,offsetWidth:400});
+          global.document={getElementById:stub,querySelectorAll:()=>[]};
           global.fetch=()=>Promise.reject(new Error('no net'));
           global.setInterval=()=>{}; global.setTimeout=()=>{};
           global.window={};
           eval(js);
-          const mk=(d,env)=>calcRisk(env,d,{noRegime:true});
           const tests=[
-            ['Сухо, слънчево, вторник', new Date('2026-03-10T12:00:00'), {rain:0,snow:0,sun:0.9}],
-            ['Проливен дъжд, петък',    new Date('2026-03-13T12:00:00'), {rain:25,snow:0,sun:0.1}],
-            ['Сняг 6cm, понеделник',    new Date('2026-01-12T12:00:00'), {rain:2,snow:6,sun:0.1,tmin:-3}],
-            ['23 декември',             new Date('2026-12-23T12:00:00'), {rain:0,snow:0,sun:0.5}],
-            ['Коледа',                  new Date('2026-12-25T12:00:00'), {rain:0,snow:0,sun:0.5}],
-            ['Неделя, слънчево, март',  new Date('2026-03-15T12:00:00'), {rain:0,snow:0,sun:0.95}],
+            ['Сухо слънчево, вторник', new Date('2026-03-10T12:00:00'), {rain:0,snow:0,sun:0.9}],
+            ['Проливен дъжд, петък',   new Date('2026-03-13T12:00:00'), {rain:25,snow:0,sun:0.1}],
+            ['Сняг 6cm, понеделник',   new Date('2026-01-12T12:00:00'), {rain:2,snow:6,sun:0.1,tmin:-3}],
+            ['23 декември',            new Date('2026-12-23T12:00:00'), {rain:0,snow:0,sun:0.5}],
+            ['Коледа',                 new Date('2026-12-25T12:00:00'), {rain:0,snow:0,sun:0.5}],
+            ['Неделя слънчево, март',  new Date('2026-03-15T12:00:00'), {rain:0,snow:0,sun:0.95}],
           ];
           let bad=0;
           for(const [name,d,env] of tests){
-            const r=mk(d,env);
-            if(!(r.riskScore>=1&&r.riskScore<=10)){bad++;}
-            console.log(String(name).padEnd(26), 'score='+r.riskScore+'/10', 'mult='+r.totalMult.toFixed(3), 'exp='+r.expected);
+            const r=calcRisk(env,d,{noRegime:true});
+            if(!(r.riskScore>=1&&r.riskScore<=10)) bad++;
+            console.log(String(name).padEnd(25),'score='+r.riskScore+'/10','mult='+r.totalMult.toFixed(3),'exp='+r.expected);
           }
-          if(bad){console.error('FAIL: '+bad+' score(s) out of 1-10 range');process.exit(1);}
+          if(bad){console.error('FAIL: '+bad+' score(s) out of range');process.exit(1);}
+          if(kpEffect(9)!==1.0||moonEffect(14)!==1.0){console.error('FAIL: dropped factors still active');process.exit(1);}
           console.log('SMOKE TEST OK');
           "
       - name: Commit
