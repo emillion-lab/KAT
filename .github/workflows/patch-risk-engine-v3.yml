@@ -1,81 +1,50 @@
-name: patch-risk-engine-v3
+name: Patch Engine V3
 on:
+  schedule: [{ cron: '*/15 * * * *' }]
   workflow_dispatch:
-  schedule:
-    # push-тригерът в това репо не се задейства; cron работи (доказано в BAK).
-    # Върти се на всеки 10 мин; след успешен патч сам спира, защото
-    # маркерите вече ги няма и скриптът излиза с грешка преди да пипне нещо.
-    - cron: '*/10 * * * *'
-
 permissions:
   contents: write
-
 jobs:
   patch:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Skip if already applied
-        id: chk
-        run: |
-          if grep -q 'harmScore' index.html; then
-            echo "done=1" >> $GITHUB_OUTPUT
-            echo "v3 already applied — nothing to do"
-          else
-            echo "done=0" >> $GITHUB_OUTPUT
-          fi
-      - name: Apply v3
-        if: steps.chk.outputs.done == '0'
-        run: python3 scripts/patch_engine_v3.py
-      - name: JS syntax check
-        if: steps.chk.outputs.done == '0'
-        run: |
+      - run: |
+          if grep -q harmScore index.html; then echo "already applied"; exit 0; fi
+          python3 scripts/patch_engine_v3.py
           python3 -c "
           import io,re
           h=io.open('index.html',encoding='utf-8').read()
           m=re.search(r'<script>(.*)</script>',h,re.S)
-          io.open('/tmp/check.js','w',encoding='utf-8').write(m.group(1))
+          io.open('/tmp/c.js','w',encoding='utf-8').write(m.group(1))
           "
-          node --check /tmp/check.js && echo 'JS SYNTAX OK'
-      - name: Smoke test both scales
-        if: steps.chk.outputs.done == '0'
-        run: |
+          node --check /tmp/c.js
           node -e "
           const fs=require('fs');
           const js=fs.readFileSync('index.html','utf8').match(/<script>([\s\S]*)<\/script>/)[1];
-          const stub=()=>({textContent:'',style:{},innerHTML:'',className:'',
-            classList:{toggle:()=>{},contains:()=>false},appendChild:()=>{},contains:()=>false,
-            addEventListener:()=>{},getContext:()=>null,offsetWidth:400});
+          const stub=()=>({textContent:'',style:{},innerHTML:'',className:'',classList:{toggle:()=>{},contains:()=>false},appendChild:()=>{},contains:()=>false,addEventListener:()=>{},getContext:()=>null,offsetWidth:400});
           global.document={getElementById:stub,querySelectorAll:()=>[]};
-          global.fetch=()=>Promise.reject(new Error('no net'));
+          global.fetch=()=>Promise.reject(new Error('x'));
           global.setInterval=()=>{}; global.setTimeout=()=>{}; global.window={};
           eval(js);
-          const T=[
-            ['Сняг 6cm, понеделник', new Date('2026-01-12T12:00:00'),{rain:2,snow:6,sun:0.1,tmin:-3,tmax:1}],
-            ['Сухо неделя август',   new Date('2026-08-16T12:00:00'),{rain:0,snow:0,sun:0.95,tmin:16,tmax:33}],
-            ['Проливен дъжд петък',  new Date('2026-03-13T12:00:00'),{rain:25,snow:0,sun:0.1,tmin:6,tmax:12}],
-            ['23 декември',          new Date('2026-12-23T12:00:00'),{rain:0,snow:0,sun:0.5,tmin:-1,tmax:5}],
-            ['Ясно, амплитуда 18°',  new Date('2026-04-10T12:00:00'),{rain:0,snow:0,sun:0.95,tmin:6,tmax:24}],
-            ['Ден след Коледа',      new Date('2026-12-27T12:00:00'),{rain:0,snow:0,sun:0.6,tmin:0,tmax:6}],
-          ];
+          const T=[['Sneg',new Date('2026-01-12T12:00:00'),{rain:2,snow:6,sun:0.1,tmin:-3,tmax:1}],
+                   ['Avgust ned',new Date('2026-08-16T12:00:00'),{rain:0,snow:0,sun:0.95,tmin:16,tmax:33}],
+                   ['Dazhd pet',new Date('2026-03-13T12:00:00'),{rain:25,snow:0,sun:0.1,tmin:6,tmax:12}],
+                   ['23 dek',new Date('2026-12-23T12:00:00'),{rain:0,snow:0,sun:0.5,tmin:-1,tmax:5}],
+                   ['Amplituda 18',new Date('2026-04-10T12:00:00'),{rain:0,snow:0,sun:0.95,tmin:6,tmax:24}],
+                   ['Sled Koleda',new Date('2026-12-27T12:00:00'),{rain:0,snow:0,sun:0.6,tmin:0,tmax:6}]];
           let bad=0;
-          for(const [n,d,env] of T){
-            const r=calcRisk(env,d,{noRegime:true});
+          for(const [n,d,e] of T){
+            const r=calcRisk(e,d,{noRegime:true});
             if(!(r.riskScore>=1&&r.riskScore<=10)||!(r.harmScore>=1&&r.harmScore<=10)) bad++;
-            console.log(String(n).padEnd(23),'кола='+r.riskScore+'/10','човек='+r.harmScore+'/10',
-                        'mult='+r.totalMult.toFixed(3),'harm='+r.harmMult.toFixed(3));
+            console.log(n.padEnd(14),'kola='+r.riskScore,'chovek='+r.harmScore,'m='+r.totalMult.toFixed(3),'h='+r.harmMult.toFixed(3));
           }
-          if(bad){console.error('FAIL: '+bad+' score(s) out of range');process.exit(1);}
+          if(bad) { console.error('FAIL range'); process.exit(1); }
           const sn=calcRisk({rain:2,snow:6,sun:0.1,tmin:-3,tmax:1},new Date('2026-01-12T12:00:00'),{noRegime:true});
-          if(!(sn.riskScore>sn.harmScore)){console.error('FAIL: snow should be worse for cars than people');process.exit(1);}
-          if(mvTotal({ptp:3,injured:27})!==27){console.error('FAIL: mvTotal still trusts ptp');process.exit(1);}
-          console.log('SMOKE TEST OK');
-          "
-      - name: Commit
-        if: steps.chk.outputs.done == '0'
-        run: |
-          git config user.name bot; git config user.email bot@kat
-          git add index.html
-          git commit -m "risk engine v3: two scales (car/human), seasonal regime weight, amplitude, day-after-holiday" || true
-          git fetch origin main && git rebase origin/main || true
+          if(!(sn.riskScore>sn.harmScore)) { console.error('FAIL snow divergence'); process.exit(1); }
+          if(mvTotal({ptp:3,injured:27})!==27) { console.error('FAIL mvTotal'); process.exit(1); }
+          console.log('SMOKE OK');
+          " 2>&1 | tee v3.log
+          git config user.name ci; git config user.email ci@kat
+          git add index.html v3.log && git commit -m "risk engine v3: two scales, seasonal regime, amplitude [skip ci]" || echo "no change"
           git push
