@@ -1,0 +1,26 @@
+======================================================================
+STEP 1 — seed pages
+======================================================================
+FAIL https://www.mvr.bg/ptp -> HTTP Error 403: Forbidden
+FAIL https://www.mvr.bg/opp -> HTTP Error 403: Forbidden
+FAIL https://ptp.mvr.bg/ -> <urlopen error [Errno -5] No address associated with hostname>
+200  text/html  https://katastrofi.bg/  41314 chars
+
+======================================================================
+STEP 2 — candidate endpoints harvested from those pages
+======================================================================
+  https://fonts.googleapis.com
+  https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap
+total candidates: 2
+
+======================================================================
+STEP 3 — probing candidates
+======================================================================
+  ERR  https://fonts.googleapis.com                                           HTTP Error 404: Not Found
+  200  https://fonts.googleapis.com/css2?family=Inter:wght@400;50     9884 text/css
+
+======================================================================
+STEP 4 — sample payloads from JSON hits
+======================================================================
+
+SUMMARY: seeds_ok=1 candidates=2 json_hits=0
