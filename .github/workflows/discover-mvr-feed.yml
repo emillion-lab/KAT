@@ -1,0 +1,32 @@
+name: discover-mvr-feed
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/discover_mvr_feed.py'
+      - '.github/workflows/discover-mvr-feed.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe
+        continue-on-error: true
+        run: python3 scripts/discover_mvr_feed.py > debug/mvr-feed-probe.txt 2>&1 || echo NONZERO >> debug/mvr-feed-probe.txt
+      - name: Show
+        if: always()
+        run: cat debug/mvr-feed-probe.txt || true
+      - name: Commit
+        if: always()
+        run: |
+          mkdir -p debug
+          git config user.name bot; git config user.email bot@kat
+          git add -A
+          git commit -m "MVR feed discovery probe [skip ci]" || true
+          git fetch origin main && git rebase origin/main || true
+          git push
