@@ -1,10 +1,11 @@
 name: patch-risk-engine-v3
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'scripts/patch_engine_v3.py'
-      - '.github/workflows/patch-risk-engine-v3.yml'
+  schedule:
+    # push-тригерът в това репо не се задейства; cron работи (доказано в BAK).
+    # Върти се на всеки 10 мин; след успешен патч сам спира, защото
+    # маркерите вече ги няма и скриптът излиза с грешка преди да пипне нещо.
+    - cron: '*/10 * * * *'
 
 permissions:
   contents: write
@@ -14,9 +15,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Skip if already applied
+        id: chk
+        run: |
+          if grep -q 'harmScore' index.html; then
+            echo "done=1" >> $GITHUB_OUTPUT
+            echo "v3 already applied — nothing to do"
+          else
+            echo "done=0" >> $GITHUB_OUTPUT
+          fi
       - name: Apply v3
+        if: steps.chk.outputs.done == '0'
         run: python3 scripts/patch_engine_v3.py
       - name: JS syntax check
+        if: steps.chk.outputs.done == '0'
         run: |
           python3 -c "
           import io,re
@@ -26,6 +38,7 @@ jobs:
           "
           node --check /tmp/check.js && echo 'JS SYNTAX OK'
       - name: Smoke test both scales
+        if: steps.chk.outputs.done == '0'
         run: |
           node -e "
           const fs=require('fs');
@@ -53,15 +66,16 @@ jobs:
                         'mult='+r.totalMult.toFixed(3),'harm='+r.harmMult.toFixed(3));
           }
           if(bad){console.error('FAIL: '+bad+' score(s) out of range');process.exit(1);}
-          // snow must diverge: many crashes, fewer casualties
           const sn=calcRisk({rain:2,snow:6,sun:0.1,tmin:-3,tmax:1},new Date('2026-01-12T12:00:00'),{noRegime:true});
           if(!(sn.riskScore>sn.harmScore)){console.error('FAIL: snow should be worse for cars than people');process.exit(1);}
           if(mvTotal({ptp:3,injured:27})!==27){console.error('FAIL: mvTotal still trusts ptp');process.exit(1);}
           console.log('SMOKE TEST OK');
           "
       - name: Commit
+        if: steps.chk.outputs.done == '0'
         run: |
           git config user.name bot; git config user.email bot@kat
           git add index.html
           git commit -m "risk engine v3: two scales (car/human), seasonal regime weight, amplitude, day-after-holiday" || true
+          git fetch origin main && git rebase origin/main || true
           git push
