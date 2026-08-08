@@ -1,0 +1,32 @@
+═══ RSS / SITEMAP ═══
+  FAIL https://www.bta.bg/bg/rss -> HTTP Error 404: Not Found
+  FAIL https://www.bta.bg/rss -> HTTP Error 404: Not Found
+  FAIL https://www.bta.bg/bg/feed -> HTTP Error 404: Not Found
+  FAIL https://www.bta.bg/bg/rss/bulgaria -> HTTP Error 404: Not Found
+  200  https://www.bta.bg/bg/news/bulgaria/rss  (62245 знака, 20 записа)
+      https://www.bta.bg/bg/news/bulgaria/rss
+      https://www.bta.bg/bg/news/bulgaria/1182114-za-palezh-na-avtomobil-v-slanchev-bryag-e-zadarzhan-kriminalno-proyaven-42-godis
+      https://www.bta.bg/bg/news/bulgaria/1182102-dva-pozhara-sa-vazniknali-na-teritoriyata-na-oblast-haskovo-saobshtiha-ot-oblas
+      https://www.bta.bg/bg/news/bulgaria/1182099-pozharat-kray-asenovgrad-e-ovladyan-zasegnatata-plosht-e-nad-6000-dekara
+      https://www.bta.bg/bg/news/bulgaria/1182111-nay-veroyatno-se-kasae-za-dron-primamka-mayya-nyama-prichina-da-se-smyata-ch
+      https://www.bta.bg/bg/news/balkans/1182110-rumanskoto-ministerstvo-na-otbranata-za-vzriviliya-se-v-balgariya-dron-nashite-
+      https://www.bta.bg/bg/news/bulgaria/1182097-okrazhniyat-sad-v-burgas-zasedava-po-iskaneto-za-zadarzhane-pod-strazha-na-obvin
+      https://www.bta.bg/bg/news/bulgaria/1182090-nad-100-detsa-ot-tsyalata-strana-se-sabraha-na-detski-plener-usmihnato-lyato-v
+  FAIL https://www.bta.bg/bg/sitemap.xml -> HTTP Error 404: Not Found
+  FAIL https://www.bta.bg/sitemap.xml -> HTTP Error 404: Not Found
+
+═══ СТРАНИРАНЕ НА РУБРИКАТА ═══
+  200  https://www.bta.bg/bg/news/bulgaria?page=2  (47 статии)
+  FAIL https://www.bta.bg/bg/news/bulgaria/page/2 -> HTTP Error 404: Not Found
+  200  https://www.bta.bg/bg/news/bulgaria?p=2  (57 статии)
+      ← РАЗЛИЧНИ от предишната страница: страницирането РАБОТИ
+  200  https://www.bta.bg/bg/news/all?page=2  (47 статии)
+
+═══ ПРОВЕРКА НА ИЗВЕСТНА СТАТИЯ ═══
+  HTTP 200, "изминалото денонощие" на позиция 13
+  ТЕКСТ:  БТА :: През изминалото денонощие при 23 катастрофи в страната са загинали двама, а 28 души са ранени --> --> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-19978293-1'); Меню България Национални новини Регионални новини Области Благоевград Благоевград Бургас Бургас Варна Варна Велико Търново Велико Търново Видин Видин Враца Враца Габрово Габрово Добрич Добрич Кърджали Кърджали Кюстендил Кюстендил Ловеч Ловеч Монтана Монтана Пазарджик Пазарджик Перник Перник Плевен Плевен Пловдив Пловдив Разград Разград Русе Русе Силистра Силистра Сливен Сливен Смолян Смолян София София София - област София - област Стара Загора Стара Загора Търговище Търговище Хасково Хасково Шумен Шумен Ямбол Ямбол g[data-map] {cursor: pointer;} .map-p
+  ДАТА ("datePublished"\s*:\s*"(): 2026-06-21T11:01:29+03:00
+
+═══ ДНЕШНАТА СПРАВКА ПО ID ═══
+  най-нови ID в рубриката: [1182114, 1182111, 1182110, 1182107, 1182106]
+  съвпадения в текущата рубрика: 0
