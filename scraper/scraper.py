@@ -1,26 +1,15 @@
 #!/usr/bin/env python3
-"""МВР ArcGIS scraper — открива endpoint-а, тегли, нормализира, архивира.
+"""МВР ArcGIS scraper — v2, откри истинския сървър: gis.mvr.bg.
 
-Ключовото различие спрямо стария скрейп: не се четат новинарски заглавия.
-Оттам идваха 8 от 30 дни покритие за ПТП и стойности като "3" (заглавие за
-една област, взето за национално число). ArcGIS слоят дава инцидент по
-инцидент, с дата, координати и тежест — тоест София се отделя без да се гадае.
-
-Изход:
-  data/latest.json               последното състояние + агрегати за деня
-  data/history/YYYY/MM/DD.json   дневен архив, само при промяна
-  data/daily.csv                 дата, ПТП, загинали, ранени (нац. + София)
-  data/discovery.txt             какво е намерено при търсенето на endpoint
-
-Скриптът НЕ се проваля тихо: ако слоят не се намери, discovery.txt казва
-какво точно е било пробвано и с какъв отговор.
+Първото пускане намери services?f=json на gis.mvr.bg с папка MVR_Incident —
+точно там трябва да е слоят с ПТП. Тази версия слиза в папката и намира
+конкретната услуга и слой номер, вместо да гадае.
 """
-import json, os, re, sys, csv, datetime, urllib.request, urllib.parse, urllib.error
+import json, os, re, sys, csv, datetime, urllib.request, urllib.parse
 
 UA = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
                     '(KHTML, like Gecko) Chrome/124.0 Safari/537.36',
-      'Accept': 'application/json,text/html,*/*',
-      'Accept-Language': 'bg-BG,bg;q=0.9'}
+      'Accept': 'application/json,*/*'}
 LOG = []
 
 def log(*a):
@@ -33,82 +22,57 @@ def get(url, timeout=60):
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.getcode(), r.headers.get('Content-Type', ''), r.read().decode('utf-8', 'replace')
 
-# ─────────────────────────── 1. откриване на слоя ───────────────────────────
-# Страници, в чийто HTML/JS може да стои адресът на ArcGIS услугата.
-SEEDS = [
-    "https://www.mvr.bg/ptp",
-    "https://ptp.mvr.bg/",
-    "https://www.mvr.bg/gdnp",
-]
-# Пряко пробвани адреси, ако в HTML няма нищо.
-DIRECT = [
-    "https://services.arcgis.com/lJXqXsx2f8xnZWDL/arcgis/rest/services?f=json",
-    "https://services8.arcgis.com/rest/services?f=json",
-    "https://gis.mvr.bg/arcgis/rest/services?f=json",
-    "https://ptp.mvr.bg/arcgis/rest/services?f=json",
-]
+ROOT = "https://gis.mvr.bg/arcgis/rest/services"
 
-ARC_RE = re.compile(
-    r'https?://[A-Za-z0-9._\-]+/(?:arcgis|server)/rest/services/[A-Za-z0-9._%\-/]+'
-    r'/(?:Feature|Map)Server(?:/\d+)?', re.I)
-ANY_ARC_RE = re.compile(r'https?://[A-Za-z0-9._\-]*arcgis[A-Za-z0-9._\-]*/[^\s"\'<>]{0,200}', re.I)
+def list_folder(path=""):
+    url = f"{ROOT}/{path}?f=json".replace("//", "/").replace("https:/", "https://")
+    code, ct, body = get(url)
+    return json.loads(body)
 
-def discover():
-    found = set()
-    for u in SEEDS:
+def walk_all():
+    """Обхожда всички папки, връща списък (пълен_път, тип) за всяка услуга."""
+    services = []
+    root = list_folder("")
+    log("папки в корена:", root.get('folders'))
+    folders = root.get('folders', [])
+    for fo in folders:
         try:
-            code, ct, body = get(u)
-            log(f"seed {code} {u} ({len(body)} chars)")
-            for m in ARC_RE.finditer(body):
-                found.add(m.group(0))
-            for m in ANY_ARC_RE.finditer(body):
-                found.add(m.group(0))
-            # ArcGIS dashboards често се зареждат в iframe
-            for m in re.finditer(r'<iframe[^>]+src="([^"]+)"', body, re.I):
-                src = m.group(1)
-                if src.startswith('//'): src = 'https:' + src
-                if src.startswith('/'):  src = '/'.join(u.split('/')[:3]) + src
-                if not src.startswith('http'): continue
-                try:
-                    c2, _, b2 = get(src)
-                    log(f"  iframe {c2} {src[:90]}")
-                    for m2 in ARC_RE.finditer(b2): found.add(m2.group(0))
-                    for m2 in ANY_ARC_RE.finditer(b2): found.add(m2.group(0))
-                except Exception as ex:
-                    log(f"  iframe FAIL {src[:70]} -> {ex}")
+            j = list_folder(fo)
         except Exception as ex:
-            log(f"seed FAIL {u} -> {ex}")
-    log(f"кандидати от HTML: {len(found)}")
-    for f in sorted(found):
-        log("  ", f)
-    return sorted(found)
+            log(f"  папка {fo} FAIL: {ex}")
+            continue
+        svcs = j.get('services', [])
+        log(f"  папка {fo}: {len(svcs)} услуги")
+        for s in svcs:
+            services.append((f"{fo}/{s['name'].split('/')[-1]}", s['type']))
+        for sub in j.get('folders', []):
+            try:
+                j2 = list_folder(f"{fo}/{sub}")
+                for s in j2.get('services', []):
+                    services.append((f"{fo}/{sub}/{s['name'].split('/')[-1]}", s['type']))
+                log(f"    подпапка {fo}/{sub}: {len(j2.get('services', []))} услуги")
+            except Exception as ex:
+                log(f"    подпапка {fo}/{sub} FAIL: {ex}")
+    return services
 
-def probe_layer(url):
-    """Проверява дали адресът е FeatureServer слой с полезни полета."""
-    base = url.split('?')[0].rstrip('/')
-    if not re.search(r'/(Feature|Map)Server(/\d+)?$', base, re.I):
-        return None
-    if not re.search(r'/\d+$', base):
-        base += '/0'
+def inspect_service(name, typ):
+    url = f"{ROOT}/{name}/{typ}?f=json"
     try:
-        code, ct, body = get(base + '?f=json')
+        code, ct, body = get(url)
         j = json.loads(body)
     except Exception as ex:
-        log(f"  probe FAIL {base} -> {ex}")
-        return None
-    fields = [f.get('name') for f in j.get('fields', [])]
-    if not fields:
-        return None
-    log(f"  СЛОЙ {base}")
-    log(f"    име: {j.get('name')}  записи: {j.get('maxRecordCount')}")
-    log(f"    полета: {fields[:25]}")
-    return {'url': base, 'name': j.get('name'), 'fields': fields}
+        log(f"    inspect FAIL {name} -> {ex}")
+        return []
+    layers = j.get('layers', [])
+    out = []
+    for lyr in layers:
+        out.append((f"{ROOT}/{name}/{typ}/{lyr['id']}", lyr.get('name', '')))
+    return out
 
-# ─────────────────────────── 2. теглене и нормализиране ─────────────────────
-DATE_HINTS  = ('date', 'dat', 'datum', 'time', 'vreme', 'дата')
-DEAD_HINTS  = ('dead', 'kill', 'fatal', 'zagin', 'загин')
-INJ_HINTS   = ('inj', 'ranen', 'wound', 'ранен', 'постр')
-AREA_HINTS  = ('obl', 'area', 'region', 'district', 'област', 'oblast')
+DATE_HINTS = ('date', 'dat', 'datum', 'time', 'дата')
+DEAD_HINTS = ('dead', 'kill', 'fatal', 'zagin', 'загин')
+INJ_HINTS  = ('inj', 'ranen', 'wound', 'ранен', 'постр')
+AREA_HINTS = ('obl', 'area', 'region', 'district', 'област', 'oblast', 'grad', 'city')
 
 def pick(fields, hints):
     for f in fields:
@@ -117,19 +81,25 @@ def pick(fields, hints):
             return f
     return None
 
-def fetch_features(layer):
-    url = layer['url'] + '/query?' + urllib.parse.urlencode({
-        'where': '1=1', 'outFields': '*', 'returnGeometry': 'true',
-        'f': 'json', 'resultRecordCount': 4000})
-    code, ct, body = get(url, timeout=180)
-    j = json.loads(body)
-    feats = j.get('features', [])
-    log(f"изтеглени записи: {len(feats)}")
-    return feats
+def probe_layer(layer_url, layer_name):
+    try:
+        code, ct, body = get(layer_url + '?f=json')
+        j = json.loads(body)
+    except Exception as ex:
+        log(f"    layer probe FAIL {layer_url} -> {ex}")
+        return None
+    fields = [f.get('name') for f in j.get('fields', [])]
+    if not fields:
+        return None
+    hits = sum(1 for hint_group in (DATE_HINTS, DEAD_HINTS, INJ_HINTS) if pick(fields, hint_group))
+    log(f"    слой {layer_name}: {layer_url}")
+    log(f"      полета: {fields[:30]}")
+    log(f"      съвпадения по ключови думи: {hits}/3")
+    return {'url': layer_url, 'name': layer_name, 'fields': fields, 'hits': hits}
 
 def to_date(v):
     if v is None: return None
-    if isinstance(v, (int, float)):           # ArcGIS epoch ms
+    if isinstance(v, (int, float)):
         try: return datetime.datetime.utcfromtimestamp(v/1000).date().isoformat()
         except Exception: return None
     s = str(v)[:10]
@@ -138,13 +108,23 @@ def to_date(v):
         except ValueError: pass
     return None
 
+def fetch_features(layer):
+    url = layer['url'] + '/query?' + urllib.parse.urlencode({
+        'where': '1=1', 'outFields': '*', 'returnGeometry': 'false',
+        'f': 'json', 'resultRecordCount': 4000})
+    code, ct, body = get(url, timeout=180)
+    j = json.loads(body)
+    if 'error' in j:
+        log(f"    query error: {j['error']}")
+        return []
+    feats = j.get('features', [])
+    log(f"    изтеглени записи: {len(feats)}")
+    return feats
+
 def normalize(feats, layer):
     fields = layer['fields']
-    fd  = pick(fields, DATE_HINTS)
-    fdd = pick(fields, DEAD_HINTS)
-    fi  = pick(fields, INJ_HINTS)
-    fa  = pick(fields, AREA_HINTS)
-    log(f"полета: дата={fd} загинали={fdd} ранени={fi} област={fa}")
+    fd, fdd, fi, fa = pick(fields, DATE_HINTS), pick(fields, DEAD_HINTS), pick(fields, INJ_HINTS), pick(fields, AREA_HINTS)
+    log(f"    полета: дата={fd} загинали={fdd} ранени={fi} област={fa}")
     days = {}
     for ft in feats:
         at = ft.get('attributes', {})
@@ -157,12 +137,9 @@ def normalize(feats, layer):
         rec['total'] += 1; rec['dead'] += dead; rec['injured'] += inj
         area = str(at.get(fa) or '') if fa else ''
         if 'софия' in area.lower() or 'sofia' in area.lower():
-            rec['sofia_total'] += 1
-            rec['sofia_dead'] += dead
-            rec['sofia_injured'] += inj
+            rec['sofia_total'] += 1; rec['sofia_dead'] += dead; rec['sofia_injured'] += inj
     return dict(sorted(days.items()))
 
-# ─────────────────────────── 3. запис ───────────────────────────────────────
 def write_all(days, layer):
     os.makedirs('data/history', exist_ok=True)
     with open('data/latest.json', 'w', encoding='utf-8') as f:
@@ -187,28 +164,39 @@ def write_all(days, layer):
     log(f"записани {len(days)} дни")
 
 def main():
-    layer = None
-    for cand in discover():
-        layer = probe_layer(cand)
-        if layer: break
-    if not layer:
-        log("HTML не даде слой — пробвам преки адреси")
-        for u in DIRECT:
-            try:
-                code, ct, body = get(u)
-                log(f"direct {code} {u}")
-                log("  " + body[:400])
-            except Exception as ex:
-                log(f"direct FAIL {u} -> {ex}")
-    if layer:
+    services = walk_all()
+    log(f"общо услуги: {len(services)}")
+    candidates = []
+    for name, typ in services:
+        low = name.lower()
+        # приоритет на услуги, чието име подсказва ПТП/инциденти
+        score = sum(w in low for w in ('incident', 'ptp', 'accident', 'катастроф', 'zagin'))
+        candidates.append((score, name, typ))
+    candidates.sort(key=lambda x: -x[0])
+    log("топ кандидати по име:")
+    for score, name, typ in candidates[:10]:
+        log(f"  [{score}] {name} ({typ})")
+
+    best = None
+    for score, name, typ in candidates[:15]:
+        layers = inspect_service(name, typ)
+        for lurl, lname in layers:
+            probed = probe_layer(lurl, f"{name}/{lname}")
+            if probed and probed['hits'] >= 2:
+                best = probed
+                break
+        if best:
+            break
+
+    if not best:
+        log("НЯМА СЛОЙ С ДОСТАТЪЧНО СЪВПАДЕНИЯ — виж пълния списък по-горе")
+    else:
         try:
-            days = normalize(fetch_features(layer), layer)
-            if days: write_all(days, layer)
-            else: log("НЯМА разпознати дати — виж имената на полетата по-горе")
+            days = normalize(fetch_features(best), best)
+            if days: write_all(days, best)
+            else: log("слоят е намерен, но 0 дни се разпознаха — виж имената на полетата")
         except Exception as ex:
             log(f"теглене се провали: {ex}")
-    else:
-        log("СЛОЯТ НЕ Е ОТКРИТ — виж списъка с кандидати по-горе")
 
     os.makedirs('data', exist_ok=True)
     with open('data/discovery.txt', 'w', encoding='utf-8') as f:
