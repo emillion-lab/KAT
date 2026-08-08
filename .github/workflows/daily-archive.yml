@@ -14,30 +14,15 @@ jobs:
         run: |
           set -e
           CHANGED=0
-          if grep -q 'harmScore' index.html && ! grep -q 'sl-harm' index.html; then
-            echo ">>> UI v4"; python3 scripts/patch_ui_v4.py; CHANGED=1
-          fi
-          if grep -q 'sl-harm' index.html && ! grep -q 'methodologyBlock' index.html; then
-            echo ">>> v5"; python3 scripts/patch_v5.py; CHANGED=1
-          fi
-          if grep -q "wd\['k'+i\]" index.html; then
-            echo ">>> v6"; python3 scripts/patch_v6.py; CHANGED=1
-          fi
-          if grep -q 'curve-canvas' index.html; then
-            echo ">>> v7"; python3 scripts/patch_v7.py; CHANGED=1
+          if ! grep -q 'MIN_PLAUSIBLE_INJURED' engine.js; then
+            echo ">>> regime filter"; python3 scripts/patch_regime_filter.py; CHANGED=1
           fi
           if [ "$CHANGED" = "1" ]; then
-            python3 -c "
-          import io,re
-          h=io.open('index.html',encoding='utf-8').read()
-          m=re.search(r'<script>(.*)</script>',h,re.S)
-          io.open('/tmp/c.js','w',encoding='utf-8').write(m.group(1))
-          "
-            node --check /tmp/c.js
-            echo ">>> syntax OK"
+            node --check engine.js && echo ">>> syntax OK"
             git config user.name ci; git config user.email ci@kat
-            git add index.html
-            git commit -m "KAT patches applied [skip ci]"
+            git add engine.js
+            git commit -m "regime filter: reject regional headlines [skip ci]"
+            git fetch origin main && git rebase origin/main || true
             git push
             echo ">>> pushed"
           else
