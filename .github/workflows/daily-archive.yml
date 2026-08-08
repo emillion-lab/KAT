@@ -10,16 +10,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # --- pending patches, applied once, then self-skipping ---
       - name: Apply pending patches
         run: |
           set -e
           CHANGED=0
           if grep -q 'harmScore' index.html && ! grep -q 'sl-harm' index.html; then
-            echo ">>> applying UI v4"; python3 scripts/patch_ui_v4.py; CHANGED=1
+            echo ">>> UI v4"; python3 scripts/patch_ui_v4.py; CHANGED=1
           fi
           if grep -q 'sl-harm' index.html && ! grep -q 'methodologyBlock' index.html; then
-            echo ">>> applying v5"; python3 scripts/patch_v5.py; CHANGED=1
+            echo ">>> v5"; python3 scripts/patch_v5.py; CHANGED=1
+          fi
+          if grep -q "wd\['k'+i\]" index.html; then
+            echo ">>> v6"; python3 scripts/patch_v6.py; CHANGED=1
           fi
           if [ "$CHANGED" = "1" ]; then
             python3 -c "
@@ -32,14 +34,13 @@ jobs:
             echo ">>> syntax OK"
             git config user.name ci; git config user.email ci@kat
             git add index.html
-            git commit -m "KAT v5: history aligned with model, methodology, forecast two scales [skip ci]"
+            git commit -m "KAT patches applied [skip ci]"
             git push
             echo ">>> pushed"
           else
             echo ">>> nothing pending"
           fi
 
-      # --- original daily archive job, only on the 21:00 run ---
       - name: Daily archive
         if: github.event.schedule == '0 21 * * *' || github.event_name == 'workflow_dispatch'
         run: |
