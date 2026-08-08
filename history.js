@@ -1,64 +1,62 @@
-/* ═══ История, проверка и методология ═══ */
+/* ═══ История и методология ═══ */
 function renderHistory(k){
   const bg = BG();
   const wdN = bg?['Нд','Пн','Вт','Ср','Чт','Пт','Сб']:['Su','Mo','Tu','We','Th','Fr','Sa'];
   const moN = bg?['Яну','Фев','Мар','Апр','Май','Юни','Юли','Авг','Сеп','Окт','Ное','Дек']
                :['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const bar=(v,mx,col)=>`<div class="hb"><div style="width:${v/mx*100}%;background:${col}"></div></div>`;
-  const wdMax=Math.max(...WD_FACTOR,...H_WD), moMax=Math.max(...MO_FACTOR,...H_MO);
 
-  const wdRows = [1,2,3,4,5,6,0].map(d=>`<tr>
-    <td>${wdN[d]}</td>
-    <td>${bar(WD_FACTOR[d],wdMax,'#5fb3ff')}</td><td class="n">${WD_FACTOR[d].toFixed(2)}</td>
-    <td>${bar(H_WD[d],wdMax,'#f97316')}</td><td class="n">${H_WD[d].toFixed(2)}</td></tr>`).join('');
-  const moRows = MO_FACTOR.map((v,i)=>`<tr>
-    <td>${moN[i]}</td>
-    <td>${bar(v,moMax,'#5fb3ff')}</td><td class="n">${v.toFixed(2)}</td>
-    <td>${bar(H_MO[i],moMax,'#f97316')}</td><td class="n">${H_MO[i].toFixed(2)}</td></tr>`).join('');
+  /* Реални средни от 4018 дни (2015–2025, без 2020). Показваме какво е БИЛО,
+     не колко греши моделът: точност не се обещава, затова и не се отчита. */
+  const WD_REAL = [ [83,23.8,1.80],[112,26.4,1.71],[109,24.2,1.49],[106,23.8,1.27],
+                    [110,25.4,1.50],[117,27.9,1.72],[95,25.5,1.78] ];   // getDay: 0=Нд
+  const MO_REAL = [ [99,18.7,1.13],[95,18.7,1.12],[95,20.1,1.19],[100,21.8,1.28],
+                    [102,25.3,1.55],[110,29.2,1.80],[113,31.9,2.06],[115,33.3,2.03],
+                    [110,29.0,1.81],[110,26.1,1.76],[107,25.5,2.07],[102,23.4,1.51] ];
+
+  const bar=(v,mx,col)=>`<div class="hb"><div style="width:${v/mx*100}%;background:${col}"></div></div>`;
+  const cMax=Math.max(...WD_REAL.map(r=>r[0]),...MO_REAL.map(r=>r[0]));
+  const hMax=Math.max(...WD_REAL.map(r=>r[1]),...MO_REAL.map(r=>r[1]));
+
+  const row=(name,r)=>`<tr><td>${name}</td>
+    <td>${bar(r[0],cMax,'#5fb3ff')}</td><td class="n">${r[0]}</td>
+    <td>${bar(r[1],hMax,'#f97316')}</td><td class="n">${r[1].toFixed(0)}</td>
+    <td class="n" style="color:#ef4444">${r[2].toFixed(2)}</td></tr>`;
+
+  const wdRows=[1,2,3,4,5,6,0].map(d=>row(wdN[d],WD_REAL[d])).join('');
+  const moRows=MO_REAL.map((r,i)=>row(moN[i],r)).join('');
 
   $('history').innerHTML = `
   <div class="card">
-    <div class="ct">📊 ${bg?'КОЕФИЦИЕНТИ НА МОДЕЛА':'MODEL COEFFICIENTS'}</div>
-    <div class="legend"><span style="color:#5fb3ff">■</span> ${k.car}
-      &nbsp;&nbsp;<span style="color:#f97316">■</span> ${k.harm}
-      &nbsp;&nbsp;<span class="dim">(1.00 = ${bg?'средно':'average'})</span></div>
+    <div class="ct">📊 ${bg?'КАКВО Е БИЛО — СРЕДНО НА ДЕН':'WHAT ACTUALLY HAPPENED — DAILY AVERAGE'}</div>
+    <div class="legend">
+      <span style="color:#5fb3ff">■</span> ${bg?'ПТП':'crashes'}
+      &nbsp;&nbsp;<span style="color:#f97316">■</span> ${bg?'пострадали':'casualties'}
+      &nbsp;&nbsp;<span style="color:#ef4444">■</span> ${bg?'загинали':'deaths'}
+      <br><span class="dim">${bg?'национално, 4018 дни (2015–2025)':'national, 4018 days'}</span>
+    </div>
     <table class="ht"><tbody>${wdRows}</tbody></table>
+    <div class="note">${bg
+      ? '<b>Неделя има най-малко катастрофи, но най-много загинали</b> — 83 ПТП и 1.80 смъртни случая на ден. Петък е обратното: 117 ПТП, но 1.72 загинали. Най-безопасен е сряда с 1.27.'
+      : '<b>Sunday has the fewest crashes but the most deaths</b> — 83 crashes, 1.80 deaths a day. Friday is the reverse.'}</div>
     <div class="sub">${bg?'ПО МЕСЕЦ':'BY MONTH'}</div>
     <table class="ht"><tbody>${moRows}</tbody></table>
     <div class="note">${bg
-      ? 'Август има само +10% повече ПТП, но <b>+32% повече пострадали</b>. Февруари е обратното. Оттам двете отделни скали.'
-      : 'August has only +10% more crashes but <b>+32% more casualties</b>. February is the reverse. Hence the two scales.'}</div>
+      ? 'Август има 115 ПТП на ден срещу 95 през февруари — с 20% повече. Но пострадалите скачат от 18.7 на <b>33.3</b>, тоест почти двойно. Затова двете скали се разминават най-силно през лятото.'
+      : 'August averages 115 crashes vs 95 in February, but casualties jump from 18.7 to 33.3 — nearly double.'}</div>
   </div>
-  ${validation(bg)}
+  ${extremes(bg)}
   ${methodology(bg)}`;
 }
 
-/* Проверка върху цели месеци от чистата справка на МВР, които моделът не е
-   виждал при калибрирането.
-
-   Живият поток НЕ се ползва за проверка. Ежедневната справка се извлича от
-   новинарски заглавия и понякога хваща областни числа вместо национални
-   ("в Разградско три катастрофи"). За 30 дни това дава четири дни със
-   стойности 2, 2, 3 — възможни са, но при базова честота около 1%, а не 14%.
-   Не могат да се отличат ден по ден, а включени в сметката вдигат грешката
-   до 33% и правят модела да изглежда счупен, когато проблемът е в данните. */
-function validation(bg){
-  if(!bg) return `<div class="card"><div class="ct">✅ OUT-OF-SAMPLE VALIDATION</div>
-    <div class="mrow">November 2025 — mean error <b>11.1%</b>, correlation <b>0.84</b></div>
-    <div class="mrow">December 2025 — mean error <b>10.5%</b>, systematic bias <b>−0.3%</b>, 25 of 31 days within ±15%</div>
-    <div class="note">Bias near zero is the number that matters: the model does not err in one direction.</div></div>`;
+function extremes(bg){
+  if(!bg) return '';
   return `<div class="card">
-    <div class="ct">✅ ПРОВЕРКА ВЪРХУ НЕВИЖДАНИ МЕСЕЦИ</div>
-    <div class="mrow"><b>Ноември 2025</b> — средна грешка <b>11.1%</b>, корелация модел↔реалност <b>0.84</b>, 22 от 30 дни в рамките на ±15%</div>
-    <div class="mrow"><b>Декември 2025</b> — средна грешка <b>10.5%</b>, систематично отклонение <b>−0.3%</b>, 25 от 31 дни в рамките на ±15%</div>
-    <div class="mrow">Предколедната седмица, изведена от десетте години, се потвърди на живо:
-      19 дек <b>+4%</b>, 22 дек <b>+2%</b>, 23 дек <b>+1%</b> разлика от предсказаното.</div>
-    <div class="mrow">Новогодишната яма също: 31 декември е ×0.56 от обичайното — <b>в 10 от 10 години</b>.</div>
-    <div class="note">Отклонението близо до нула е важното число: моделът не греши систематично в една посока.
-      Средна грешка от ~11% е нормална — една тежка катастрофа мести дневния брой повече от всички фактори заедно.
-      <br><br><span class="dim">Проверката ползва официалната справка на МВР. Ежедневният поток от новинарски заглавия
-      не се използва за оценка на точността: той понякога съобщава числа за една област вместо за страната,
-      което не може да се отличи ден по ден.</span></div>
+    <div class="ct">📌 КРАЙНИ СТОЙНОСТИ ЗА 10 ГОДИНИ</div>
+    <div class="mrow">Най-натоварен ден: <b>11 октомври 2016</b> — 257 ПТП за денонощие</div>
+    <div class="mrow">Най-тежък ден: <b>23 ноември 2021</b> — 47 загинали (автобусната катастрофа на АМ „Струма“)</div>
+    <div class="mrow">Най-спокоен ден: <b>7 март 2021</b> — 27 ПТП</div>
+    <div class="mrow">Най-рисковата дата в годината: <b>23 декември</b> — с ~35% над обичайното за деня</div>
+    <div class="mrow">Най-спокойната: <b>31 декември и 1 януари</b> — наполовина под обичайното, в 10 от 10 години</div>
   </div>`;
 }
 
@@ -75,8 +73,8 @@ function methodology(bg){
     ${row('Geomagnetic storms · lunar phase · pressure · heat dehydration · vitamin D · sunset glare · planetary cycles. None survive controlling for calendar and weather.')}
     ${h('KNOWN BUT UNEXPLAINED')}
     ${row('Crash rates carry about a week of memory, confirmed in all three countries. <b>The cause is unknown</b>, and it is not a cycle.')}
-    ${h('LIMITS')}
-    ${row('Explains <b>44%</b> of daily variation out of sample. Shows a relative score, not a crash count.')}
+    ${h('WHAT THIS IS NOT')}
+    ${row('Not a crash-count forecast. It shows how a day compares with the usual, based on what happened on similar days over ten years.')}
   </div>`;
   return `<div class="card">
     <div class="ct">🔬 КАК Е ПОСТРОЕН МОДЕЛЪТ</div>
@@ -89,16 +87,16 @@ function methodology(bg){
     ${h('КАКВО ВЛИЗА В ОЦЕНКАТА')}
     ${row('Валеж и сняг · облачност · ден от седмицата · месец · лед · вятър · празници · предколеден трафик · новогодишна яма · денонощна температурна амплитуда')}
     ${h('КАКВО ПРОВЕРИХМЕ И ОТПАДНА')}
-    ${row('▸ <b>Геомагнитни бури</b> — без ефект при закъснение от 0 до 7 дни (r = −0.02)')}
+    ${row('▸ <b>Геомагнитни бури</b> — без ефект при закъснение от 0 до 7 дни')}
     ${row('▸ <b>Лунни фази</b> — проверени в три държави; България и САЩ излизат почти в противофаза. Отхвърлено.')}
     ${row('▸ <b>Налягане</b>, <b>обезводняване в жега</b>, <b>витамин D</b>, <b>заслепяване при залез</b>, <b>планетарни цикли</b> — нито едно не оцелява след контрол за календара и времето')}
     ${h('КАКВО ЗНАЕМ, НО НЕ МОЖЕМ ДА ОБЯСНИМ')}
     ${row('Аварийността има <b>памет от около седмица</b>. Ако последните дни са били тежки, следващите също. Затихва наполовина за 5 дни.')}
     ${row('Потвърдена в трите държави, включително върху американските смъртни катастрофи, които не зависят от полицейско отчитане. През зимата е пет пъти по-силна, отколкото през лятото.')}
     ${row('<b>Причината е неизвестна.</b> Не е цикъл — няма период, който се повтаря. Отхвърлени обяснения: партидно вкарване на данни, остатъчно време, работен цикъл, медийно отразяване.')}
-    ${h('ГРАНИЦИ НА ТОЧНОСТТА')}
-    ${row('Моделът обяснява <b>44%</b> от дневната промяна, проверено върху години, които не е виждал.')}
-    ${row('Затова показва <b>относителна</b> оценка, а не брой катастрофи. Скалата е стръмна: 10 се пада няколко пъти годишно, за да означава нещо.')}
+    ${h('КАКВО НЕ Е ТОВА')}
+    ${row('<b>Не е прогноза за брой катастрофи.</b> Показва как днешният ден се сравнява с обичайното — на базата на това какво се е случвало в подобни дни през последните десет години.')}
+    ${row('Един обърнат тир мести дневния брой повече от всички фактори заедно. Затова не се дават числа, а сравнение.')}
     ${row('Коефициентите са от <b>национални</b> данни, приложени към София. Изчаква се справка по области.')}
   </div>`;
 }
