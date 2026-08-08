@@ -1025,9 +1025,13 @@ function buildLongTermAnalytics(){
      (Сб 1.24, Пн 0.92) и противоречеше на самия двигател. */
   const avg=h.sofia_daily_avg||{};
   const wd={}, md={};
-  const _wdOrder=[1,2,3,4,5,6,0];              // Пн..Нд → getDay()
-  _wdOrder.forEach((g,i)=>{ wd['k'+i]=WD_FACTOR[g]; });
-  for(let m=0;m<12;m++) md['k'+m]=MO_FACTOR[m];
+  /* Рендерът търси ключове '0_monday'.. и '1_january'.. — трябва да съвпаднат. */
+  const _wdKeys=['0_monday','1_tuesday','2_wednesday','3_thursday','4_friday','5_saturday','6_sunday'];
+  const _wdDay =[1,2,3,4,5,6,0];               // Пн..Нд → getDay()
+  _wdKeys.forEach((key,i)=>{ wd[key]=WD_FACTOR[_wdDay[i]]; });
+  const _moNames=['january','february','march','april','may','june','july',
+                  'august','september','october','november','december'];
+  _moNames.forEach((nm,i)=>{ md[(i+1)+'_'+nm]=MO_FACTOR[i]; });
   const wdNames = bg?['Пн','Вт','Ср','Чт','Пт','Сб','Нд']:['Mo','Tu','We','Th','Fr','Sa','Su'];
   const wdOrder = ['0_monday','1_tuesday','2_wednesday','3_thursday','4_friday','5_saturday','6_sunday'];
   const wdVals = wdOrder.map(k=>wd[k]||1);
