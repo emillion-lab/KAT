@@ -1,0 +1,26 @@
+name: BTA Scraper
+on:
+  schedule: [{ cron: '40 * * * *' }]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scrape BTA
+        run: python3 scraper/bta.py
+      - name: Show log
+        if: always()
+        run: cat data/bta_log.txt || echo "no log"
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name ci; git config user.email ci@kat
+          mkdir -p data
+          git add -f data/bta_daily.json data/bta_log.txt || true
+          git commit -m "BTA daily data [skip ci]" || echo "no change"
+          git fetch origin main && git rebase origin/main || true
+          git push
