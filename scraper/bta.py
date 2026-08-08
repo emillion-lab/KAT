@@ -45,17 +45,29 @@ def num(tok):
         if t.startswith(w): return WORDS[w]
     return None
 
+MENU_END = re.compile(r'Ямбол[^А-Яа-я]{0,80}', re.I)
+
+def plain(html):
+    h = re.sub(r'<(script|style)[\s\S]*?</\1>', ' ', html, flags=re.I)
+    return re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', h)).strip()
+
 def body_text(html):
-    m = re.search(r'<article[\s\S]{0,200000}?</article>', html, re.I)
-    chunk = m.group(0) if m else ''
-    if len(chunk) < 200:
-        m = re.search(r'<meta[^>]+name="description"[^>]+content="([^"]{60,})"', html, re.I)
-        chunk = m.group(1) if m else ''
-    if len(chunk) < 200:
-        m = re.search(r'(?:itemprop="articleBody"|class="[^"]*body[^"]*")[\s\S]{0,120000}?</div>', html, re.I)
-        chunk = m.group(0) if m else html
-    chunk = re.sub(r'<(script|style)[\s\S]*?</\1>', ' ', chunk, flags=re.I)
-    return re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', chunk)).strip()
+    """Тялото на статията, без заглавието и без менюто с областите.
+
+    Фразата се среща и в <title>, и в тялото. Заглавието е съкратено, тялото
+    е пълно — затова взимаме ПОСЛЕДНОТО срещане. Менюто на БТА стои между
+    двете и изброява всички области, включително София; ако не се изреже,
+    "В София" се хваща от менюто вместо от изречението с числата."""
+    t = plain(html)
+    # изрязваме менюто: то свършва на последната област по азбучен ред
+    m = list(MENU_END.finditer(t[:20000]))
+    if m:
+        t = t[m[-1].end():]
+    occ = [x.start() for x in re.finditer(r'(?:изминалото|последното)\s+денонощие', t, re.I)]
+    if not occ:
+        return t[:4000]
+    start = max(0, occ[-1] - 200)
+    return t[start:start + 2000]
 
 def drop_totals(t):
     return ' '.join(s for s in re.split(r'(?<=[.!?])\s+', t)
@@ -138,9 +150,10 @@ def main():
         except Exception:
             continue
         checked += 1
-        txt = body_text(html)
-        if 'изминалото денонощие' not in txt.lower() and 'последното денонощие' not in txt.lower():
+        full = plain(html)
+        if not re.search(r'(?:изминалото|последното)\s+денонощие', full, re.I):
             continue
+        txt = body_text(html)
         if not re.search(r'катастроф|пътнотранспортн', txt, re.I):
             continue
         hit += 1
