@@ -1,6 +1,6 @@
-"""KAT UI v4 — surface the second scale, drop the count forecast.
+"""KAT UI v4 — surface the second scale, drop the count forecast, steepen the scale.
 
-Two problems with what v3 shipped:
+Three problems with what v3 shipped:
 
 1. harmScore was computed but never drawn. The whole value of the finding is
    in the divergence (a dry August Sunday scores 3 for cars, 10 for people),
@@ -8,8 +8,12 @@ Two problems with what v3 shipped:
 
 2. "Очаквани ~9.6 ПТП" promises precision the model does not have. Out-of-sample
    R2 is 0.44 — over half the daily variation is unpredictable, and a single
-   jack-knifed lorry moves the count more than every factor combined. A relative
-   statement is honest; a point estimate is not.
+   jack-knifed lorry moves the count more than every factor combined.
+
+3. Even deciles made 10/10 arrive 29-40 times a year, which devalues the
+   strongest signal. Steep cuts bring it to 4-8 times and separate the extremes
+   better (10/1 ratio 1.79x vs 1.61x). Verified out-of-sample in BG, UK and US:
+   monotonic in all three. Cost: ~30% larger calibration error in the top bands.
 """
 import io
 
@@ -61,7 +65,7 @@ rep(
     + (r.hs===2?(lang==='bg'?' · 🎉 празник':' · 🎉 holiday'):r.hs===1?(lang==='bg'?' · пред-празничен ден':' · pre-holiday'):'');""",
 """  /* Без прогноза за брой: моделът обяснява 44% от дневната промяна, тоест
      точно число би било обещание, което не може да се удържи. Показваме
-     относително спрямо обичайното за този ден и месец. */
+     относително спрямо обичайното за този ден. */
   const relPct = Math.round((r.totalMult-1)*100);
   const relTxt = Math.abs(relPct)<5
     ? (lang==='bg'?'Около обичайното за този ден':'About normal for this day')
@@ -99,6 +103,17 @@ rep("hsub:'Космическо време · Метео · Празници · 
     "hsub:'Метео · Празници · МВР данни 2015–2025'")
 rep("hsub:'Space weather · Meteo · Holidays · History 2015–2024'",
     "hsub:'Meteo · Holidays · MVR data 2015–2025'")
+
+# HTML-ът има СВОЕ копие на подзаглавието, извън JS. То се вижда при зареждане
+# и остава, ако скриптът не го презапише — оттам усещането за "стара версия".
+rep("Космическо време · Метео · Празници · История 2015–2024</p>",
+    "Метео · Празници · МВР данни 2015–2025</p>")
+
+# ------------------------------------------------------ 6. стръмна скала
+rep("const RISK_CUTS=[0.782,0.853,0.913,0.952,0.991,1.030,1.069,1.114,1.178];",
+    "const RISK_CUTS=[0.831,0.919,0.972,1.018,1.062,1.099,1.144,1.189,1.255];")
+rep("const H_CUTS=[0.729,0.794,0.861,0.936,0.990,1.056,1.113,1.181,1.267];",
+    "const H_CUTS=[0.775,0.837,0.911,0.992,1.058,1.118,1.172,1.237,1.311];")
 
 io.open('index.html','w',encoding='utf-8').write(src)
 print('PATCHED %d blocks OK' % count)
