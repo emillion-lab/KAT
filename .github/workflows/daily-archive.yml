@@ -14,14 +14,15 @@ jobs:
         run: |
           set -e
           CHANGED=0
-          if ! grep -q 'MIN_PLAUSIBLE_INJURED' engine.js; then
-            echo ">>> regime filter"; python3 scripts/patch_regime_filter.py; CHANGED=1
+          if ! grep -q 'injured_base' engine.js; then
+            echo ">>> regime patch"; python3 scripts/patch_regime.py; CHANGED=1
           fi
           if [ "$CHANGED" = "1" ]; then
-            node --check engine.js && echo ">>> syntax OK"
+            node --check engine.js
+            echo ">>> syntax OK"
             git config user.name ci; git config user.email ci@kat
             git add engine.js
-            git commit -m "regime filter: reject regional headlines [skip ci]"
+            git commit -m "engine: enable regime with regional-headline filter [skip ci]"
             git fetch origin main && git rebase origin/main || true
             git push
             echo ">>> pushed"
