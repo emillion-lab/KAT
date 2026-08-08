@@ -1,0 +1,18 @@
+[open] 403 https://www.mvr.bg/ptp
+  връзки: 0
+[open] 403 https://www.mvr.bg/opp
+  връзки: 0
+[open] 403 https://www.mvr.bg
+  връзки: 0
+ кандидат-страници с карта: 0 
+══════ https://www.mvr.bg/ptp ══════
+IFRAMES: https://www.mvr.bg/ptp  |  https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/b/turnstile/f/av0/rch/vwar0/0x4AAAAAAAAjq6WYeRDKmebM/light/fbE/new/normal?lang=auto
+  REQ  https://challenges.cloudflare.com/turnstile/v0/b/8eb6d5cd556e/api.js?onload=Wfanq7&render=explicit
+
+══════ https://www.mvr.bg/opp ══════
+IFRAMES: https://www.mvr.bg/opp  |  https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/b/turnstile/f/av0/rch/3y760/0x4AAAAAAAAjq6WYeRDKmebM/light/fbE/new/normal?lang=auto
+  REQ  https://challenges.cloudflare.com/turnstile/v0/b/8eb6d5cd556e/api.js?onload=Wfanq7&render=explicit
+
+══════ https://www.mvr.bg ══════
+IFRAMES: https://www.mvr.bg/  |  https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/b/turnstile/f/av0/rch/vrmpu/0x4AAAAAAAAjq6WYeRDKmebM/light/fbE/new/normal?lang=auto
+  REQ  https://challenges.cloudflare.com/turnstile/v0/b/8eb6d5cd556e/api.js?onload=Wfanq7&render=explicit
