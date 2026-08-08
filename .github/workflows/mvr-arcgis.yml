@@ -1,0 +1,29 @@
+name: MVR Data Scraper
+on:
+  schedule: [{ cron: '15 * * * *' }]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scrape MVR ArcGIS
+        run: python3 scraper/scraper.py
+      - name: Show discovery log
+        if: always()
+        run: cat data/discovery.txt || echo "no log"
+      - name: Commit data
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Update MVR data [skip ci]"
+            git fetch origin main && git rebase origin/main || true
+            git push
+          fi
