@@ -1,0 +1,13 @@
+seed FAIL https://www.mvr.bg/ptp -> HTTP Error 403: Forbidden
+seed FAIL https://ptp.mvr.bg/ -> <urlopen error [Errno -5] No address associated with hostname>
+seed FAIL https://www.mvr.bg/gdnp -> HTTP Error 403: Forbidden
+кандидати от HTML: 0
+HTML не даде слой — пробвам преки адреси
+direct 200 https://services.arcgis.com/lJXqXsx2f8xnZWDL/arcgis/rest/services?f=json
+  {"error":{"code":400,"message":"Invalid URL","details":["Invalid URL"]}}
+direct 200 https://services8.arcgis.com/rest/services?f=json
+  {"error":{"code":400,"message":"Invalid URL","details":["Invalid URL"]}}
+direct 200 https://gis.mvr.bg/arcgis/rest/services?f=json
+  {"currentVersion":10.9,"folders":["GISMVR","GISMVR_BASE","GISMVR_EVENTS","Hosted","LKO","MVR_APP","MVR_Incident","MVR_Opovestiavane","MVR_PBZN","MVR_Refugees_UK","RS_GEOEVENT","Utilities"],"services":[]}
+direct FAIL https://ptp.mvr.bg/arcgis/rest/services?f=json -> <urlopen error [Errno -5] No address associated with hostname>
+СЛОЯТ НЕ Е ОТКРИТ — виж списъка с кандидати по-горе
