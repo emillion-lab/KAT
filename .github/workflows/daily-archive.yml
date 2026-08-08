@@ -23,6 +23,9 @@ jobs:
           if grep -q "wd\['k'+i\]" index.html; then
             echo ">>> v6"; python3 scripts/patch_v6.py; CHANGED=1
           fi
+          if grep -q 'curve-canvas' index.html; then
+            echo ">>> v7"; python3 scripts/patch_v7.py; CHANGED=1
+          fi
           if [ "$CHANGED" = "1" ]; then
             python3 -c "
           import io,re
