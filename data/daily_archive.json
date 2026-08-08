@@ -113,11 +113,11 @@
       "date": "2026-08-08",
       "kp_max": 1.67,
       "kp_avg": 1.17,
-      "pressure_hpa": 954.0,
-      "moon_age_days": 24.48,
+      "pressure_hpa": 954.2,
+      "moon_age_days": 24.5,
       "dow": 5,
       "accidents": null
     }
   ],
-  "updated": "2026-08-08T06:38:42.275954+00:00"
+  "updated": "2026-08-08T06:58:41.310746+00:00"
 }
