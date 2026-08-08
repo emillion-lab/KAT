@@ -181,11 +181,22 @@ function regimeEffect(mon){
 function mvTotal(m){
   if(!m) return null;
   if(m.sofia_light != null) return m.sofia_light;
-  if(m.injured != null) return m.injured;
-  if(m.light != null || m.serious != null) return (m.light||0)+(m.serious||0);
+  /* Филтър срещу областни заглавия. Ежедневната справка се чете от новини и
+     понякога съобщава числа за една област вместо за страната ("в Разградско
+     три катастрофи"). Национално под 10 ранени за денонощие се случва в
+     около 1% от дните; в потока такива стойности са 14% — почти сигурно са
+     регионални. По-добре пропуснат ден, отколкото фалшив спад в режима. */
+  if(m.injured != null) return m.injured >= 10 ? m.injured : null;
+  if(m.light != null || m.serious != null){
+    const t = (m.light||0)+(m.serious||0);
+    return t >= 10 ? t : null;
+  }
   return null;
 }
-function baseDaily(){ return (S.historical && S.historical.base_daily) || 27; }
+/* Базата се сравнява със същата величина, която mvTotal връща — ранени на
+   денонощие национално. Медианата за 2015–2025 е 24. Ако се ползваше базата
+   за брой ПТП (~100), режимът щеше да отчита постоянен спад от 75%. */
+function baseDaily(){ return (S.historical && S.historical.injured_base) || 24; }
 
 /* Български празници, включително подвижните великденски дни */
 const EASTER = {2024:'05-05',2025:'04-20',2026:'04-12',2027:'05-02',2028:'04-16'};
