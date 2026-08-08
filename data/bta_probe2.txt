@@ -3,22 +3,22 @@
   FAIL https://www.bta.bg/rss -> HTTP Error 404: Not Found
   FAIL https://www.bta.bg/bg/feed -> HTTP Error 404: Not Found
   FAIL https://www.bta.bg/bg/rss/bulgaria -> HTTP Error 404: Not Found
-  200  https://www.bta.bg/bg/news/bulgaria/rss  (62245 знака, 20 записа)
+  200  https://www.bta.bg/bg/news/bulgaria/rss  (65886 знака, 20 записа)
       https://www.bta.bg/bg/news/bulgaria/rss
+      https://www.bta.bg/bg/news/lik/1182112-pencho-slaveykov-e-sred-nay-trudnite-za-prevod-balgarski-poeti-na-angliyski-ezik
       https://www.bta.bg/bg/news/bulgaria/1182114-za-palezh-na-avtomobil-v-slanchev-bryag-e-zadarzhan-kriminalno-proyaven-42-godis
       https://www.bta.bg/bg/news/bulgaria/1182102-dva-pozhara-sa-vazniknali-na-teritoriyata-na-oblast-haskovo-saobshtiha-ot-oblas
       https://www.bta.bg/bg/news/bulgaria/1182099-pozharat-kray-asenovgrad-e-ovladyan-zasegnatata-plosht-e-nad-6000-dekara
       https://www.bta.bg/bg/news/bulgaria/1182111-nay-veroyatno-se-kasae-za-dron-primamka-mayya-nyama-prichina-da-se-smyata-ch
       https://www.bta.bg/bg/news/balkans/1182110-rumanskoto-ministerstvo-na-otbranata-za-vzriviliya-se-v-balgariya-dron-nashite-
       https://www.bta.bg/bg/news/bulgaria/1182097-okrazhniyat-sad-v-burgas-zasedava-po-iskaneto-za-zadarzhane-pod-strazha-na-obvin
-      https://www.bta.bg/bg/news/bulgaria/1182090-nad-100-detsa-ot-tsyalata-strana-se-sabraha-na-detski-plener-usmihnato-lyato-v
   FAIL https://www.bta.bg/bg/sitemap.xml -> HTTP Error 404: Not Found
   FAIL https://www.bta.bg/sitemap.xml -> HTTP Error 404: Not Found
 
 ═══ СТРАНИРАНЕ НА РУБРИКАТА ═══
   200  https://www.bta.bg/bg/news/bulgaria?page=2  (47 статии)
   FAIL https://www.bta.bg/bg/news/bulgaria/page/2 -> HTTP Error 404: Not Found
-  200  https://www.bta.bg/bg/news/bulgaria?p=2  (57 статии)
+  200  https://www.bta.bg/bg/news/bulgaria?p=2  (56 статии)
       ← РАЗЛИЧНИ от предишната страница: страницирането РАБОТИ
   200  https://www.bta.bg/bg/news/all?page=2  (47 статии)
 
@@ -28,5 +28,5 @@
   ДАТА ("datePublished"\s*:\s*"(): 2026-06-21T11:01:29+03:00
 
 ═══ ДНЕШНАТА СПРАВКА ПО ID ═══
-  най-нови ID в рубриката: [1182114, 1182111, 1182110, 1182107, 1182106]
+  най-нови ID в рубриката: [1182121, 1182114, 1182112, 1182111, 1182110]
   съвпадения в текущата рубрика: 0
