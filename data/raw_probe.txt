@@ -1,0 +1,14 @@
+=== MVR_Incident ===
+{"error":{"code":499,"message":"Token Required","details":[]}}
+
+=== GISMVR_EVENTS ===
+{"error":{"code":499,"message":"Token Required","details":[]}}
+
+=== MVR_APP ===
+{"error":{"code":499,"message":"Token Required","details":[]}}
+
+=== RS_GEOEVENT ===
+{"error":{"code":499,"message":"Token Required","details":[]}}
+
+=== Hosted ===
+{"error":{"code":499,"message":"Token Required","details":[]}}
