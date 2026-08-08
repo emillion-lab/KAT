@@ -1,0 +1,63 @@
+търсене v1: HTTP 200, 336838 знака, 174 уникални /bg/news/ връзки
+    /bg/news/all
+    /bg/news/all/1182076-balgarski-uchenitsi-specheliha-tri-medala-i-dve-pochetni-gramoti-ot-mezhdunarodn
+    /bg/news/balkans
+    /bg/news/balkans/1182059-vuchich-ukrayna-vinagi-shte-ima-palnata-podkrepa-na-nashata-strana-po-evropeysk
+    /bg/news/balkans/1182080-v-gartsiya-byaha-zadarzhani-13-dushi-za-uchastie-v-mrezhi-za-trafik-na-hora
+    /bg/news/balkans/1182082-ukrainskiyat-prezident-volodimir-zelenski-se-sreshtna-v-belgrad-s-premiera-na-sa
+    /bg/news/balkans/1182098-dnes-se-navarshvat-35-godini-ot-otpatuvaneto-na-blizo-19-000-albantsi-ot-pristan
+    /bg/news/balkans/1182110-rumanskoto-ministerstvo-na-otbranata-za-vzriviliya-se-v-balgariya-dron-nashite-
+    /bg/news/balkans/news
+    /bg/news/balkans/news/AL
+    /bg/news/balkans/news/BA
+    /bg/news/balkans/news/CY
+    срещания на "изминалото денонощие" в текста: 0
+
+търсене v2: HTTP 200, 336838 знака, 174 уникални /bg/news/ връзки
+    /bg/news/all
+    /bg/news/all/1182076-balgarski-uchenitsi-specheliha-tri-medala-i-dve-pochetni-gramoti-ot-mezhdunarodn
+    /bg/news/balkans
+    /bg/news/balkans/1182059-vuchich-ukrayna-vinagi-shte-ima-palnata-podkrepa-na-nashata-strana-po-evropeysk
+    /bg/news/balkans/1182080-v-gartsiya-byaha-zadarzhani-13-dushi-za-uchastie-v-mrezhi-za-trafik-na-hora
+    /bg/news/balkans/1182082-ukrainskiyat-prezident-volodimir-zelenski-se-sreshtna-v-belgrad-s-premiera-na-sa
+    /bg/news/balkans/1182098-dnes-se-navarshvat-35-godini-ot-otpatuvaneto-na-blizo-19-000-albantsi-ot-pristan
+    /bg/news/balkans/1182110-rumanskoto-ministerstvo-na-otbranata-za-vzriviliya-se-v-balgariya-dron-nashite-
+    /bg/news/balkans/news
+    /bg/news/balkans/news/AL
+    /bg/news/balkans/news/BA
+    /bg/news/balkans/news/CY
+    срещания на "изминалото денонощие" в текста: 0
+
+търсене v3: FAIL HTTP Error 404: Not Found
+рубрика България: HTTP 200, 367447 знака, 181 уникални /bg/news/ връзки
+    /bg/news/all
+    /bg/news/all/1182076-balgarski-uchenitsi-specheliha-tri-medala-i-dve-pochetni-gramoti-ot-mezhdunarodn
+    /bg/news/balkans
+    /bg/news/balkans/1182059-vuchich-ukrayna-vinagi-shte-ima-palnata-podkrepa-na-nashata-strana-po-evropeysk
+    /bg/news/balkans/1182080-v-gartsiya-byaha-zadarzhani-13-dushi-za-uchastie-v-mrezhi-za-trafik-na-hora
+    /bg/news/balkans/1182082-ukrainskiyat-prezident-volodimir-zelenski-se-sreshtna-v-belgrad-s-premiera-na-sa
+    /bg/news/balkans/1182098-dnes-se-navarshvat-35-godini-ot-otpatuvaneto-na-blizo-19-000-albantsi-ot-pristan
+    /bg/news/balkans/1182110-rumanskoto-ministerstvo-na-otbranata-za-vzriviliya-se-v-balgariya-dron-nashite-
+    /bg/news/balkans/news
+    /bg/news/balkans/news/AL
+    /bg/news/balkans/news/BA
+    /bg/news/balkans/news/CY
+    срещания на "изминалото денонощие" в текста: 0
+
+начална: HTTP 200, 482798 знака, 179 уникални /bg/news/ връзки
+    /bg/news/all
+    /bg/news/all/1182076-balgarski-uchenitsi-specheliha-tri-medala-i-dve-pochetni-gramoti-ot-mezhdunarodn
+    /bg/news/balkans
+    /bg/news/balkans/1182029-vsyaka-godina-okolo-12-000-dushi-v-harvatiya-se-lekuvat-ot-problemi-svarzani-sa
+    /bg/news/balkans/1182054-turtsiya-generira-okolo-45-protsenta-poveche-plastmasovi-otpadatsi-na-chovek-spr
+    /bg/news/balkans/1182059-vuchich-ukrayna-vinagi-shte-ima-palnata-podkrepa-na-nashata-strana-po-evropeysk
+    /bg/news/balkans/1182080-v-gartsiya-byaha-zadarzhani-13-dushi-za-uchastie-v-mrezhi-za-trafik-na-hora
+    /bg/news/balkans/1182082-ukrainskiyat-prezident-volodimir-zelenski-se-sreshtna-v-belgrad-s-premiera-na-sa
+    /bg/news/balkans/1182098-dnes-se-navarshvat-35-godini-ot-otpatuvaneto-na-blizo-19-000-albantsi-ot-pristan
+    /bg/news/balkans/1182110-rumanskoto-ministerstvo-na-otbranata-za-vzriviliya-se-v-balgariya-dron-nashite-
+    /bg/news/balkans/news
+    /bg/news/balkans/news/AL
+    срещания на "изминалото денонощие" в текста: 0
+
+=== адреси, съдържащи ключови думи ===
+намерени: 0
