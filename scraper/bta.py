@@ -1,29 +1,19 @@
 #!/usr/bin/env python3
-"""БТА scraper — ежедневната справка на МВР, национално И за София.
+"""БТА scraper v3 — филтър по ТЕКСТ, не по адрес.
 
-Защо БТА: mvr.bg е зад Cloudflare Turnstile (403 дори на истински браузър),
-а gis.mvr.bg иска token. БТА е държавна агенция, отдава се без защита и
-преиздава съобщението на пресцентъра дословно — включително софийските числа,
-които никъде другаде ги няма в машинно четим вид.
+v2 събра 55 адреса, но 0 минаха филтъра по ключова дума в URL-а. Причината:
+ежедневната справка не винаги е в рубрика "България" и заглавието ѝ невинаги
+съдържа "denonoshtie" — понякога е "Двама души са загинали при катастрофи...".
+Затова сега се тегли всеки кандидат и се проверява самият текст.
 
-Как се стига до статиите (проверено):
-  ✓ https://www.bta.bg/bg/news/bulgaria/rss   — 20 най-нови
-  ✓ ?page=N на рубриката                      — за назад
-  ✗ търсачката — клиентска, сървърът не връща резултати
+55–120 заявки на пускане е приемливо; статиите са малки.
 
-Текстът НЕ е с един шаблон. Реални варианти 2025–2026:
-  "станали 23 катастрофи, при които са загинали двама души и са ранени 28"
-  "регистрирани 20 тежки катастрофи с 29 ранени" + отделно "няма загинали"
-  "станали 10 тежки пътнотранспортни произшествия, при които са пострадали 11"
-Числата са ту с цифри, ту с думи ("двама", "трима", "четирима").
-
-Два капана, и двата ги обезвреждаме:
-  1. Същият текст носи годишни суми — "от началото на годината 5693 катастрофи
-     с 380 загинали". Наивен regex хваща тях. Изреченията с "от началото на"
-     се махат ПРЕДИ търсенето на числа.
-  2. Пълният HTML съдържа менюто на сайта с всички области ("Благоевград
-     Бургас Варна... София..."), което трови търсенето на софийското изречение.
-     Затова се реже само същинският текст на статията.
+Останалото от v2 остава:
+  ✓ RSS + страниране (търсачката на БТА е клиентска и не връща резултати)
+  ✓ реже се само текстът на статията — менюто на сайта изброява всички
+    области, включително София, и трови търсенето на софийското изречение
+  ✓ маха се "от началото на годината 5693 катастрофи с 380 загинали"
+  ✓ датата се измества с 1 ден назад — справката е за предното денонощие
 """
 import json, os, re, datetime, urllib.request
 
@@ -50,23 +40,20 @@ def num(tok):
     t = tok.strip().lower()
     if t.isdigit():
         v = int(t)
-        return v if v < 500 else None      # над 500 = годишна сума
+        return v if v < 500 else None
     for w in sorted(WORDS, key=len, reverse=True):
         if t.startswith(w): return WORDS[w]
     return None
 
 def body_text(html):
-    """Само същинският текст: без меню, скриптове и странични блокове."""
     m = re.search(r'<article[\s\S]{0,200000}?</article>', html, re.I)
     chunk = m.group(0) if m else ''
     if len(chunk) < 200:
-        m = re.search(r'(?:itemprop="articleBody"|class="[^"]*article[^"]*body[^"]*")'
-                      r'[\s\S]{0,200000}?</div>', html, re.I)
-        chunk = m.group(0) if m else ''
+        m = re.search(r'<meta[^>]+name="description"[^>]+content="([^"]{60,})"', html, re.I)
+        chunk = m.group(1) if m else ''
     if len(chunk) < 200:
-        # краен вариант: описанието в мета-таговете носи цялото резюме
-        m = re.search(r'<meta[^>]+name="description"[^>]+content="([^"]{80,})"', html, re.I)
-        chunk = m.group(1) if m else html
+        m = re.search(r'(?:itemprop="articleBody"|class="[^"]*body[^"]*")[\s\S]{0,120000}?</div>', html, re.I)
+        chunk = m.group(0) if m else html
     chunk = re.sub(r'<(script|style)[\s\S]*?</\1>', ' ', chunk, flags=re.I)
     return re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', chunk)).strip()
 
@@ -75,33 +62,26 @@ def drop_totals(t):
                     if not re.search(r'от\s+начало(то)?\s+на|за\s+същия\s+период|спрямо', s, re.I))
 
 def parse(text):
-    t = drop_totals(text)
-    out = {}
+    t = drop_totals(text); out = {}
     for pat in [r'в\s+страната\s+са\s+(?:станали|регистрирани)\s+' + NUM,
                 r'са\s+(?:станали|регистрирани)\s+' + NUM + r'\s+(?:тежки\s+)?(?:пътнотранспортни|катастроф|ПТП)',
                 r'при\s+' + NUM + r'\s+катастрофи']:
         m = re.search(pat, t, re.I)
         if m and num(m.group(1)) is not None:
             out['total'] = num(m.group(1)); break
-
     if re.search(r'(няма|без)\s+загинали', t, re.I):
         out['dead'] = 0
     else:
         for pat in [r'са\s+загинали\s+' + NUM, r'загинали\s+са\s+' + NUM,
-                    NUM + r'\s+(?:човек|души)\s+(?:е\s+|са\s+)?загина',
-                    r'загинал\w*\s+' + NUM]:
+                    NUM + r'\s+(?:човек|души)\s+(?:е\s+|са\s+)?загина', r'загинал\w*\s+' + NUM]:
             m = re.search(pat, t, re.I)
             if m and num(m.group(1)) is not None:
                 out['dead'] = num(m.group(1)); break
-
     for pat in [r'с\s+' + NUM + r'\s+ранени', r'а\s+' + NUM + r'\s+(?:души\s+)?са\s+ранени',
-                r'са\s+ранени\s+' + NUM, r'са\s+пострадали\s+' + NUM,
-                r'ранени\s+' + NUM + r'\s+души']:
+                r'са\s+ранени\s+' + NUM, r'са\s+пострадали\s+' + NUM, r'ранени\s+' + NUM + r'\s+души']:
         m = re.search(pat, t, re.I)
         if m and num(m.group(1)) is not None:
             out['injured'] = num(m.group(1)); break
-
-    # София — само изречението, започващо с "В София"
     sof = re.search(r'В\s+София[^.]{5,300}\.', t)
     if sof:
         s = sof.group(0)
@@ -114,63 +94,75 @@ def parse(text):
         out['sofia_sentence'] = s[:180]
     return out
 
-def article_urls():
+FEEDS = ['https://www.bta.bg/bg/news/bulgaria/rss',
+         'https://www.bta.bg/bg/news/all/rss',
+         'https://www.bta.bg/bg/news/regional/rss']
+
+def candidates():
     urls = set()
-    try:
-        rss = get('https://www.bta.bg/bg/news/bulgaria/rss')
-        urls |= set(re.findall(r'<link>\s*(https://www\.bta\.bg/bg/news/[^<\s]+)', rss))
-        log(f'RSS: {len(urls)} адреса')
-    except Exception as ex:
-        log(f'RSS FAIL: {ex}')
-    for p in range(1, 9):
+    for f in FEEDS:
         try:
-            html = get(f'https://www.bta.bg/bg/news/bulgaria?page={p}')
-            found = set('https://www.bta.bg' + u for u in
-                        re.findall(r'href="(/bg/news/[a-z]+/\d{6,8}-[a-z0-9\-]+)"', html))
-            urls |= found
+            rss = get(f)
+            got = set(re.findall(r'<link>\s*(https://www\.bta\.bg/bg/news/[^<\s]+)', rss))
+            urls |= got
+            log(f'RSS {f.split("/")[-2]}: {len(got)}')
         except Exception as ex:
-            log(f'стр.{p} FAIL: {ex}'); break
-    log(f'общо адреси: {len(urls)}')
-    return [u for u in urls if re.search(r'denonosht|katastrof|ptp|ranen|zagin', u, re.I)]
+            log(f'RSS FAIL {f}: {str(ex)[:50]}')
+    for sec in ['bulgaria', 'all']:
+        for p in range(1, 7):
+            for q in ('page', 'p'):
+                try:
+                    html = get(f'https://www.bta.bg/bg/news/{sec}?{q}={p}')
+                    urls |= set('https://www.bta.bg' + u for u in
+                        re.findall(r'href="(/bg/news/[a-z]+/\d{6,8}-[a-z0-9\-]+)"', html))
+                except Exception:
+                    pass
+    log(f'общо уникални статии: {len(urls)}')
+    return sorted(urls, reverse=True)
 
 def main():
     os.makedirs('data', exist_ok=True)
-    cands = article_urls()
-    log(f'кандидати за ежедневна справка: {len(cands)}')
-
     old = {}
     if os.path.exists('data/bta_daily.json'):
         try:
             old = {d['date']: d for d in json.load(open('data/bta_daily.json'))['days'] if d.get('date')}
         except Exception: pass
-
     days = dict(old)
-    for u in cands:
+    log(f'вече записани: {len(old)} дни')
+
+    checked = hit = 0
+    for u in candidates():
+        # бърз отсев по адрес, но НЕ отхвърляме останалите — само ги гледаме след тях
         try:
             html = get(u)
-        except Exception as ex:
-            log(f'  FAIL {u[-50:]}: {ex}'); continue
-        txt = body_text(html)
-        if 'изминалото денонощие' not in txt.lower(): continue
-        rec = parse(txt)
-        if not rec.get('total'): 
-            log(f'  ? неразпознат: {u[-60:]}'); continue
-        m = re.search(r'"datePublished"\s*:\s*"(\d{4}-\d{2}-\d{2})', html)
-        pub = m.group(1) if m else None
-        if pub:  # справката е за ПРЕДНОТО денонощие
-            d = (datetime.date.fromisoformat(pub) - datetime.timedelta(days=1)).isoformat()
-        else:
+        except Exception:
             continue
-        rec['date'] = d; rec['url'] = u; rec['published'] = pub
+        checked += 1
+        txt = body_text(html)
+        if 'изминалото денонощие' not in txt.lower() and 'последното денонощие' not in txt.lower():
+            continue
+        if not re.search(r'катастроф|пътнотранспортн', txt, re.I):
+            continue
+        hit += 1
+        rec = parse(txt)
+        if not rec.get('total'):
+            log(f'  ? неразпознат текст: {u[-55:]}')
+            log(f'    {txt[:220]}')
+            continue
+        m = re.search(r'"datePublished"\s*:\s*"(\d{4}-\d{2}-\d{2})', html)
+        if not m: continue
+        d = (datetime.date.fromisoformat(m.group(1)) - datetime.timedelta(days=1)).isoformat()
+        rec.update(date=d, url=u, published=m.group(1))
         days[d] = rec
-        log(f"  ✓ {d}  нац={rec.get('total')} загин={rec.get('dead')} ранени={rec.get('injured')}"
+        log(f"  ✓ {d} нац={rec.get('total')} загин={rec.get('dead')} ранени={rec.get('injured')}"
             f" | София леки={rec.get('sofia_light')} тежки={rec.get('sofia_serious')}"
             f" ранени={rec.get('sofia_injured')}")
 
+    log(f'прегледани {checked} статии, {hit} с ежедневна справка')
     with open('data/bta_daily.json', 'w', encoding='utf-8') as f:
         json.dump({'generated': datetime.datetime.utcnow().isoformat()+'Z',
                    'days': [days[d] for d in sorted(days)]}, f, ensure_ascii=False, indent=1)
-    log(f'записани общо {len(days)} дни (нови този път: {len(days)-len(old)})')
+    log(f'записани общо {len(days)} дни (нови: {len(days)-len(old)})')
     open('data/bta_log.txt', 'w', encoding='utf-8').write('\n'.join(LOG))
 
 if __name__ == '__main__':
