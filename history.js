@@ -1,4 +1,4 @@
-/* ═══ История, бектест и методология ═══ */
+/* ═══ История, проверка и методология ═══ */
 function renderHistory(k){
   const bg = BG();
   const wdN = bg?['Нд','Пн','Вт','Ср','Чт','Пт','Сб']:['Su','Mo','Tu','We','Th','Fr','Sa'];
@@ -30,11 +30,18 @@ function renderHistory(k){
       : 'August has only +10% more crashes but <b>+32% more casualties</b>. February is the reverse. Hence the two scales.'}</div>
   </div>
   ${validation(bg)}
-  ${backtest(bg)}
   ${methodology(bg)}`;
 }
 
-/* Проверка върху цели месеци, които моделът не е виждал при калибрирането. */
+/* Проверка върху цели месеци от чистата справка на МВР, които моделът не е
+   виждал при калибрирането.
+
+   Живият поток НЕ се ползва за проверка. Ежедневната справка се извлича от
+   новинарски заглавия и понякога хваща областни числа вместо национални
+   ("в Разградско три катастрофи"). За 30 дни това дава четири дни със
+   стойности 2, 2, 3 — възможни са, но при базова честота около 1%, а не 14%.
+   Не могат да се отличат ден по ден, а включени в сметката вдигат грешката
+   до 33% и правят модела да изглежда счупен, когато проблемът е в данните. */
 function validation(bg){
   if(!bg) return `<div class="card"><div class="ct">✅ OUT-OF-SAMPLE VALIDATION</div>
     <div class="mrow">November 2025 — mean error <b>11.1%</b>, correlation <b>0.84</b></div>
@@ -42,51 +49,16 @@ function validation(bg){
     <div class="note">Bias near zero is the number that matters: the model does not err in one direction.</div></div>`;
   return `<div class="card">
     <div class="ct">✅ ПРОВЕРКА ВЪРХУ НЕВИЖДАНИ МЕСЕЦИ</div>
-    <div class="mrow"><b>Ноември 2025</b> — средна грешка <b>11.1%</b>, корелация модел↔реалност <b>0.84</b></div>
+    <div class="mrow"><b>Ноември 2025</b> — средна грешка <b>11.1%</b>, корелация модел↔реалност <b>0.84</b>, 22 от 30 дни в рамките на ±15%</div>
     <div class="mrow"><b>Декември 2025</b> — средна грешка <b>10.5%</b>, систематично отклонение <b>−0.3%</b>, 25 от 31 дни в рамките на ±15%</div>
-    <div class="mrow">Предколедната седмица се потвърди на живо: 19 дек +4%, 22 дек +2%, <b>23 дек +1%</b> разлика от предсказаното.</div>
-    <div class="note">Отклонението близо до нула е важното число — значи моделът не греши систематично в една посока.
-      Средната грешка от ~11% е нормална: една тежка катастрофа мести дневния брой повече от всички фактори заедно.</div>
-  </div>`;
-}
-
-/* Последните 30 дни от живия поток на МВР. */
-function backtest(bg){
-  const days=(S.mvrDays||[]).filter(d=>d?.date && mvTotal(d)!=null)
-    .sort((a,b)=>b.date.localeCompare(a.date)).slice(0,30).reverse();
-  if(days.length<5) return `<div class="card"><div class="ct">📈 ${bg?'ПОСЛЕДНИ 30 ДНИ':'LAST 30 DAYS'}</div>
-    <div class="note">${bg?'Няма достатъчно пресни данни от МВР за сравнение.':'Not enough fresh MVR data.'}</div></div>`;
-  const base = days.reduce((s,d)=>s+mvTotal(d),0)/days.length;
-  const rows = days.map(d=>{
-    const dt = new Date(d.date+'T12:00');
-    const r  = calcRisk({rain:0,snow:0,sun:null}, dt, {noRegime:true});
-    const act = mvTotal(d), exp = base*r.carMult;
-    const diff = Math.round((act/exp-1)*100);
-    const col = Math.abs(diff)<=15?'#22c55e':Math.abs(diff)<=30?'#fbbf24':'#ef4444';
-    return `<tr><td>${d.date.slice(5)}</td>
-      <td style="color:${scoreColor(r.carScore)}">${r.carScore}</td>
-      <td style="color:${scoreColor(r.harmScore)}">${r.harmScore}</td>
-      <td>${act}</td><td>${exp.toFixed(0)}</td>
-      <td style="color:${col}">${diff>0?'+':''}${diff}%</td></tr>`;
-  }).join('');
-  const errs = days.map(d=>{
-    const r=calcRisk({rain:0,snow:0,sun:null}, new Date(d.date+'T12:00'), {noRegime:true});
-    return mvTotal(d)/(base*r.carMult)-1;
-  });
-  const mean = errs.reduce((a,b)=>a+b,0)/errs.length;
-  const mae  = errs.reduce((a,b)=>a+Math.abs(b),0)/errs.length;
-  return `<div class="card">
-    <div class="ct">📈 ${bg?'ПОСЛЕДНИ 30 ДНИ — ЖИВ ПОТОК':'LAST 30 DAYS — LIVE FEED'}</div>
-    <div class="note">${bg
-      ? `Средна грешка <b>${(mae*100).toFixed(0)}%</b>, систематично отклонение <b>${mean>0?'+':''}${(mean*100).toFixed(0)}%</b>.`
-      : `Mean error <b>${(mae*100).toFixed(0)}%</b>, bias <b>${mean>0?'+':''}${(mean*100).toFixed(0)}%</b>.`}</div>
-    <table class="ht bt"><thead><tr>
-      <th>${bg?'ДАТА':'DATE'}</th><th>🚗</th><th>🧍</th>
-      <th>${bg?'РЕАЛНО':'ACTUAL'}</th><th>${bg?'ОЧАКВ.':'EXP.'}</th><th>${bg?'РАЗЛ.':'DIFF'}</th>
-    </tr></thead><tbody>${rows}</tbody></table>
-    <div class="note dim">${bg
-      ? 'Реалната стойност е броят ранени от ежедневната справка на МВР — единственото поле с надеждно покритие. Метеото за минали дни не се дърпа, затова тук се сравнява само календарната част на модела. Пълната проверка с метео е горе.'
-      : 'Actual = daily injured count from MVR. Past weather is not fetched, so this compares the calendar part only.'}</div>
+    <div class="mrow">Предколедната седмица, изведена от десетте години, се потвърди на живо:
+      19 дек <b>+4%</b>, 22 дек <b>+2%</b>, 23 дек <b>+1%</b> разлика от предсказаното.</div>
+    <div class="mrow">Новогодишната яма също: 31 декември е ×0.56 от обичайното — <b>в 10 от 10 години</b>.</div>
+    <div class="note">Отклонението близо до нула е важното число: моделът не греши систематично в една посока.
+      Средна грешка от ~11% е нормална — една тежка катастрофа мести дневния брой повече от всички фактори заедно.
+      <br><br><span class="dim">Проверката ползва официалната справка на МВР. Ежедневният поток от новинарски заглавия
+      не се използва за оценка на точността: той понякога съобщава числа за една област вместо за страната,
+      което не може да се отличи ден по ден.</span></div>
   </div>`;
 }
 
@@ -120,7 +92,6 @@ function methodology(bg){
     ${row('▸ <b>Геомагнитни бури</b> — без ефект при закъснение от 0 до 7 дни (r = −0.02)')}
     ${row('▸ <b>Лунни фази</b> — проверени в три държави; България и САЩ излизат почти в противофаза. Отхвърлено.')}
     ${row('▸ <b>Налягане</b>, <b>обезводняване в жега</b>, <b>витамин D</b>, <b>заслепяване при залез</b>, <b>планетарни цикли</b> — нито едно не оцелява след контрол за календара и времето')}
-    ${row('<span class="dim">Остават видими на началната страница, за да се вижда, че са проверени.</span>')}
     ${h('КАКВО ЗНАЕМ, НО НЕ МОЖЕМ ДА ОБЯСНИМ')}
     ${row('Аварийността има <b>памет от около седмица</b>. Ако последните дни са били тежки, следващите също. Затихва наполовина за 5 дни.')}
     ${row('Потвърдена в трите държави, включително върху американските смъртни катастрофи, които не зависят от полицейско отчитане. През зимата е пет пъти по-силна, отколкото през лятото.')}
