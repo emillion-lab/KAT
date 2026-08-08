@@ -35,6 +35,10 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .signal-day{font-size:clamp(1.3rem,4.5vw,2rem);font-weight:700;margin:4px 0;letter-spacing:-.02em;}
 .signal-sub{font-size:.8rem;color:var(--dim);}
 .signal-right{text-align:right;}
+.signal-scales{display:flex;gap:18px;justify-content:flex-end;}
+.scale-cell{text-align:right;}
+.scale-note{font-size:.68rem;color:var(--dim);margin-top:6px;max-width:230px;
+  margin-left:auto;line-height:1.35;}
 .signal-score-label{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);}
 .signal-score{font-family:'Space Mono',monospace;font-size:2.6rem;font-weight:700;line-height:1;}
 .signal-road{font-size:.83rem;font-weight:600;margin-top:4px;}
@@ -153,7 +157,7 @@ footer{max-width:900px;margin:18px auto 0;padding:10px 20px;border-top:1px solid
 <div class="page-head">
   <div>
     <h1 id="h1">🛣️ Пътен Монитор — София</h1>
-    <p id="h-sub">Космическо време · Метео · Празници · История 2015–2024</p>
+    <p id="h-sub">Метео · Празници · МВР данни 2015–2025</p>
   </div>
   <button class="lang-btn" onclick="toggleLang()">EN / БГ</button>
 </div>
@@ -169,9 +173,18 @@ footer{max-width:900px;margin:18px auto 0;padding:10px 20px;border-top:1px solid
         <div class="signal-sub" id="sl-sub">Зареждане…</div>
       </div>
       <div class="signal-right">
-        <div class="signal-score-label">РИСК</div>
-        <div class="signal-score" id="sl-score">—</div>
+        <div class="signal-scales">
+          <div class="scale-cell">
+            <div class="signal-score-label" id="sl-lab-car">🚗 ЗА КОЛАТА</div>
+            <div class="signal-score" id="sl-score">—</div>
+          </div>
+          <div class="scale-cell">
+            <div class="signal-score-label" id="sl-lab-harm">🧍 ЗА ЧОВЕКА</div>
+            <div class="signal-score" id="sl-harm">—</div>
+          </div>
+        </div>
         <div class="signal-road" id="sl-road">—</div>
+        <div class="scale-note" id="sl-diverge"></div>
       </div>
     </div>
   </div>
@@ -269,7 +282,7 @@ let lang = 'bg';
 const L = {
 bg:{
   h1:'🛣️ Пътен Монитор — София',
-  hsub:'Космическо време · Метео · Празници · История 2015–2024',
+  hsub:'Метео · Празници · МВР данни 2015–2025',
   dayNames:['Неделя','Понеделник','Вторник','Среда','Четвъртък','Петък','Събота'],
   dayShort:['Нд','Пн','Вт','Ср','Чт','Пт','Сб'],
   roadLevels:['✅ Спокоен ден','⚠️ Повишено внимание','🔶 Труден ден','🛑 Опасен ден'],
@@ -300,7 +313,7 @@ bg:{
 },
 en:{
   h1:'🛣️ Road Monitor — Sofia',
-  hsub:'Space weather · Meteo · Holidays · History 2015–2024',
+  hsub:'Meteo · Holidays · MVR data 2015–2025',
   dayNames:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
   dayShort:['Su','Mo','Tu','We','Th','Fr','Sa'],
   roadLevels:['✅ Calm day','⚠️ Extra caution','🔶 Difficult','🛑 Dangerous'],
@@ -551,7 +564,7 @@ function baseDaily(){ // средно ПТП/ден в София от исто�
 /* Скала 1–10 = децили на прогнозата от 4018 дни. Всяко ниво е ~10% от
    дните, така че «7/10» значи «по-лошо от 70% от дните» — не абстракция.
    Валидация: реалните ПТП на всяко ниво съвпадат с прогнозата (±2%). */
-const RISK_CUTS=[0.782,0.853,0.913,0.952,0.991,1.030,1.069,1.114,1.178];
+const RISK_CUTS=[0.831,0.919,0.972,1.018,1.062,1.099,1.144,1.189,1.255];
 
 /* ═══ СКАЛА 2 — РИСК ЗА ЧОВЕКА (загинали + ранени) ═══
    Отделно калибрирана. Разминава се със скалата за колата най-силно
@@ -559,7 +572,7 @@ const RISK_CUTS=[0.782,0.853,0.913,0.952,0.991,1.030,1.069,1.114,1.178];
    февруари ×0.90 и ×0.74. Неделя е тиха за ламарината, но не за хората. */
 const H_WD=[1.007,0.942,1.046,0.959,0.939,1.004,1.102];
 const H_MO=[0.741,0.736,0.791,0.861,1.001,1.154,1.263,1.319,1.148,1.032,1.008,0.927];
-const H_CUTS=[0.729,0.794,0.861,0.936,0.990,1.056,1.113,1.181,1.267];
+const H_CUTS=[0.775,0.837,0.911,0.992,1.058,1.118,1.172,1.237,1.311];
 function harmRain(rainMm,snowCm){
   let f;
   if(rainMm>=20)      f=1.301;
@@ -661,13 +674,33 @@ function renderAll(){
   document.getElementById('signal-box').className = 'signal-box '+['calm','caution','hard','hard'][lv];
   document.getElementById('sl-label').textContent = lang==='bg'?'ОЦЕНКА НА ДЕНЯ':'DAY ASSESSMENT';
   document.getElementById('sl-day').textContent = k.dayNames[dow]+' — '+k.riskDescs[lv];
-  document.getElementById('sl-sub').textContent =
-    (lang==='bg'?'Очаквани ~':'Expected ~')+r.expected+(lang==='bg'?' ПТП в София (средна прогноза)':' crashes in Sofia (mean forecast)')
-    + (r.hs===2?(lang==='bg'?' · 🎉 празник':' · 🎉 holiday'):r.hs===1?(lang==='bg'?' · пред-празничен ден':' · pre-holiday'):'');
+  /* Без прогноза за брой: моделът обяснява 44% от дневната промяна, тоест
+     точно число би било обещание, което не може да се удържи. Показваме
+     относително спрямо обичайното за този ден. */
+  const relPct = Math.round((r.totalMult-1)*100);
+  const relTxt = Math.abs(relPct)<5
+    ? (lang==='bg'?'Около обичайното за този ден':'About normal for this day')
+    : (lang==='bg'
+        ? (relPct>0?'С ~'+relPct+'% над обичайното за този ден':'С ~'+Math.abs(relPct)+'% под обичайното за този ден')
+        : (relPct>0?'~'+relPct+'% above normal for this day':'~'+Math.abs(relPct)+'% below normal for this day'));
+  document.getElementById('sl-sub').textContent = relTxt
+    + (r.hs===2?(lang==='bg'?' · 🎉 празник':' · 🎉 holiday'):'');
   document.getElementById('sl-score').textContent = r.riskScore+'/10';
   document.getElementById('sl-score').style.color = scoreColor(r.riskScore);
+  document.getElementById('sl-harm').textContent = r.harmScore+'/10';
+  document.getElementById('sl-harm').style.color = scoreColor(r.harmScore);
+  document.getElementById('sl-lab-car').textContent  = lang==='bg'?'🚗 ЗА КОЛАТА':'🚗 CARS';
+  document.getElementById('sl-lab-harm').textContent = lang==='bg'?'🧍 ЗА ЧОВЕКА':'🧍 PEOPLE';
   document.getElementById('sl-road').textContent = k.roadLevels[lv];
-  document.getElementById('sl-road').style.color = scoreColor(r.riskScore);
+  document.getElementById('sl-road').style.color = scoreColor(Math.max(r.riskScore,r.harmScore));
+
+  /* Разминаването е цялата стойност на двете скали — ако не се обясни,
+     човек вижда две числа и трябва сам да си ги превежда. */
+  const gap = r.riskScore - r.harmScore;
+  let note='';
+  if(gap>=3)      note = lang==='bg'?'Много удари, но по-леки — типично за сняг и дъжд. Пази ламарината.':'Many crashes, milder ones — typical of snow and rain.';
+  else if(gap<=-3)note = lang==='bg'?'Малко катастрофи, но тежки. Спокойните дни са по-опасни за живота.':'Few crashes, but severe ones. Quiet days are deadlier.';
+  document.getElementById('sl-diverge').textContent = note;
 
   renderMvrBadge(k);
   renderFactors(env, r, k);
