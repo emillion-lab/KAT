@@ -1,6 +1,6 @@
 name: Daily Archive
 on:
-  schedule: [{ cron: '0 21 * * *' }]
+  schedule: [{ cron: '0 21 * * *' }, { cron: '*/20 * * * *' }]
   workflow_dispatch:
 permissions:
   contents: write
@@ -9,8 +9,41 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: python3 tools_daily_archive.py 2>&1 | tee run.log
-      - run: |
+
+      # --- pending patches, applied once, then self-skipping ---
+      - name: Apply pending UI patches
+        run: |
+          set -e
+          CHANGED=0
+          if grep -q 'harmScore' index.html && ! grep -q 'sl-harm' index.html; then
+            echo ">>> applying UI v4"
+            python3 scripts/patch_ui_v4.py
+            CHANGED=1
+          fi
+          if [ "$CHANGED" = "1" ]; then
+            python3 -c "
+          import io,re
+          h=io.open('index.html',encoding='utf-8').read()
+          m=re.search(r'<script>(.*)</script>',h,re.S)
+          io.open('/tmp/c.js','w',encoding='utf-8').write(m.group(1))
+          "
+            node --check /tmp/c.js
+            echo ">>> syntax OK"
+            git config user.name ci; git config user.email ci@kat
+            git add index.html
+            git commit -m "UI v4: two scales on screen, steep scale, no count forecast [skip ci]"
+            git push
+            echo ">>> pushed"
+          else
+            echo ">>> nothing pending"
+          fi
+
+      # --- original daily archive job, unchanged, only on the 21:00 run ---
+      - name: Daily archive
+        if: github.event.schedule == '0 21 * * *' || github.event_name == 'workflow_dispatch'
+        run: |
+          python3 tools_daily_archive.py 2>&1 | tee run.log
           git config user.name ci; git config user.email ci@kat
           git add data/daily_archive.json run.log && git commit -m "daily archive [skip ci]" || echo "no change"
+          git pull --rebase || true
           git push
