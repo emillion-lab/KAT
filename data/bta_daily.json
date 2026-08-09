@@ -1,4 +1,40 @@
 {
- "generated": "2026-08-09T09:15:23.389803Z",
- "days": []
+ "generated": "2026-08-09T10:07:22.658470Z",
+ "days": [
+  {
+   "total": 20,
+   "injured": 32,
+   "date": "2026-08-01",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1178147-kilimat-kadryavi-zvezdi-na-parviya-kmet-na-kotel-veche-e-chast-ot-fonda-na-ist",
+   "published": "2026-08-02"
+  },
+  {
+   "total": 20,
+   "injured": 32,
+   "date": "2026-08-05",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1180841-pikat-na-meteorniya-potok-perseidi-e-v-noshtta-sreshtu-13-avgust",
+   "published": "2026-08-06"
+  },
+  {
+   "total": 20,
+   "injured": 32,
+   "date": "2026-08-06",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1177787-zapochva-izplashtaneto-na-pensiite",
+   "published": "2026-08-07"
+  },
+  {
+   "total": 20,
+   "injured": 32,
+   "date": "2026-08-07",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1179764-ot-dnes-do-30-avgust-shte-ima-ima-promyana-v-dvizhenieto-na-tramvai-10-12-1",
+   "published": "2026-08-08"
+  },
+  {
+   "total": 20,
+   "injured": 32,
+   "date": "2026-08-08",
+   "url": "https://www.bta.bg/bg/news/economy/1179226-sushata-prinuzhdava-avstriyski-fermeri-da-prodavat-zhivotnite-si-zaradi-nedostig",
+   "published": "2026-08-09"
+  }
+ ]
 }
