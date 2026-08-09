@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-09T12:35:40.395047Z",
+ "generated": "2026-08-09T13:42:03.060766Z",
  "days": [
   {
    "total": 20,
@@ -32,8 +32,10 @@
   {
    "total": 20,
    "injured": 32,
+   "sofia_light": 22,
+   "sofia_sentence": "В София са станали 22 леки пътни произшествия.",
    "date": "2026-08-08",
-   "url": "https://www.bta.bg/bg/news/bulgaria/1181630--vizii-za-badeshteto-po-porechieto-na-dunav-s-aktsent-varhu-germano-balgarskite",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1182247-prez-izminaloto-denonoshtie-na-teritoriyata-na-stranata-sa-registrirani-20-tezhk",
    "published": "2026-08-09"
   }
  ]
