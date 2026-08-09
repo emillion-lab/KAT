@@ -2,8 +2,8 @@
 RSS bulgaria: 21
 RSS all: 0
 RSS regional: 0
-общо уникални статии: 435
+общо уникални статии: 440
   ? неразпознат текст: https://www.bta.bg/bg/news/bulgaria/rss
     омобила, съобщиха от полицията в Шумен https://www.bta.bg/bg/news/bulgaria/1182308-pri-spetsializirana-operatsiya-sa-sastaveni-shest-akta-i-108-globi-s-fish-prove Sun, 09 Aug 2026 14:05:45 +0300 През последното денонощие
-прегледани 435 статии, 1 с ежедневна справка
+прегледани 440 статии, 1 с ежедневна справка
 записани общо 5 дни (нови: 0)
