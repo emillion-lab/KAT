@@ -121,7 +121,8 @@ def candidates():
         except Exception as ex:
             log(f'RSS FAIL {f}: {str(ex)[:50]}')
     for sec in ['bulgaria', 'all']:
-        for p in range(1, 7):
+        for p in range(1, 26):
+            before = len(urls)
             for q in ('page', 'p'):
                 try:
                     html = get(f'https://www.bta.bg/bg/news/{sec}?{q}={p}')
@@ -129,6 +130,8 @@ def candidates():
                         re.findall(r'href="(/bg/news/[a-z]+/\d{6,8}-[a-z0-9\-]+)"', html))
                 except Exception:
                     pass
+            if len(urls) == before:      # страницирането свърши
+                break
     log(f'общо уникални статии: {len(urls)}')
     return sorted(urls, reverse=True)
 
@@ -143,7 +146,10 @@ def main():
     log(f'вече записани: {len(old)} дни')
 
     checked = hit = 0
-    for u in candidates():
+    def key(u):
+        m = re.search(r'/(\d{6,8})-', u)
+        return int(m.group(1)) if m else 0
+    for u in sorted(candidates(), key=key, reverse=True):
         # бърз отсев по адрес, но НЕ отхвърляме останалите — само ги гледаме след тях
         try:
             html = get(u)
