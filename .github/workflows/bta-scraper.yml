@@ -7,21 +7,19 @@ permissions:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
-      - name: Apply pending text-extraction fix
+      - name: Apply pending fixes
         run: |
           if ! grep -q 'MENU_END' scraper/bta.py; then
-            python3 scripts/fix_bta_text.py && python3 -m py_compile scraper/bta.py && echo "fix applied"
-          else
-            echo "fix already applied"
+            python3 scripts/fix_bta_text.py && echo "text fix applied"
           fi
-
-      - name: Diagnostics
-        continue-on-error: true
-        run: python3 scraper/bta_diag.py
+          if ! grep -q 'range(1, 26)' scraper/bta.py; then
+            python3 scripts/fix_bta_depth.py && echo "depth fix applied"
+          fi
+          python3 -m py_compile scraper/bta.py && echo "compile OK"
 
       - name: Scrape
         continue-on-error: true
@@ -29,16 +27,14 @@ jobs:
 
       - name: Show
         if: always()
-        run: |
-          echo "──── DIAG ────"; cat data/bta_diag.txt || true
-          echo "──── LOG ────";  cat data/bta_log.txt  || true
+        run: cat data/bta_log.txt || true
 
       - name: Commit
         if: always()
         run: |
           git config user.name ci; git config user.email ci@kat
           mkdir -p data
-          git add -f data/bta_diag.txt data/bta_daily.json data/bta_log.txt scraper/bta.py 2>/dev/null || true
+          git add -f data/bta_daily.json data/bta_log.txt scraper/bta.py 2>/dev/null || true
           git commit -m "BTA cycle [skip ci]" || echo "no change"
           git fetch origin main && git rebase origin/main || true
           git push
