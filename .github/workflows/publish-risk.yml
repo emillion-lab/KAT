@@ -1,0 +1,20 @@
+name: Publish Risk
+on:
+  schedule: [{ cron: '5 * * * *' }]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/publish_risk.py
+      - name: Commit
+        run: |
+          git config user.name ci; git config user.email ci@kat
+          git add data/risk_now.json
+          git commit -m "risk published [skip ci]" || echo "no change"
+          git fetch origin main && git rebase origin/main || true
+          git push
