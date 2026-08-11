@@ -2,6 +2,12 @@ name: Publish Risk
 on:
   schedule: [{ cron: '5 * * * *' }]
   workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      # .run пуска пресмятането веднага, без Actions бутона
+      - '.run'
+      - 'scripts/publish_risk.py'
 permissions:
   contents: write
 jobs:
