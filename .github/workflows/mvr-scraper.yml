@@ -9,6 +9,12 @@ on:
         description: 'Колко дни назад да търси (backfill)'
         required: false
         default: '3'
+  push:
+    branches: [ main ]
+    paths:
+      # .run пуска скрейпа веднага (backfill 3 дни), без Actions бутона
+      - '.run'
+      - 'scripts/scrape_mvr.py'
 
 jobs:
   scrape:
