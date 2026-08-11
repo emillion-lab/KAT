@@ -2,6 +2,14 @@ name: BTA Scraper
 on:
   schedule: [{ cron: '*/15 * * * *' }]
   workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      # Пипването на .run пуска цикъла веднага — така се иска ръчно
+      # изпълнение, без достъп до Actions бутона (напр. от телефон).
+      - '.run'
+      - 'scraper/bta.py'
+      - 'scripts/fix_bta_*.py'
 permissions:
   contents: write
 jobs:
