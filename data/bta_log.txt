@@ -1,7 +1,7 @@
 вече записани: 5 дни
-RSS FAIL https://www.bta.bg/bg/news/bulgaria/rss: <urlopen error timed out>
-RSS FAIL https://www.bta.bg/bg/news/all/rss: <urlopen error timed out>
-RSS FAIL https://www.bta.bg/bg/news/regional/rss: <urlopen error timed out>
-общо уникални статии: 0
-прегледани 0 статии, 0 с ежедневна справка
+RSS bulgaria: 21
+RSS all: 0
+RSS regional: 0
+общо уникални статии: 425
+прегледани 425 статии, 0 с ежедневна справка
 записани общо 5 дни (нови: 0)
