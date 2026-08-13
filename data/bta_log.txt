@@ -2,8 +2,8 @@
 RSS bulgaria: 21
 RSS all: 0
 RSS regional: 0
-общо уникални статии: 428
+общо уникални статии: 433
   ? неразпознат текст: https://www.bta.bg/bg/news/bulgaria/rss
     и 145 пожара, трима души са пострадали https://www.bta.bg/bg/news/bulgaria/1184501-prez-izminaloto-denonoshtie-v-stranata-sa-potusheni-145-pozhara-trima-dushi-sa- Thu, 13 Aug 2026 07:30:45 +0300 През изминалото денонощие
-прегледани 428 статии, 1 с ежедневна справка
+прегледани 433 статии, 1 с ежедневна справка
 записани общо 5 дни (нови: 0)
