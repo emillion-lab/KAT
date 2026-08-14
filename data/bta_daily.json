@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-14T08:05:10.276671Z",
+ "generated": "2026-08-14T09:17:00.258550Z",
  "days": [
   {
    "total": 20,
@@ -35,6 +35,15 @@
    "date": "2026-08-08",
    "url": "https://www.bta.bg/bg/news/bulgaria/1182384-katastrofa-mezhdu-tri-leki-avtomobila-zatrudni-dvizhenieto-po-am-trakiya-v-ray",
    "published": "2026-08-09"
+  },
+  {
+   "total": 19,
+   "injured": 25,
+   "sofia_light": 14,
+   "sofia_sentence": "В София през последните 24 часа са станали една тежка катастрофа с един ранен и 14 леки пътнотранспортни произшествия.",
+   "date": "2026-08-13",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1185236-pri-katastrofi-v-stranata-prez-izminaloto-denonoshtie-sa-postradali-25-dushi-ny",
+   "published": "2026-08-14"
   }
  ]
 }
