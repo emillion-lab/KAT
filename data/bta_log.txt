@@ -2,6 +2,8 @@
 RSS bulgaria: 21
 RSS all: 0
 RSS regional: 0
-общо уникални статии: 92
-прегледани 92 статии, 0 с ежедневна справка
+общо уникални статии: 431
+  ? неразпознат текст: https://www.bta.bg/bg/news/bulgaria/rss
+    то денонощие, пострадали са двама души https://www.bta.bg/bg/news/bulgaria/1185234-obshto-141-pozhara-sa-potusheni-v-stranata-prez-poslednoto-denonoshtie-postrada Fri, 14 Aug 2026 07:31:08 +0300 През изминалото денонощие
+прегледани 431 статии, 1 с ежедневна справка
 записани общо 5 дни (нови: 0)
