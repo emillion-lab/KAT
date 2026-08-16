@@ -1,12 +1,34 @@
 {
-  "updated": "2026-08-15T09:50:23.047798+03:00",
+  "updated": "2026-08-16T09:51:27.866274+03:00",
   "status": "live_news",
   "source": "Google News RSS — дневни МВР справки (backfill v5)",
   "note": "Дневен брой от новинарски RSS (МВР справка), автоматично парснат.",
   "mvr_frozen_since": "2026-05-05",
   "mvr_news_url": "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp",
-  "days_count": 57,
+  "days_count": 59,
   "days": [
+    {
+      "date": "2026-08-15",
+      "source": "news",
+      "ptp": null,
+      "dead": null,
+      "injured": 2,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Ликвидирани са 142 пожара през изминалото денонощие, а двама души са пострадали - Пловдив Нюз"
+    },
+    {
+      "date": "2026-08-14",
+      "source": "news",
+      "ptp": null,
+      "dead": 3,
+      "injured": 34,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Черно денонощие на пътя: Трима загинаха, 34 души са ранени - Флагман.Бг"
+    },
     {
       "date": "2026-08-13",
       "source": "news",
