@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-17T07:28:24.049309Z",
+ "generated": "2026-08-17T08:21:48.426251Z",
  "days": [
   {
    "total": 20,
@@ -44,10 +44,12 @@
    "published": "2026-08-13"
   },
   {
-   "total": 22,
-   "dead": 2,
+   "total": 19,
+   "injured": 25,
+   "sofia_light": 14,
+   "sofia_sentence": "В София през последните 24 часа са станали една тежка катастрофа с един ранен и 14 леки пътнотранспортни произшествия.",
    "date": "2026-08-13",
-   "url": "https://www.bta.bg/bg/news/bulgaria/1184609-obshtinskiyat-savet-v-nikopol-shte-glasuva-godishen-plan-za-sotsialnite-uslugi-p",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1185236-pri-katastrofi-v-stranata-prez-izminaloto-denonoshtie-sa-postradali-25-dushi-ny",
    "published": "2026-08-14"
   },
   {
