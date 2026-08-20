@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-20T06:09:20.585766Z",
+ "generated": "2026-08-20T07:09:51.260285Z",
  "days": [
   {
    "total": 20,
@@ -72,6 +72,27 @@
    "date": "2026-08-16",
    "url": "https://www.bta.bg/bg/news/lik/1185503-chestvame-pametta-na-sveshtenomachenik-miron",
    "published": "2026-08-17"
+  },
+  {
+   "total": 23,
+   "dead": 2,
+   "date": "2026-08-17",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1187016-sveti-ivan-rilski-chudotvorets-e-nay-obichaniyat-i-nay-tarseniyat-balgarski-svet",
+   "published": "2026-08-18"
+  },
+  {
+   "total": 23,
+   "dead": 2,
+   "date": "2026-08-18",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1186780-transportnite-podlezi-pri-lavov-most-i-sitnyakovo-v-sofiya-shte-badat-izmiti",
+   "published": "2026-08-19"
+  },
+  {
+   "total": 23,
+   "dead": 2,
+   "date": "2026-08-19",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1187339-stolichnata-obshtina-razdava-bezplatna-voda-zaradi-ochakvanite-visoki-temperatur",
+   "published": "2026-08-20"
   }
  ]
 }
