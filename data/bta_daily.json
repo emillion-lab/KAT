@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-22T09:48:58.315078Z",
+ "generated": "2026-08-22T10:12:45.874729Z",
  "days": [
   {
    "total": 20,
@@ -89,15 +89,13 @@
   },
   {
    "total": 31,
-   "dead": 5,
    "injured": 42,
    "date": "2026-08-19",
-   "url": "https://www.bta.bg/bg/news/bulgaria/1188640-do-kraya-na-godinata-iskame-da-napravim-testovi-kontsert-v-zalata-za-evroviziya",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1188668-edinadesetiyat-sabor-pri-prohoda-sv-nikola-shte-sabere-balgari-i-sarbi-v-sabo",
    "published": "2026-08-20"
   },
   {
    "total": 31,
-   "dead": 5,
    "injured": 42,
    "date": "2026-08-20",
    "url": "https://www.bta.bg/bg/news/bulgaria/1188319-ogranichavat-dvizhenieto-na-kamioni-nad-12-t-po-magistralite-trakiya-i-struma",
@@ -105,10 +103,9 @@
   },
   {
    "total": 31,
-   "dead": 5,
    "injured": 42,
    "date": "2026-08-21",
-   "url": "https://www.bta.bg/bg/news/balkans/1188366-nay-visokata-skalna-skulptura-v-evropa-e-v-rumaniya",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1189476-prezidentat-iliyana-yotova-shte-uchastva-v-chestvaneto-na-149-g-ot-shipchenska",
    "published": "2026-08-22"
   }
  ]
