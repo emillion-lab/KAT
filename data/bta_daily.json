@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-22T08:06:32.844365Z",
+ "generated": "2026-08-22T08:43:58.131926Z",
  "days": [
   {
    "total": 20,
@@ -88,11 +88,28 @@
    "published": "2026-08-19"
   },
   {
-   "total": 23,
-   "dead": 2,
+   "total": 31,
+   "dead": 5,
+   "injured": 42,
    "date": "2026-08-19",
-   "url": "https://www.bta.bg/bg/news/bulgaria/1187339-stolichnata-obshtina-razdava-bezplatna-voda-zaradi-ochakvanite-visoki-temperatur",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1188582-efe-noviyat-vrag-na-evropa-sushata-shte-stava-vse-po-chesto-sreshtano-yavlenie",
    "published": "2026-08-20"
+  },
+  {
+   "total": 31,
+   "dead": 5,
+   "injured": 42,
+   "date": "2026-08-20",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1188319-ogranichavat-dvizhenieto-na-kamioni-nad-12-t-po-magistralite-trakiya-i-struma",
+   "published": "2026-08-21"
+  },
+  {
+   "total": 31,
+   "dead": 5,
+   "injured": 42,
+   "date": "2026-08-21",
+   "url": "https://www.bta.bg/bg/news/balkans/1188366-nay-visokata-skalna-skulptura-v-evropa-e-v-rumaniya",
+   "published": "2026-08-22"
   }
  ]
 }
