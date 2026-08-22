@@ -2,8 +2,8 @@
 RSS bulgaria: 21
 RSS all: 0
 RSS regional: 0
-общо уникални статии: 434
+общо уникални статии: 430
   ? неразпознат текст: https://www.bta.bg/bg/news/bulgaria/rss
     а ликвидирани 167 пожара, няма пострадали https://www.bta.bg/bg/news/bulgaria/1189985-v-poslednoto-denonoshtie-v-stranata-sa-likvidirani-167-pozhara-nyama-postradali Sat, 22 Aug 2026 08:57:20 +0300 В последното денонощие
-прегледани 434 статии, 1 с ежедневна справка
+прегледани 430 статии, 1 с ежедневна справка
 записани общо 13 дни (нови: 0)
