@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-23T06:11+03:00",
+ "generated": "2026-08-23T07:47+03:00",
  "source": "KAT · МВР 2015–2025",
  "days": [
   {
@@ -17,23 +17,23 @@
    "date": "2026-08-24",
    "car": 8,
    "harm": 7,
-   "car_mult": 1.191,
-   "harm_mult": 1.202,
-   "rain": 1.8,
+   "car_mult": 1.239,
+   "harm_mult": 1.24,
+   "rain": 3.2,
    "snow": 0,
-   "tmin": 21.5,
-   "tmax": 29.3
+   "tmin": 21.1,
+   "tmax": 29.1
   },
   {
    "date": "2026-08-25",
-   "car": 7,
+   "car": 5,
    "harm": 9,
-   "car_mult": 1.123,
-   "harm_mult": 1.347,
-   "rain": 0.7,
+   "car_mult": 1.078,
+   "harm_mult": 1.333,
+   "rain": 0,
    "snow": 0,
-   "tmin": 19.7,
-   "tmax": 30.2
+   "tmin": 19.4,
+   "tmax": 31.4
   },
   {
    "date": "2026-08-26",
@@ -41,10 +41,10 @@
    "harm": 7,
    "car_mult": 1.098,
    "harm_mult": 1.235,
-   "rain": 1.5,
+   "rain": 0.7,
    "snow": 0,
-   "tmin": 20.5,
-   "tmax": 27.2
+   "tmin": 20.4,
+   "tmax": 30.4
   }
  ]
 }
