@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-24T07:35:03.198941Z",
+ "generated": "2026-08-24T08:22:55.011955Z",
  "days": [
   {
    "total": 20,
@@ -108,6 +108,18 @@
    "date": "2026-08-21",
    "url": "https://www.bta.bg/bg/news/bulgaria/1190030-prez-izminaloto-denonoshtie-na-teritoriyata-na-stranata-sa-registrirani-31-katas",
    "published": "2026-08-22"
+  },
+  {
+   "total": 28,
+   "dead": 0,
+   "injured": 5,
+   "sofia_light": 5,
+   "sofia_serious": 5,
+   "sofia_injured": 5,
+   "sofia_sentence": "В София през последните 24 часа са станали пет тежки и пет леки катастрофи с петима ранени, като един от тях е с опасност за живота.",
+   "date": "2026-08-23",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1190553-pri-katastrofi-v-stranata-prez-izminaloto-denonoshtie-sa-postradali-32-dushi-ny",
+   "published": "2026-08-24"
   }
  ]
 }
