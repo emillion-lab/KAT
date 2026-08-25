@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-25T06:59:04.096737Z",
+ "generated": "2026-08-25T07:44:46.365051Z",
  "days": [
   {
    "total": 20,
@@ -120,6 +120,13 @@
    "date": "2026-08-23",
    "url": "https://www.bta.bg/bg/news/bulgaria/1190553-pri-katastrofi-v-stranata-prez-izminaloto-denonoshtie-sa-postradali-32-dushi-ny",
    "published": "2026-08-24"
+  },
+  {
+   "total": 23,
+   "injured": 29,
+   "date": "2026-08-24",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1191252-pri-katastrofi-prez-izminaloto-denonoshtie-v-balgariya-sa-raneni-29-dushi",
+   "published": "2026-08-25"
   }
  ]
 }
