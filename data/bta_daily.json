@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-26T06:03:04.728110Z",
+ "generated": "2026-08-26T06:58:06.545726Z",
  "days": [
   {
    "total": 20,
@@ -109,23 +109,25 @@
    "published": "2026-08-22"
   },
   {
-   "total": 28,
-   "dead": 0,
-   "injured": 5,
-   "sofia_light": 5,
-   "sofia_serious": 5,
-   "sofia_injured": 5,
-   "sofia_sentence": "В София през последните 24 часа са станали пет тежки и пет леки катастрофи с петима ранени, като един от тях е с опасност за живота.",
+   "total": 18,
+   "injured": 26,
    "date": "2026-08-23",
-   "url": "https://www.bta.bg/bg/news/bulgaria/1190553-pri-katastrofi-v-stranata-prez-izminaloto-denonoshtie-sa-postradali-32-dushi-ny",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1190214-pesenta-e-sila-za-samosaznanieto-na-horata-kazva-rodenata-na-dneshniya-den-pred",
    "published": "2026-08-24"
   },
   {
-   "total": 23,
-   "injured": 29,
+   "total": 18,
+   "injured": 26,
    "date": "2026-08-24",
-   "url": "https://www.bta.bg/bg/news/bulgaria/1191252-pri-katastrofi-prez-izminaloto-denonoshtie-v-balgariya-sa-raneni-29-dushi",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1189459-dnes-i-v-chetvartak-vremenno-shte-se-promenya-organizatsiyata-na-dvizhenieto-v-u",
    "published": "2026-08-25"
+  },
+  {
+   "total": 18,
+   "injured": 26,
+   "date": "2026-08-25",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1190853-zaradi-investitsionno-namerenie-se-predlaga-imotat-na-bivshata-stomatologichna-p",
+   "published": "2026-08-26"
   }
  ]
 }
