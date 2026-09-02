@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-02T14:57:28.069488Z",
+ "generated": "2026-09-02T18:20:00.708702Z",
  "days": [
   {
    "total": 20,
@@ -128,6 +128,14 @@
    "date": "2026-08-25",
    "url": "https://www.bta.bg/bg/news/bulgaria/1190853-zaradi-investitsionno-namerenie-se-predlaga-imotat-na-bivshata-stomatologichna-p",
    "published": "2026-08-26"
+  },
+  {
+   "total": 27,
+   "dead": 1,
+   "injured": 27,
+   "date": "2026-09-01",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1196474-politsai-ustanoviha-20-godishen-mazh-ot-selo-kaspichan-otkradnal-avtomobil-s-k",
+   "published": "2026-09-02"
   }
  ]
 }
