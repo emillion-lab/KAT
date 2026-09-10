@@ -1,0 +1,33 @@
+name: Apply peak line
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Прилагане на патча
+        run: |
+          set -e
+          python3 scripts/patch_peak_line.py
+          if git diff --quiet index.html; then
+            echo "няма промяна — вече е приложено"
+            exit 0
+          fi
+          # Груба проверка, че HTML-ът не е осакатен
+          grep -q 'id="today-peak"' index.html
+          grep -q '</html>' index.html
+          git config user.name ci
+          git config user.email ci@kat
+          git add index.html
+          git commit -m "KAT: ред за следващия пиков прозорец (FT-PEAKLINE-V1)"
+          for i in 1 2 3; do
+            git fetch origin main && git rebase origin/main || git rebase --abort
+            git push && exit 0
+            echo "push retry $i"; sleep $((i * 5))
+          done
+          exit 1
