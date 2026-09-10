@@ -102,6 +102,8 @@ footer{text-align:center;font-size:.66rem;color:#4a5260;padding:22px 16px;line-h
       <div class="sday" id="today-day">Зареждане…</div>
       <div class="ssub" id="today-sub"></div>
       <div id="today-scores"></div>
+      <!-- FT-PEAKLINE-V1 -->
+      <div class="ssub" id="today-peak" style="margin:12px 0 0;font-family:'Space Mono',monospace"></div>
     </div>
     <div id="mvr"></div>
     <div class="expl" id="expl"></div>
@@ -140,6 +142,37 @@ document.getElementById('expl').innerHTML =
 document.getElementById('upd').textContent =
   'Обновено: ' + new Date().toLocaleTimeString('bg-BG',{hour:'2-digit',minute:'2-digit'});
 boot();
+
+/* FT-PEAKLINE-V1 — следващият пиков прозорец.
+   Идва наготово от mvr-proxy /risk (полето next_peak), за да не се смята
+   часовата логика на второ място. Ако worker-ът мълчи, редът просто липсва. */
+(function(){
+  var el = document.getElementById('today-peak');
+  if(!el) return;
+  fetch('https://mvr-proxy.mihov-emil.workers.dev/risk')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d || !d.ok || !d.next_peak) return;
+      var p = d.next_peak;
+      var hh = function(h){ return (h < 10 ? '0' : '') + h + ':00'; };
+      var bg = (typeof lang === 'undefined') || lang === 'bg';
+      var win = hh(p.from) + '\u2013' + hh(p.to);
+      var sc = '\uD83D\uDE97 ' + p.score + '/10 \u00B7 \uD83E\uDDCD ' + p.harm_score + '/10';
+      if (p.active) {
+        el.textContent = bg
+          ? '\u23F0 Сега сме в ' + p.name + ' (' + win + ') — ' + sc
+          : '\u23F0 Peak window now (' + win + ') — car ' + p.score + '/10 \u00B7 people ' + p.harm_score + '/10';
+      } else {
+        el.textContent = bg
+          ? '\u23F0 След ' + p.in_hours + ' ч — ' + p.name + ' ' + win + ' \u2192 ' + sc
+          : '\u23F0 In ' + p.in_hours + 'h — peak ' + win + ' \u2192 car ' + p.score + '/10 \u00B7 people ' + p.harm_score + '/10';
+      }
+      el.title = bg
+        ? 'Часовите прозорци са фиксирани, не са калибрирани върху данните на МВР — те са дневни.'
+        : 'Hour windows are fixed, not calibrated on the daily MVR data.';
+    })
+    .catch(function(){});
+})();
 </script>
 </body>
 </html>
