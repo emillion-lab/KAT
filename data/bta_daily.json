@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-14T01:36:03.688632Z",
+ "generated": "2026-09-14T06:57:49.653251Z",
  "days": [
   {
    "total": 20,
@@ -136,6 +136,14 @@
    "date": "2026-09-01",
    "url": "https://www.bta.bg/bg/news/bulgaria/1196474-politsai-ustanoviha-20-godishen-mazh-ot-selo-kaspichan-otkradnal-avtomobil-s-k",
    "published": "2026-09-02"
+  },
+  {
+   "total": 15,
+   "dead": 1,
+   "injured": 19,
+   "date": "2026-09-13",
+   "url": "https://www.bta.bg/bg/news/sport/1203479-atletiko-madrid-se-nalozhi-pri-gostuvaneto-si-na-real-sosiedad-v-la-liga-s-golov",
+   "published": "2026-09-14"
   }
  ]
 }
