@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-25T02:02:08.180799Z",
+ "generated": "2026-09-25T07:19:59.199008Z",
  "days": [
   {
    "total": 20,
@@ -144,6 +144,17 @@
    "date": "2026-09-13",
    "url": "https://www.bta.bg/bg/news/bulgaria/1203546-katastrofa-zatrudnyava-dvizhenieto-na-glavniya-pat-mezhdu-stara-zagora-i-kazanla",
    "published": "2026-09-14"
+  },
+  {
+   "total": 13,
+   "dead": 1,
+   "injured": 13,
+   "sofia_light": 28,
+   "sofia_serious": 2,
+   "sofia_sentence": "В София са станали две тежки и 28 леки пътни произшествия.",
+   "date": "2026-09-24",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1211341-edin-chovek-e-zaginal-a-13-sa-raneni-pri-katastrofi-v-stranata-prez-izminaloto-",
+   "published": "2026-09-25"
   }
  ]
 }
