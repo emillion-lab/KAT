@@ -1,12 +1,23 @@
 {
-  "updated": "2026-09-29T15:37:19.120045+03:00",
+  "updated": "2026-09-30T15:22:45.187924+03:00",
   "status": "live_news",
   "source": "Google News RSS — дневни МВР справки (backfill v5)",
   "note": "Дневен брой от новинарски RSS (МВР справка), автоматично парснат.",
   "mvr_frozen_since": "2026-05-05",
   "mvr_news_url": "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp",
-  "days_count": 100,
+  "days_count": 101,
   "days": [
+    {
+      "date": "2026-09-29",
+      "source": "news",
+      "ptp": null,
+      "dead": null,
+      "injured": 3,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Общо 70 пожара са потушени през изминалото денонощие, трима души са пострадали - utroruse.com"
+    },
     {
       "date": "2026-09-28",
       "source": "news",
