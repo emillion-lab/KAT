@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-01T04:36:48.157414Z",
+ "generated": "2026-10-01T11:21:03.689920Z",
  "days": [
   {
    "total": 20,
@@ -165,6 +165,14 @@
    "date": "2026-09-29",
    "url": "https://www.bta.bg/bg/news/bulgaria/1214320-obshto-23-dushi-sa-raneni-pri-katastrofi-prez-izminaloto-denonoshtie-nyama-zagi",
    "published": "2026-09-30"
+  },
+  {
+   "total": 18,
+   "sofia_light": 27,
+   "sofia_sentence": "В София са регистрирани 27 леки и един тежък пътен инцидент.",
+   "date": "2026-09-30",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1215204-obshto-19-dushi-sa-raneni-pri-katastrofi-prez-izminaloto-denonoshtie-petima-sa-",
+   "published": "2026-10-01"
   }
  ]
 }
