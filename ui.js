@@ -166,6 +166,19 @@ function renderForecast(k){
   $('forecast').innerHTML = rows.join('');
 }
 
+/* Проблемните дни се показват винаги, с причината. Те не влизат в риска —
+   по-добре режим от по-малко дни, отколкото режим от грешни числа.
+   Пълното заглавие е в title на всеки ред (задържане / дълго натискане). */
+const MV_WHY = {
+  bg:{fire:'статия за пожари, не за ПТП', region:'областно заглавие',
+      inj:'ранените не са в заглавието', dead:'загиналите не са в заглавието',
+      nodead:'пише „без загинали“, а има число', noinj:'няма брой ранени',
+      nodeadnum:'загиналите не са разчетени', nohead:'няма заглавие'},
+  en:{fire:'fire report, not crashes', region:'regional headline',
+      inj:'injured not in headline', dead:'deaths not in headline',
+      nodead:'says "no deaths" but has a number', noinj:'no injured count',
+      nodeadnum:'deaths not parsed', nohead:'no headline'}
+};
 function renderMvr(){
   const el = $('mvr'); if(!el) return;
   const days = (S.mvrDays||[]).filter(d=>d?.date).sort((a,b)=>b.date.localeCompare(a.date));
@@ -173,12 +186,32 @@ function renderMvr(){
   const last = days[0];
   const age = Math.round((Date.now()-new Date(last.date+'T12:00'))/86400000);
   const reg = calcRisk(envFor(0), new Date()).regime;
+  const W = MV_WHY[lang];
+  const recent = days.slice(0,7);
+  const nProb = recent.filter(d=>mvCheck(d).kind!=='ok').length;
+  const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  const num = (v,u,c) => v==null ? '—' : (c.kind==='bad' ? `<s>${v}</s>` : v)+' '+u;
+  const rows = recent.map(d=>{
+    const c = mvCheck(d);
+    const col = c.kind==='bad' ? '#ef4444' : c.kind==='gap' ? '#fbbf24' : 'transparent';
+    const bgc = c.kind==='bad' ? 'rgba(239,68,68,.10)' : c.kind==='gap' ? 'rgba(251,191,36,.08)' : 'transparent';
+    const why = c.why.map(w=>W[w]||w).join(' · ');
+    const out = c.use ? '' : (BG()?' — не влиза в риска':' — excluded from risk');
+    return `<div title="${esc(d.headline)}" style="display:flex;flex-wrap:wrap;gap:2px 10px;padding:4px 8px;margin-top:4px;border-left:3px solid ${col};background:${bgc};border-radius:4px;font-size:.85em">
+      <span style="opacity:.7">${d.date.slice(5)}</span>
+      <span>${num(d.injured, BG()?'ранени':'injured', c)} · ${num(d.dead, BG()?'загинали':'dead', c)}</span>
+      ${why?`<span style="color:${col}">⚠ ${why}${out}</span>`:''}
+    </div>`;
+  }).join('');
+  const lastC = mvCheck(last);
   el.innerHTML = `<div class="mvr ${age<=2?'fresh':'stale'}">
-    <span>📰 ${BG()?'Последни данни от МВР':'Latest MVR data'}: ${last.date} · ${age} ${BG()?'дни':'d'}</span>
+    <span>📰 ${BG()?'Последни данни от МВР':'Latest MVR data'}: ${last.date} · ${age} ${BG()?'дни':'d'}${lastC.kind!=='ok'?' ⚠':''}</span>
     <span class="mvr-n">${last.injured!=null?last.injured+' '+(BG()?'ранени':'injured'):''}
       ${last.dead!=null?' · '+last.dead+' '+(BG()?'загинали':'dead'):''}</span>
     <span class="mvr-reg">${reg.active
-      ? (BG()?'режим активен ×':'regime on ×')+reg.mult.toFixed(2)
-      : (BG()?'режимът спи':'regime idle')}</span>
+      ? (BG()?'режим ×':'regime ×')+reg.mult.toFixed(2)+(BG()?' · от '+reg.n+' чисти дни':' · '+reg.n+' clean days')
+      : (BG()?'режимът спи — под 3 чисти дни':'regime idle — under 3 clean days')}</span>
+    ${nProb?`<div style="width:100%;margin-top:8px;font-size:.85em;color:#fbbf24">⚠ ${BG()?'Проблемни дни от последните 7: ':'Problem days in last 7: '}${nProb}</div>`:''}
+    <div style="width:100%">${rows}</div>
   </div>`;
 }
