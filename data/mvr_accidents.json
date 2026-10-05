@@ -1,12 +1,23 @@
 {
-  "updated": "2026-10-04T15:11:02.997031+03:00",
+  "updated": "2026-10-05T17:21:06.934088+03:00",
   "status": "live_news",
   "source": "Google News RSS — дневни МВР справки (backfill v5)",
   "note": "Дневен брой от новинарски RSS (МВР справка), автоматично парснат.",
   "mvr_frozen_since": "2026-05-05",
   "mvr_news_url": "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp",
-  "days_count": 105,
+  "days_count": 106,
   "days": [
+    {
+      "date": "2026-10-04",
+      "source": "news",
+      "ptp": 28,
+      "dead": 4,
+      "injured": 30,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Четирима души са загинали при катастрофи през изминалото денонощие - Утро Русе"
+    },
     {
       "date": "2026-10-03",
       "source": "news",
