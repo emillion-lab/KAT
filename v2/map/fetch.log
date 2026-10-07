@@ -1,0 +1,7 @@
+отговор, ключове: ['accidents', 'totalCount', 'returnedCount', 'statistics', 'appliedFilters']
+катастрофи общо: 29014
+полета на запис: ['bgS2005X', 'bgS2005Y', 'wgS84X', 'wgS84Y', 'diedCount', 'injuredCount', 'participantCount', 'crashType', 'crashDate', 'crashDateTime', 'ptpPlace', 'ptpPlaceCharacteristic', 'ptpRoadClass', 'year', 'region', 'hourOfDay', 'dayOfWeek', 'month', 'latitude', 'longitude', 'municipality', 'location', 'day', 'isMajor', 'tempC', 'precipMm', 'coco', 'weatherType', 'stationId', 'stationName', 'stationDistanceKm', 'allowedSpeedAtLocation', 'streetName', 'weatherStation']
+пример: {"bgS2005X": 385263.6775000002, "bgS2005Y": 4697126.664000001, "wgS84X": 25.96705203501057, "wgS84Y": 3.484989377337085, "diedCount": 0, "injuredCount": 0, "participantCount": 1, "crashType": 1376, "crashDate": "2025-10-07T00:00:00", "crashDateTime": "2025-10-07T00:10:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "СТАРА ЗАГОРА", "hourOfDay": 0, "dayOfWeek": 2, "month": 10, "latitude": 42.41797043, "longitude": 25.60543973, "municipality": "СТАРА ЗАГОРА", "location": "ГР.СТАРА ЗАГОРА", "day": 7, "isMajor": false, "tempC": 11.4, "precipMm": 0, "coco"
+София: 7410 | дати 2025-10-07 … 2026-10-06 | поле за дата: crashDate
+по месеци: [('2025-10', 465), ('2025-11', 526), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 159)]
+PM сензори в София (24ч): 293
