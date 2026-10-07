@@ -77,16 +77,47 @@ def pm24():
     return list(out.values())
 
 
+def minify(acc):
+    """[lat, lon, 'YYYY-MM-DDTHH:MM', ранени, загинали, улица] — компактно за картата."""
+    rows = []
+    for r in acc:
+        rows.append([round(float(r["latitude"]), 5), round(float(r["longitude"]), 5),
+                     str(r.get("crashDateTime") or r.get("crashDate") or "")[:16],
+                     int(r.get("injuredCount") or 0), int(r.get("diedCount") or 0),
+                     (r.get("streetName") or r.get("location") or "").strip()])
+    rows.sort(key=lambda x: x[2])
+    return rows
+
+
+def append_pm_history(pm, path):
+    """Трупа дневни снимки: {дата: {sensor_id: pm25}} + регистър на местата."""
+    try:
+        h = json.load(open(path, encoding="utf-8"))
+    except (FileNotFoundError, ValueError):
+        h = {"note": "24ч средни PM2.5 от sensor.community, снимка веднъж дневно", "sensors": {}, "days": {}}
+    day = (date.today() - timedelta(days=1)).isoformat()  # 24ч прозорецът е основно вчерашният ден
+    h["days"][day] = {str(s["id"]): s["pm25"] for s in pm}
+    for s in pm:
+        h["sensors"][str(s["id"])] = [s["lat"], s["lon"]]
+    json.dump(h, open(path, "w", encoding="utf-8"), ensure_ascii=False)
+    print(f"PM история: {len(h['days'])} дни")
+
+
 if __name__ == "__main__":
-    end = sys.argv[2] if len(sys.argv) > 2 else (date.today() - timedelta(days=1)).isoformat()
+    end = sys.argv[2] if len(sys.argv) > 2 else date.today().isoformat()
     start = sys.argv[1] if len(sys.argv) > 1 else (date.today() - timedelta(days=365)).isoformat()
     import os
     os.makedirs(OUT, exist_ok=True)
+    stamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     acc, dkey = accidents(start, end)
-    json.dump({"source": "katastrofi.bg (данни МВР)", "fetched": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    json.dump({"source": "katastrofi.bg (данни МВР)", "fetched": stamp,
                "start": start, "end": end, "date_field": dkey, "accidents": acc},
               open(f"{OUT}/accidents_sofia.json", "w", encoding="utf-8"), ensure_ascii=False)
+    json.dump({"source": "katastrofi.bg (данни МВР)", "fetched": stamp,
+               "fields": ["lat", "lon", "datetime", "injured", "died", "street"], "rows": minify(acc)},
+              open(f"{OUT}/accidents_sofia.min.json", "w", encoding="utf-8"), ensure_ascii=False,
+              separators=(",", ":"))
     pm = pm24()
-    snap = {"source": "sensor.community data.24h.json", "fetched": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "sensors": pm}
+    snap = {"source": "sensor.community data.24h.json", "fetched": stamp, "sensors": pm}
     json.dump(snap, open(f"{OUT}/pm24_latest.json", "w", encoding="utf-8"), ensure_ascii=False)
+    append_pm_history(pm, f"{OUT}/pm24_history.json")
