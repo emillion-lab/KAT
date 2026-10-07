@@ -1,9 +1,10 @@
 name: KAT v2 map data
 on:
+  schedule: [{ cron: '17 5 * * *' }]
   workflow_dispatch:
     inputs:
       start: { description: 'от (празно = преди 365 дни)', default: '' }
-      end:   { description: 'до (празно = вчера)', default: '' }
+      end:   { description: 'до (празно = днес)', default: '' }
 permissions:
   contents: write
 jobs:
