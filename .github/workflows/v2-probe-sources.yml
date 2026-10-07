@@ -1,0 +1,16 @@
+name: KAT v2 probe sources
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 v2/probe_sources.py 2>&1 | tee v2/sources.txt
+      - if: always()
+        run: |
+          git config user.name ci; git config user.email ci@kat
+          git add v2/sources.txt && git commit -m "v2 probe sources [skip ci]" || echo "no change"
+          git pull --rebase || true
+          git push
