@@ -1,0 +1,59 @@
+=== katastrofi.bg ===
+200 text/html 41314
+scripts: ['/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', 'https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js', 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js', './js/main.js']
+  /cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js: 1239 chars
+  https://unpkg.com/leaflet@1.9.4/dist/leaflet.js: 147552 chars
+  https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js: 33724 chars
+  https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js: 204948 chars
+  ./js/main.js: 4216 chars
+кандидати:
+   data-cfemail
+   data-sources-list
+   data-summary
+   data-summary__item
+   data-summary__label
+   data-summary__value
+   dataset
+   datasets
+   datasets.${t}
+   datasets.${t}.elements.${e}
+   datasets.${t}.transitions.${e}
+   export-btn
+   export-controls
+   exports
+   http://www.w3.org/2000/svg
+   https://leafletjs.com
+
+=== опит на кандидати ===
+200 text/html                      https://katastrofi.bg/data-cfemail
+    '<!DOCTYPE html>\n<html lang="bg">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    \n    <!-- Primary Meta Tags -->\n    <title>Анализ на пътнотранспортни произшествия в България | Интерактивна карта и статистики</title>\n    <meta name="ti'
+200 text/html                      https://katastrofi.bg/data-sources-list
+    '<!DOCTYPE html>\n<html lang="bg">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    \n    <!-- Primary Meta Tags -->\n    <title>Анализ на пътнотранспортни произшествия в България | Интерактивна карта и статистики</title>\n    <meta name="ti'
+200 text/html                      https://katastrofi.bg/data-summary
+    '<!DOCTYPE html>\n<html lang="bg">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    \n    <!-- Primary Meta Tags -->\n    <title>Анализ на пътнотранспортни произшествия в България | Интерактивна карта и статистики</title>\n    <meta name="ti'
+200 text/html                      https://katastrofi.bg/data-summary__item
+    '<!DOCTYPE html>\n<html lang="bg">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    \n    <!-- Primary Meta Tags -->\n    <title>Анализ на пътнотранспортни произшествия в България | Интерактивна карта и статистики</title>\n    <meta name="ti'
+200 text/html                      https://katastrofi.bg/data-summary__label
+    '<!DOCTYPE html>\n<html lang="bg">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    \n    <!-- Primary Meta Tags -->\n    <title>Анализ на пътнотранспортни произшествия в България | Интерактивна карта и статистики</title>\n    <meta name="ti'
+200 text/html                      https://katastrofi.bg/data-summary__value
+    '<!DOCTYPE html>\n<html lang="bg">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    \n    <!-- Primary Meta Tags -->\n    <title>Анализ на пътнотранспортни произшествия в България | Интерактивна карта и статистики</title>\n    <meta name="ti'
+200 text/html                      https://katastrofi.bg/dataset
+    '<!DOCTYPE html>\n<html lang="bg">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    \n    <!-- Primary Meta Tags -->\n    <title>Анализ на пътнотранспортни произшествия в България | Интерактивна карта и статистики</title>\n    <meta name="ti'
+200 text/html                      https://katastrofi.bg/datasets
+    '<!DOCTYPE html>\n<html lang="bg">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    \n    <!-- Primary Meta Tags -->\n    <title>Анализ на пътнотранспортни произшествия в България | Интерактивна карта и статистики</title>\n    <meta name="ti'
+ERR https://katastrofi.bg/datasets.t HTTP Error 404: Not Found
+ERR https://katastrofi.bg/datasets.t.elements.e HTTP Error 404: Not Found
+ERR https://katastrofi.bg/datasets.t.transitions.e HTTP Error 404: Not Found
+200 text/html                      https://katastrofi.bg/export-btn
+    '<!DOCTYPE html>\n<html lang="bg">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    \n    <!-- Primary Meta Tags -->\n    <title>Анализ на пътнотранспортни произшествия в България | Интерактивна карта и статистики</title>\n    <meta name="ti'
+200 text/html                      https://katastrofi.bg/export-controls
+    '<!DOCTYPE html>\n<html lang="bg">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    \n    <!-- Primary Meta Tags -->\n    <title>Анализ на пътнотранспортни произшествия в България | Интерактивна карта и статистики</title>\n    <meta name="ti'
+200 text/html                      https://katastrofi.bg/exports
+    '<!DOCTYPE html>\n<html lang="bg">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    \n    <!-- Primary Meta Tags -->\n    <title>Анализ на пътнотранспортни произшествия в България | Интерактивна карта и статистики</title>\n    <meta name="ti'
+
+=== sensor.community, София (текущи) ===
+200 записи=1115 сензори=511 с PM2.5=271
+типове: ['BME280', 'BMP280', 'DHT22', 'PMS5003', 'SDS011', 'SHT30', 'SHT31']
+
+=== архив sensor.community ===
+ERR The read operation timed out
