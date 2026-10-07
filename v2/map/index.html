@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KAT v2 — Прах и катастрофи</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root { --bg:#f6f5f2; --fg:#1d1d1f; --muted:#6b6b70; --card:#ffffffee; --line:#d9d7d2; --accent:#c2410c; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#141416; --fg:#ececee; --muted:#9a9aa2; --card:#1e1e22ee; --line:#34343a; --accent:#fb923c; }
+  }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--fg);
+    font:14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  #map { position:absolute; inset:0; }
+  .panel { position:absolute; z-index:1000; left:10px; right:10px; top:10px; max-width:420px;
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 12px;
+    backdrop-filter: blur(6px); }
+  .panel h1 { font-size:15px; margin:0 0 6px; }
+  .panel h1 small { font-weight:400; color:var(--muted); }
+  .row { display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin:6px 0; }
+  select, input[type=date] { font:inherit; padding:5px 6px; border-radius:8px; border:1px solid var(--line);
+    background:var(--bg); color:var(--fg); }
+  label.t { display:inline-flex; gap:4px; align-items:center; padding:4px 8px; border:1px solid var(--line);
+    border-radius:999px; cursor:pointer; user-select:none; }
+  .stats { display:flex; gap:14px; margin-top:4px; }
+  .stats b { font-size:17px; display:block; }
+  .stats span { color:var(--muted); font-size:12px; }
+  .note { color:var(--muted); font-size:12px; margin-top:6px; }
+  .warn { color:var(--accent); }
+  details summary { cursor:pointer; color:var(--muted); font-size:12px; margin-top:6px; }
+  .legend { position:absolute; z-index:1000; right:10px; bottom:22px; background:var(--card);
+    border:1px solid var(--line); border-radius:10px; padding:8px 10px; font-size:12px; }
+  .legend i { display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:6px; vertical-align:-2px; }
+  .leaflet-popup-content { font:13px/1.4 inherit; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<div class="panel" id="panel">
+  <h1>Прах и катастрофи — София <small>v2 чернова</small></h1>
+  <div class="row">
+    <select id="period">
+      <option value="1">Един ден</option>
+      <option value="7">Последните 7 дни</option>
+      <option value="30" selected>Последните 30 дни</option>
+      <option value="90">Последните 90 дни</option>
+      <option value="365">Цялата година</option>
+    </select>
+    <input type="date" id="day" hidden>
+  </div>
+  <div class="row">
+    <label class="t"><input type="checkbox" id="tHeat" checked> Гъстота</label>
+    <label class="t"><input type="checkbox" id="tPts"> Точки</label>
+    <label class="t"><input type="checkbox" id="tPm" checked> Прах PM2.5</label>
+  </div>
+  <div class="stats">
+    <div><b id="sN">–</b><span>катастрофи</span></div>
+    <div><b id="sI">–</b><span>ранени</span></div>
+    <div><b id="sD">–</b><span>загинали</span></div>
+    <div><b id="sR">–</b><span>на ден</span></div>
+  </div>
+  <div class="note" id="range"></div>
+  <details>
+    <summary>Какво гледам</summary>
+    <div class="note">
+      Катастрофите са от katastrofi.bg (данни на МВР), с час и координати.
+      Прахът е 24-часова средна стойност от гражданските сензори на sensor.community.
+      <br><span class="warn">Прахът засега е само последното денонощие.</span> Историята се трупа всеки ден,
+      така че след няколко седмици ще може да се сравнява ден по ден. Наслагването показва къде е и
+      двете — не доказва причина: катастрофите са гъсти там, където е гъст трафикът, а там е и прахът.
+    </div>
+  </details>
+</div>
+
+<div class="legend" id="legend">
+  <div style="margin-bottom:4px"><b>PM2.5, µg/m³ (24ч)</b></div>
+  <div><i style="background:#50a050"></i>0–10 добро</div>
+  <div><i style="background:#c8c83c"></i>10–20 задоволително</div>
+  <div><i style="background:#f0a020"></i>20–25 умерено</div>
+  <div><i style="background:#e0502a"></i>25–50 лошо</div>
+  <div><i style="background:#a0225a"></i>50+ много лошо</div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<script>
+(async function () {
+  const map = L.map('map', { preferCanvas: true, zoomControl: false }).setView([42.69, 23.33], 12);
+  L.control.zoom({ position: 'bottomleft' }).addTo(map);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19, attribution: '&copy; OpenStreetMap &copy; CARTO | ПТП: katastrofi.bg/МВР | PM: sensor.community'
+  }).addTo(map);
+
+  const $ = id => document.getElementById(id);
+  const [acc, pm] = await Promise.all([
+    fetch('accidents_sofia.min.json').then(r => r.json()),
+    fetch('pm24_latest.json').then(r => r.json()).catch(() => ({ sensors: [] }))
+  ]);
+  const rows = acc.rows; // [lat, lon, 'YYYY-MM-DDTHH:MM', injured, died, street]
+  const lastDay = rows.length ? rows[rows.length - 1][2].slice(0, 10) : null;
+  $('day').value = lastDay; $('day').max = lastDay; $('day').min = rows.length ? rows[0][2].slice(0, 10) : '';
+
+  const pmColor = v => v < 10 ? '#50a050' : v < 20 ? '#c8c83c' : v < 25 ? '#f0a020' : v < 50 ? '#e0502a' : '#a0225a';
+  const pmLayer = L.layerGroup(pm.sensors.map(s =>
+    L.circleMarker([s.lat, s.lon], { radius: 8, color: '#0006', weight: 1, fillColor: pmColor(s.pm25), fillOpacity: .8 })
+      .bindPopup(`<b>PM2.5 ${s.pm25}</b> µg/m³<br>PM10 ${s.pm10 ?? '–'}<br>сензор #${s.id} (${s.type})<br>24ч до ${pm.fetched?.slice(0, 16).replace('T', ' ')} UTC`)
+  ));
+  let heat = null, pts = L.layerGroup();
+
+  const addDays = (d, n) => { const x = new Date(d + 'T12:00:00Z'); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
+  const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  function render() {
+    const p = +$('period').value;
+    $('day').hidden = p !== 1;
+    let from, to;
+    if (p === 1) { from = to = $('day').value || lastDay; }
+    else { to = lastDay; from = addDays(lastDay, -(p - 1)); }
+    const sel = rows.filter(r => { const d = r[2].slice(0, 10); return d >= from && d <= to; });
+
+    if (heat) map.removeLayer(heat);
+    heat = L.heatLayer(sel.map(r => [r[0], r[1], 0.5 + Math.min(r[3], 4) * 0.25 + r[4] * 1.5]),
+      { radius: p === 1 ? 22 : 16, blur: p === 1 ? 18 : 14, maxZoom: 15, minOpacity: .25 });
+    if ($('tHeat').checked) heat.addTo(map);
+
+    pts.clearLayers();
+    sel.forEach(r => {
+      const c = r[4] ? '#b91c1c' : r[3] ? '#ea580c' : '#57534e';
+      L.circleMarker([r[0], r[1]], { radius: r[4] ? 6 : r[3] ? 4.5 : 3.5, color: c, weight: 1, fillColor: c, fillOpacity: .75 })
+        .bindPopup(`<b>${r[2].replace('T', ' ')}</b><br>${esc(r[5] || 'без улица')}<br>ранени ${r[3]} · загинали ${r[4]}`)
+        .addTo(pts);
+    });
+    if ($('tPts').checked && !map.hasLayer(pts)) pts.addTo(map);
+    if (!$('tPts').checked && map.hasLayer(pts)) map.removeLayer(pts);
+    if ($('tPm').checked && !map.hasLayer(pmLayer)) pmLayer.addTo(map);
+    if (!$('tPm').checked && map.hasLayer(pmLayer)) map.removeLayer(pmLayer);
+
+    const inj = sel.reduce((a, r) => a + r[3], 0), died = sel.reduce((a, r) => a + r[4], 0);
+    const days = p === 1 ? 1 : p;
+    $('sN').textContent = sel.length; $('sI').textContent = inj; $('sD').textContent = died;
+    $('sR').textContent = (sel.length / days).toFixed(1);
+    $('range').innerHTML = (from === to ? from : `${from} → ${to}`) +
+      ` · средно за годината ${(rows.length / 365).toFixed(1)} на ден` +
+      (lastDay ? ` · последни данни: ${lastDay}` : '');
+  }
+
+  ['period', 'day', 'tHeat', 'tPts', 'tPm'].forEach(id => $(id).addEventListener('change', render));
+  render();
+})().catch(e => {
+  document.getElementById('range').innerHTML = '<span class="warn">Грешка при зареждане: ' + e.message + '</span>';
+});
+</script>
+</body>
+</html>
