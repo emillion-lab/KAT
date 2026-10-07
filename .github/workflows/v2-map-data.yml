@@ -1,0 +1,24 @@
+name: KAT v2 map data
+on:
+  workflow_dispatch:
+    inputs:
+      start: { description: 'от (празно = преди 365 дни)', default: '' }
+      end:   { description: 'до (празно = вчера)', default: '' }
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch
+        run: |
+          ARGS=""
+          if [ -n "${{ github.event.inputs.start }}" ]; then ARGS="${{ github.event.inputs.start }} ${{ github.event.inputs.end }}"; fi
+          python3 v2/fetch_map_data.py $ARGS 2>&1 | tee v2/map/fetch.log || true
+      - if: always()
+        run: |
+          git config user.name ci; git config user.email ci@kat
+          git add v2/map/ && git commit -m "v2 map data [skip ci]" || echo "no change"
+          git pull --rebase || true
+          git push
