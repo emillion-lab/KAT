@@ -1,0 +1,23 @@
+name: KAT v2 link (traffic ↔ accidents ↔ claims)
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  link:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -q pandas numpy statsmodels openpyxl
+      - name: Fetch raw
+        run: python3 v2/fetch_link_data.py 2>&1 | tee v2/raw_fetch.log
+      - name: Analyze (if present)
+        run: if [ -f v2/link_analysis.py ]; then python3 v2/link_analysis.py 2>&1 | tee v2/link_run.log; fi
+      - if: always()
+        run: |
+          git config user.name ci; git config user.email ci@kat
+          git add v2/ && git commit -m "v2 link [skip ci]" || echo "no change"
+          git pull --rebase || true
+          git push
