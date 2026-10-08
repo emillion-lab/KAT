@@ -1,0 +1,28 @@
+{
+ "T1": {
+  "trend_pct_per_year": 2.53,
+  "p": 0.0138,
+  "ratio_2015_19": 9.13,
+  "ratio_2021_23": 10.5,
+  "claims_growth_pct": 21.7,
+  "ptp_growth_pct": 3.5,
+  "veh_growth_pct": 33.1
+ },
+ "T2": {
+  "days": 465,
+  "from": "2021-01-01",
+  "to": "2022-04-12",
+  "count_irr": 0.895,
+  "count_p": 0.0147,
+  "share_or": 1.317,
+  "share_p": 0.0447,
+  "corr_raw": -0.061
+ },
+ "T3": {
+  "months": 19,
+  "rho_count": 0.627,
+  "p_count": 0.004,
+  "rho_share": -0.425,
+  "p_share": 0.0699
+ }
+}
