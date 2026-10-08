@@ -1,8 +1,8 @@
 отговор, ключове: ['accidents', 'totalCount', 'returnedCount', 'statistics', 'appliedFilters']
-катастрофи общо: 29013
+катастрофи общо: 29031
 полета на запис: ['bgS2005X', 'bgS2005Y', 'wgS84X', 'wgS84Y', 'diedCount', 'injuredCount', 'participantCount', 'crashType', 'crashDate', 'crashDateTime', 'ptpPlace', 'ptpPlaceCharacteristic', 'ptpRoadClass', 'year', 'region', 'hourOfDay', 'dayOfWeek', 'month', 'latitude', 'longitude', 'municipality', 'location', 'day', 'isMajor', 'tempC', 'precipMm', 'coco', 'weatherType', 'stationId', 'stationName', 'stationDistanceKm', 'allowedSpeedAtLocation', 'streetName', 'weatherStation']
 пример: {"bgS2005X": 236224.87320000026, "bgS2005Y": 4708542.087300001, "wgS84X": 24.628563376242386, "wgS84Y": 2.1353496344267624, "diedCount": 0, "injuredCount": 0, "participantCount": 1, "crashType": 1375, "crashDate": "2025-10-08T00:00:00", "crashDateTime": "2025-10-08T03:27:00", "ptpPlace": 2, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "СОФИЙСКА", "hourOfDay": 3, "dayOfWeek": 3, "month": 10, "latitude": 42.48430167, "longitude": 23.79068667, "municipality": "КОСТЕНЕЦ", "location": "", "day": 8, "isMajor": false, "tempC": 5.9, "precipMm": 0, "coco": null, "weatherType"
-София: 7408 | дати 2025-10-08 … 2026-10-08 | поле за дата: crashDate
-по месеци: [('2025-10', 444), ('2025-11', 526), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 178)]
-PM сензори в София (24ч): 293
+София: 7414 | дати 2025-10-08 … 2026-10-08 | поле за дата: crashDate
+по месеци: [('2025-10', 444), ('2025-11', 526), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 184)]
+PM сензори в София (24ч): 291
 PM история: 2 дни
