@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-11T21:44:31.554093Z",
+ "generated": "2026-10-12T00:58:02.309212Z",
  "days": [
   {
    "total": 20,
@@ -183,6 +183,16 @@
    "date": "2026-10-04",
    "url": "https://www.bta.bg/bg/news/bulgaria/1217586-chetirima-dushi-sa-zaginali-pri-katastrofi-prez-izminaloto-denonoshtie",
    "published": "2026-10-05"
+  },
+  {
+   "total": 2,
+   "dead": 0,
+   "injured": 36,
+   "sofia_serious": 2,
+   "sofia_sentence": "В София са регистрирани две тежки катастрофи, при които няма загинали, а двама души са ранени.",
+   "date": "2026-10-10",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1222132-trima-dushi-sa-zaginali-pri-katastrofi-v-stranata-prez-izminaloto-denonoshtie",
+   "published": "2026-10-11"
   }
  ]
 }
