@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-15T20:38:34.848568Z",
+ "generated": "2026-10-15T23:25:14.548494Z",
  "days": [
   {
    "total": 20,
@@ -200,6 +200,14 @@
    "date": "2026-10-12",
    "url": "https://www.bta.bg/bg/news/bulgaria/1223267-edin-chovek-e-zaginal-a-24-ma-sa-raneni-pri-katastrofi-prez-izminaloto-denonosh",
    "published": "2026-10-13"
+  },
+  {
+   "total": 19,
+   "dead": 0,
+   "injured": 26,
+   "date": "2026-10-14",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1225001-pri-katastrofi-v-stranata-prez-poslednoto-denonoshtie-sa-raneni-26-dushi-saobsh",
+   "published": "2026-10-15"
   }
  ]
 }
