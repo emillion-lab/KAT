@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-16T06:18:49.373503Z",
+ "generated": "2026-10-16T11:36:45.814816Z",
  "days": [
   {
    "total": 20,
@@ -208,6 +208,16 @@
    "date": "2026-10-14",
    "url": "https://www.bta.bg/bg/news/bulgaria/1225001-pri-katastrofi-v-stranata-prez-poslednoto-denonoshtie-sa-raneni-26-dushi-saobsh",
    "published": "2026-10-15"
+  },
+  {
+   "total": 21,
+   "dead": 0,
+   "injured": 18,
+   "sofia_light": 24,
+   "sofia_sentence": "В София са станали 24 леки катастрофи, при които няма загинали и пострадали.",
+   "date": "2026-10-15",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1225888-prez-izminaloto-denonoshtie-pri-katastrofi-v-stranata-sa-raneni-18-dushi-nyama-",
+   "published": "2026-10-16"
   }
  ]
 }
