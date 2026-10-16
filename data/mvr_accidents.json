@@ -1,12 +1,23 @@
 {
-  "updated": "2026-10-15T14:16:08.039426+03:00",
+  "updated": "2026-10-16T14:10:52.789412+03:00",
   "status": "live_news",
   "source": "Google News RSS — дневни МВР справки (backfill v5)",
   "note": "Дневен брой от новинарски RSS (МВР справка), автоматично парснат.",
   "mvr_frozen_since": "2026-05-05",
   "mvr_news_url": "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp",
-  "days_count": 116,
+  "days_count": 117,
   "days": [
+    {
+      "date": "2026-10-15",
+      "source": "news",
+      "ptp": 21,
+      "dead": 1,
+      "injured": 18,
+      "serious": 21,
+      "light": null,
+      "sofia_light": null,
+      "headline": "21 тежки катастрофи в страната за денонощие, 18 души са ранени - BurgasMedia"
+    },
     {
       "date": "2026-10-14",
       "source": "news",
