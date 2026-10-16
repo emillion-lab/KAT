@@ -1,3 +1,2 @@
-unexpected Kp format, sample: [{'time_tag': '2026-10-08T00:00:00', 'Kp': 1.0, 'a_running': 4, 'station_count': 8}]
-fetch failed: https://api.open-meteo.com/v1/forecast?latitude=42.6977&longitude=23.3219&current=surface_pressure HTTP Error 429: Too Many Requests
-записан ред: {'date': '2026-10-16', 'kp_max': None, 'kp_avg': None, 'pressure_hpa': None, 'moon_age_days': 4.6, 'dow': 3, 'accidents': None}
+unexpected Kp format, sample: [{'time_tag': '2026-10-09T00:00:00', 'Kp': 3.33, 'a_running': 18, 'station_count': 8}]
+записан ред: {'date': '2026-10-17', 'kp_max': None, 'kp_avg': None, 'pressure_hpa': 954.4, 'moon_age_days': 5.59, 'dow': 4, 'accidents': None}
