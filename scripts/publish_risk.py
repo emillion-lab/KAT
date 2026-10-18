@@ -103,7 +103,20 @@ def main():
            '&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,snowfall_sum,'
            'wind_speed_10m_max,sunshine_duration,daylight_duration'
            '&forecast_days=4&timezone=Europe%2FSofia')
-    d = json.load(urllib.request.urlopen(url, timeout=60))['daily']
+    # Open-Meteo понякога връща 429/5xx на споделените IP-та на runner-ите.
+    # Три опита; ако всички паднат — старият risk_now.json остава, рънът е
+    # зелен с warning. Остаряването се вижда по полето 'generated'.
+    import time, sys
+    for attempt in range(3):
+        try:
+            d = json.load(urllib.request.urlopen(url, timeout=60))['daily']
+            break
+        except Exception as e:
+            print(f"open-meteo опит {attempt+1}: {e}")
+            time.sleep(20 * (attempt + 1))
+    else:
+        print("::warning::Open-Meteo недостъпно — risk_now.json остава старият")
+        sys.exit(0)
 
     days = []
     for i in range(4):
