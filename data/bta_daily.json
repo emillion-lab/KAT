@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-19T01:48:00.886488Z",
+ "generated": "2026-10-19T07:04:25.700220Z",
  "days": [
   {
    "total": 20,
@@ -218,6 +218,20 @@
    "date": "2026-10-15",
    "url": "https://www.bta.bg/bg/news/bulgaria/1225888-prez-izminaloto-denonoshtie-pri-katastrofi-v-stranata-sa-raneni-18-dushi-nyama-",
    "published": "2026-10-16"
+  },
+  {
+   "total": 15,
+   "dead": 2,
+   "date": "2026-10-17",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1227364-iztichane-na-gorivo-ima-na-157-iya-kilometar-na-avtomagistrala-trakiya-v-posok",
+   "published": "2026-10-18"
+  },
+  {
+   "total": 15,
+   "dead": 2,
+   "date": "2026-10-18",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1227285-prezidentat-iliyana-yotova-shte-vrachi-golyamata-nagrada-na-tseremoniyata-lekar",
+   "published": "2026-10-19"
   }
  ]
 }
