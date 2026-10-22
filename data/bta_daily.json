@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-22T06:03:32.458445Z",
+ "generated": "2026-10-22T11:26:53.854370Z",
  "days": [
   {
    "total": 20,
@@ -232,6 +232,17 @@
    "date": "2026-10-18",
    "url": "https://www.bta.bg/bg/news/bulgaria/1227285-prezidentat-iliyana-yotova-shte-vrachi-golyamata-nagrada-na-tseremoniyata-lekar",
    "published": "2026-10-19"
+  },
+  {
+   "total": 17,
+   "dead": 2,
+   "injured": 19,
+   "sofia_light": 39,
+   "sofia_serious": 2,
+   "sofia_sentence": "В София са настъпили две тежки и 39 леки произшествия, при които има двама ранени.",
+   "date": "2026-10-21",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1229914-pri-17-katastrofi-v-stranata-prez-izminaloto-denonoshtie-sa-zaginali-dvama-dushi",
+   "published": "2026-10-22"
   }
  ]
 }
