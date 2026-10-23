@@ -1,50 +1,50 @@
 {
- "generated": "2026-10-23T22:05+03:00",
+ "generated": "2026-10-24T02:03+03:00",
  "source": "KAT · МВР 2015–2025",
  "days": [
   {
-   "date": "2026-10-23",
-   "car": 9,
-   "harm": 6,
-   "car_mult": 1.43,
-   "harm_mult": 1.195,
-   "rain": 13.0,
-   "snow": 0,
-   "tmin": 5.8,
-   "tmax": 14.2
-  },
-  {
    "date": "2026-10-24",
-   "car": 3,
-   "harm": 5,
-   "car_mult": 0.949,
-   "harm_mult": 1.113,
+   "car": 2,
+   "harm": 6,
+   "car_mult": 0.926,
+   "harm_mult": 1.123,
    "rain": 0,
    "snow": 0,
-   "tmin": 2.5,
-   "tmax": 17.1
+   "tmin": 3.0,
+   "tmax": 17.2
   },
   {
    "date": "2026-10-25",
    "car": 1,
    "harm": 4,
-   "car_mult": 0.817,
-   "harm_mult": 0.995,
+   "car_mult": 0.798,
+   "harm_mult": 1.004,
    "rain": 0,
    "snow": 0,
-   "tmin": 7.2,
-   "tmax": 16.3
+   "tmin": 8.1,
+   "tmax": 16.4
   },
   {
    "date": "2026-10-26",
-   "car": 9,
-   "harm": 5,
-   "car_mult": 1.349,
-   "harm_mult": 1.097,
-   "rain": 1.1,
+   "car": 8,
+   "harm": 3,
+   "car_mult": 1.225,
+   "harm_mult": 0.939,
+   "rain": 2.9,
    "snow": 0,
-   "tmin": 6.7,
-   "tmax": 13.6
+   "tmin": 6.4,
+   "tmax": 15.0
+  },
+  {
+   "date": "2026-10-27",
+   "car": 5,
+   "harm": 4,
+   "car_mult": 1.038,
+   "harm_mult": 1.043,
+   "rain": 0,
+   "snow": 0,
+   "tmin": 2.4,
+   "tmax": 12.6
   }
  ]
 }
