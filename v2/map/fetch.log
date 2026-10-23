@@ -1,8 +1,8 @@
 отговор, ключове: ['accidents', 'totalCount', 'returnedCount', 'statistics', 'appliedFilters']
-катастрофи общо: 29370
+катастрофи общо: 29411
 полета на запис: ['bgS2005X', 'bgS2005Y', 'wgS84X', 'wgS84Y', 'diedCount', 'injuredCount', 'participantCount', 'crashType', 'crashDate', 'crashDateTime', 'ptpPlace', 'ptpPlaceCharacteristic', 'ptpRoadClass', 'year', 'region', 'hourOfDay', 'dayOfWeek', 'month', 'latitude', 'longitude', 'municipality', 'location', 'day', 'isMajor', 'tempC', 'precipMm', 'coco', 'weatherType', 'stationId', 'stationName', 'stationDistanceKm', 'allowedSpeedAtLocation', 'streetName', 'weatherStation']
-пример: {"bgS2005X": 608377.7922999999, "bgS2005Y": 4840140.453199999, "wgS84X": 27.978396701640005, "wgS84Y": 5.503212168506999, "diedCount": 0, "injuredCount": 2, "participantCount": 4, "crashType": 1364, "crashDate": "2025-10-22T00:00:00", "crashDateTime": "2025-10-22T02:15:00", "ptpPlace": 2, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "ДОБРИЧ", "hourOfDay": 2, "dayOfWeek": 3, "month": 10, "latitude": 43.70637424, "longitude": 28.34515847, "municipality": "ГЕНЕРАЛ ТОШЕВО", "location": "", "day": 22, "isMajor": true, "tempC": 11.6, "precipMm": 0, "coco": null, "weatherTy
-София: 7499 | дати 2025-10-22 … 2026-10-22 | поле за дата: crashDate
-по месеци: [('2025-10', 187), ('2025-11', 526), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 526)]
+пример: {"bgS2005X": 194053.84460000042, "bgS2005Y": 4690865.741800001, "wgS84X": 24.25032068408719, "wgS84Y": 1.7536267715749538, "diedCount": 0, "injuredCount": 0, "participantCount": 1, "crashType": 1376, "crashDate": "2025-10-23T00:00:00", "crashDateTime": "2025-10-23T00:25:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "КЮСТЕНДИЛ", "hourOfDay": 0, "dayOfWeek": 4, "month": 10, "latitude": 42.30994068, "longitude": 23.28796253, "municipality": "САПАРЕВА БАНЯ", "location": "С.САПАРЕВО", "day": 23, "isMajor": false, "tempC": 10.7, "precipMm": 0, "coco": nu
+София: 7520 | дати 2025-10-23 … 2026-10-23 | поле за дата: crashDate
+по месеци: [('2025-10', 172), ('2025-11', 526), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 562)]
 PM сензори в София (24ч): 279
-PM история: 16 дни
+PM история: 17 дни
