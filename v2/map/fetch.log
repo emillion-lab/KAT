@@ -1,8 +1,8 @@
 отговор, ключове: ['accidents', 'totalCount', 'returnedCount', 'statistics', 'appliedFilters']
-катастрофи общо: 29411
+катастрофи общо: 29348
 полета на запис: ['bgS2005X', 'bgS2005Y', 'wgS84X', 'wgS84Y', 'diedCount', 'injuredCount', 'participantCount', 'crashType', 'crashDate', 'crashDateTime', 'ptpPlace', 'ptpPlaceCharacteristic', 'ptpRoadClass', 'year', 'region', 'hourOfDay', 'dayOfWeek', 'month', 'latitude', 'longitude', 'municipality', 'location', 'day', 'isMajor', 'tempC', 'precipMm', 'coco', 'weatherType', 'stationId', 'stationName', 'stationDistanceKm', 'allowedSpeedAtLocation', 'streetName', 'weatherStation']
-пример: {"bgS2005X": 194053.84460000042, "bgS2005Y": 4690865.741800001, "wgS84X": 24.25032068408719, "wgS84Y": 1.7536267715749538, "diedCount": 0, "injuredCount": 0, "participantCount": 1, "crashType": 1376, "crashDate": "2025-10-23T00:00:00", "crashDateTime": "2025-10-23T00:25:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "КЮСТЕНДИЛ", "hourOfDay": 0, "dayOfWeek": 4, "month": 10, "latitude": 42.30994068, "longitude": 23.28796253, "municipality": "САПАРЕВА БАНЯ", "location": "С.САПАРЕВО", "day": 23, "isMajor": false, "tempC": 10.7, "precipMm": 0, "coco": nu
-София: 7520 | дати 2025-10-23 … 2026-10-23 | поле за дата: crashDate
-по месеци: [('2025-10', 172), ('2025-11', 526), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 562)]
-PM сензори в София (24ч): 279
-PM история: 17 дни
+пример: {"bgS2005X": 202844.52099999972, "bgS2005Y": 4762448.8353, "wgS84X": 24.329152773383353, "wgS84Y": 1.8331861101797486, "diedCount": 0, "injuredCount": 0, "participantCount": 2, "crashType": 1368, "crashDate": "2025-10-24T00:00:00", "crashDateTime": "2025-10-24T00:01:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "СОФИЙСКА", "hourOfDay": 0, "dayOfWeek": 5, "month": 10, "latitude": 42.9567034, "longitude": 23.35702928, "municipality": "СВОГЕ", "location": "ГР.СВОГЕ", "day": 24, "isMajor": false, "tempC": 13.8, "precipMm": 0, "coco": null, "weatherType
+София: 7501 | дати 2025-10-24 … 2026-10-23 | поле за дата: crashDate
+по месеци: [('2025-10', 145), ('2025-11', 526), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 570)]
+PM сензори в София (24ч): 276
+PM история: 18 дни
