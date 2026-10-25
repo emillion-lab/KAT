@@ -1,8 +1,8 @@
 отговор, ключове: ['accidents', 'totalCount', 'returnedCount', 'statistics', 'appliedFilters']
-катастрофи общо: 29348
+катастрофи общо: 29266
 полета на запис: ['bgS2005X', 'bgS2005Y', 'wgS84X', 'wgS84Y', 'diedCount', 'injuredCount', 'participantCount', 'crashType', 'crashDate', 'crashDateTime', 'ptpPlace', 'ptpPlaceCharacteristic', 'ptpRoadClass', 'year', 'region', 'hourOfDay', 'dayOfWeek', 'month', 'latitude', 'longitude', 'municipality', 'location', 'day', 'isMajor', 'tempC', 'precipMm', 'coco', 'weatherType', 'stationId', 'stationName', 'stationDistanceKm', 'allowedSpeedAtLocation', 'streetName', 'weatherStation']
-пример: {"bgS2005X": 202844.52099999972, "bgS2005Y": 4762448.8353, "wgS84X": 24.329152773383353, "wgS84Y": 1.8331861101797486, "diedCount": 0, "injuredCount": 0, "participantCount": 2, "crashType": 1368, "crashDate": "2025-10-24T00:00:00", "crashDateTime": "2025-10-24T00:01:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "СОФИЙСКА", "hourOfDay": 0, "dayOfWeek": 5, "month": 10, "latitude": 42.9567034, "longitude": 23.35702928, "municipality": "СВОГЕ", "location": "ГР.СВОГЕ", "day": 24, "isMajor": false, "tempC": 13.8, "precipMm": 0, "coco": null, "weatherType
-София: 7501 | дати 2025-10-24 … 2026-10-23 | поле за дата: crashDate
-по месеци: [('2025-10', 145), ('2025-11', 526), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 570)]
-PM сензори в София (24ч): 276
-PM история: 18 дни
+пример: {"bgS2005X": 306503.0756999999, "bgS2005Y": 4810178.534399999, "wgS84X": 25.259337298348772, "wgS84Y": 2.771721554335851, "diedCount": 0, "injuredCount": 1, "participantCount": 5, "crashType": 1379, "crashDate": "2025-10-25T00:00:00", "crashDateTime": "2025-10-25T01:32:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "ПЛЕВЕН", "hourOfDay": 1, "dayOfWeek": 6, "month": 10, "latitude": 43.41952046, "longitude": 24.60976099, "municipality": "ПЛЕВЕН", "location": "ГР.ПЛЕВЕН", "day": 25, "isMajor": true, "tempC": 11.1, "precipMm": 0, "coco": null, "weatherT
+София: 7483 | дати 2025-10-25 … 2026-10-23 | поле за дата: crashDate
+по месеци: [('2025-10', 127), ('2025-11', 526), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 570)]
+PM сензори в София (24ч): 277
+PM история: 19 дни
