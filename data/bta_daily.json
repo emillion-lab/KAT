@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-26T00:56:35.529246Z",
+ "generated": "2026-10-26T05:38:10.188143Z",
  "days": [
   {
    "total": 20,
@@ -252,6 +252,20 @@
    "date": "2026-10-23",
    "url": "https://www.bta.bg/bg/news/bulgaria/1231794-pri-katastrofi-prez-izminaloto-denonoshtie-sa-raneni-26-dushi",
    "published": "2026-10-24"
+  },
+  {
+   "total": 12,
+   "injured": 20,
+   "date": "2026-10-24",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1231126-balgariya-izbira-svoya-sedmi-prezident",
+   "published": "2026-10-25"
+  },
+  {
+   "total": 12,
+   "injured": 20,
+   "date": "2026-10-25",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1230145-sedmoto-izdanie-na-sofiyskiya-ikonomicheski-forum-postavya-balgariya-v-tsentara-",
+   "published": "2026-10-26"
   }
  ]
 }
