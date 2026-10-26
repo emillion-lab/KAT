@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-26T05:38:10.188143Z",
+ "generated": "2026-10-26T11:36:24.229564Z",
  "days": [
   {
    "total": 20,
@@ -263,8 +263,12 @@
   {
    "total": 12,
    "injured": 20,
+   "sofia_light": 13,
+   "sofia_serious": 3,
+   "sofia_injured": 4,
+   "sofia_sentence": "В София са регистрирани три тежки и 13 леки пътнотранспортни произшествия, при които са ранени четирима души.",
    "date": "2026-10-25",
-   "url": "https://www.bta.bg/bg/news/bulgaria/1230145-sedmoto-izdanie-na-sofiyskiya-ikonomicheski-forum-postavya-balgariya-v-tsentara-",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1232660-pri-12-katastrofi-prez-izminaloto-denonoshtie-sa-postradali-20-dushi",
    "published": "2026-10-26"
   }
  ]
