@@ -1,17 +1,28 @@
 {
-  "updated": "2026-10-26T15:43:37.437141+03:00",
+  "updated": "2026-10-27T14:58:13.482396+03:00",
   "status": "live_news",
   "source": "Google News RSS — дневни МВР справки (backfill v5)",
   "note": "Дневен брой от новинарски RSS (МВР справка), автоматично парснат.",
   "mvr_frozen_since": "2026-05-05",
   "mvr_news_url": "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp",
-  "days_count": 127,
+  "days_count": 128,
   "days": [
+    {
+      "date": "2026-10-26",
+      "source": "news",
+      "ptp": 15,
+      "dead": null,
+      "injured": 16,
+      "serious": 15,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Общо 16 души са ранени при 15 пътнотранспортни произшествия в страната през изминалото денонощие, съобщават от МВР на сайта си - Утро Русе"
+    },
     {
       "date": "2026-10-25",
       "source": "news",
       "ptp": 12,
-      "dead": null,
+      "dead": 1,
       "injured": 20,
       "serious": 12,
       "light": null,
