@@ -1,8 +1,8 @@
 отговор, ключове: ['accidents', 'totalCount', 'returnedCount', 'statistics', 'appliedFilters']
-катастрофи общо: 29142
+катастрофи общо: 29436
 полета на запис: ['bgS2005X', 'bgS2005Y', 'wgS84X', 'wgS84Y', 'diedCount', 'injuredCount', 'participantCount', 'crashType', 'crashDate', 'crashDateTime', 'ptpPlace', 'ptpPlaceCharacteristic', 'ptpRoadClass', 'year', 'region', 'hourOfDay', 'dayOfWeek', 'month', 'latitude', 'longitude', 'municipality', 'location', 'day', 'isMajor', 'tempC', 'precipMm', 'coco', 'weatherType', 'stationId', 'stationName', 'stationDistanceKm', 'allowedSpeedAtLocation', 'streetName', 'weatherStation']
-пример: {"bgS2005X": 154463.5767000001, "bgS2005Y": 4833730.4309, "wgS84X": 23.895365233904826, "wgS84Y": 1.395413553848495, "diedCount": 0, "injuredCount": 0, "participantCount": 1, "crashType": 5893, "crashDate": "2025-10-27T00:00:00", "crashDateTime": "2025-10-27T00:05:00", "ptpPlace": 2, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "ВИДИН", "hourOfDay": 0, "dayOfWeek": 1, "month": 10, "latitude": 43.5764076, "longitude": 22.72070527, "municipality": "РУЖИНЦИ", "location": "", "day": 27, "isMajor": false, "tempC": 11.2, "precipMm": 0, "coco": null, "weatherType": 2, "stat
-София: 7451 | дати 2025-10-27 … 2026-10-23 | поле за дата: crashDate
-по месеци: [('2025-10', 95), ('2025-11', 526), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 570)]
-PM сензори в София (24ч): 276
-PM история: 21 дни
+пример: {"bgS2005X": 434259.0306000002, "bgS2005Y": 4704219.353499999, "wgS84X": 26.407830796307405, "wgS84Y": 3.928605319567189, "diedCount": 0, "injuredCount": 0, "participantCount": 1, "crashType": 1376, "crashDate": "2025-10-28T00:00:00", "crashDateTime": "2025-10-28T02:00:00", "ptpPlace": 2, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "СЛИВЕН", "hourOfDay": 2, "dayOfWeek": 2, "month": 10, "latitude": 42.48753849, "longitude": 26.20006301, "municipality": "СЛИВЕН", "location": "", "day": 28, "isMajor": false, "tempC": 9.2, "precipMm": 0, "coco": null, "weatherType": 4, 
+София: 7522 | дати 2025-10-28 … 2026-10-28 | поле за дата: crashDate
+по месеци: [('2025-10', 71), ('2025-11', 526), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 665)]
+PM сензори в София (24ч): 278
+PM история: 22 дни
