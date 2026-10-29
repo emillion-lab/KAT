@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-29T04:36:11.884837Z",
+ "generated": "2026-10-29T11:17:17.428141Z",
  "days": [
   {
    "total": 20,
@@ -270,6 +270,16 @@
    "date": "2026-10-25",
    "url": "https://www.bta.bg/bg/news/bulgaria/1232660-pri-12-katastrofi-prez-izminaloto-denonoshtie-sa-postradali-20-dushi",
    "published": "2026-10-26"
+  },
+  {
+   "total": 15,
+   "dead": 0,
+   "injured": 19,
+   "sofia_light": 24,
+   "sofia_sentence": "В София са настъпили 24 леки произшествия, при които няма загинали и ранени.",
+   "date": "2026-10-28",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1235102-trima-sa-zaginali-a-19-sa-raneni-pri-katastrofi-v-stranata-prez-izminaloto-deno",
+   "published": "2026-10-29"
   }
  ]
 }
