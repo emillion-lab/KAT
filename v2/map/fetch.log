@@ -1,8 +1,8 @@
 отговор, ключове: ['accidents', 'totalCount', 'returnedCount', 'statistics', 'appliedFilters']
-катастрофи общо: 29451
+катастрофи общо: 29507
 полета на запис: ['bgS2005X', 'bgS2005Y', 'wgS84X', 'wgS84Y', 'diedCount', 'injuredCount', 'participantCount', 'crashType', 'crashDate', 'crashDateTime', 'ptpPlace', 'ptpPlaceCharacteristic', 'ptpRoadClass', 'year', 'region', 'hourOfDay', 'dayOfWeek', 'month', 'latitude', 'longitude', 'municipality', 'location', 'day', 'isMajor', 'tempC', 'precipMm', 'coco', 'weatherType', 'stationId', 'stationName', 'stationDistanceKm', 'allowedSpeedAtLocation', 'streetName', 'weatherStation']
-пример: {"bgS2005X": 388385.4293999998, "bgS2005Y": 4769580.308599999, "wgS84X": 25.995123501480716, "wgS84Y": 3.513257945278466, "diedCount": 0, "injuredCount": 0, "participantCount": 1, "crashType": 1375, "crashDate": "2025-10-29T00:00:00", "crashDateTime": "2025-10-29T00:05:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "ВЕЛИКО ТЪРНОВО", "hourOfDay": 0, "dayOfWeek": 3, "month": 10, "latitude": 43.07072137, "longitude": 25.62907207, "municipality": "ВЕЛИКО ТЪРНОВО", "location": "ГР.ВЕЛИКО ТЪРНОВО", "day": 29, "isMajor": false, "tempC": 9.2, "precipMm": 0,
-София: 7522 | дати 2025-10-29 … 2026-10-29 | поле за дата: crashDate
-по месеци: [('2025-10', 50), ('2025-11', 526), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 686)]
-PM сензори в София (24ч): 275
-PM история: 23 дни
+пример: {"bgS2005X": 313575.24569999985, "bgS2005Y": 4666740.350099999, "wgS84X": 25.32284746070145, "wgS84Y": 2.8357688329613557, "diedCount": 0, "injuredCount": 0, "participantCount": 2, "crashType": 1371, "crashDate": "2025-10-30T00:00:00", "crashDateTime": "2025-10-30T00:45:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "ПЛОВДИВ", "hourOfDay": 0, "dayOfWeek": 4, "month": 10, "latitude": 42.13061183, "longitude": 24.7444131, "municipality": "ПЛОВДИВ", "location": "ГР.ПЛОВДИВ", "day": 30, "isMajor": false, "tempC": 7.9, "precipMm": 0, "coco": null, "weath
+София: 7528 | дати 2025-10-30 … 2026-10-30 | поле за дата: crashDate
+по месеци: [('2025-10', 39), ('2025-11', 526), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 703)]
+PM сензори в София (24ч): 273
+PM история: 24 дни
