@@ -1,2 +1,2 @@
-unexpected Kp format, sample: [{'time_tag': '2026-10-22T00:00:00', 'Kp': 2.33, 'a_running': 9, 'station_count': 6}]
-записан ред: {'date': '2026-10-29', 'kp_max': None, 'kp_avg': None, 'pressure_hpa': 955.3, 'moon_age_days': 17.64, 'dow': 3, 'accidents': None}
+unexpected Kp format, sample: [{'time_tag': '2026-10-23T00:00:00', 'Kp': 1.67, 'a_running': 6, 'station_count': 8}]
+записан ред: {'date': '2026-10-30', 'kp_max': None, 'kp_avg': None, 'pressure_hpa': 956.6, 'moon_age_days': 18.64, 'dow': 4, 'accidents': None}
