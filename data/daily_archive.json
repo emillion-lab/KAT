@@ -864,7 +864,16 @@
       "moon_age_days": 18.64,
       "dow": 4,
       "accidents": null
+    },
+    {
+      "date": "2026-10-31",
+      "kp_max": null,
+      "kp_avg": null,
+      "pressure_hpa": 957.1,
+      "moon_age_days": 19.64,
+      "dow": 5,
+      "accidents": null
     }
   ],
-  "updated": "2026-10-30T00:40:00.567657+00:00"
+  "updated": "2026-10-31T00:31:57.867612+00:00"
 }
