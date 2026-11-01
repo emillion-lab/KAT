@@ -1,8 +1,8 @@
 отговор, ключове: ['accidents', 'totalCount', 'returnedCount', 'statistics', 'appliedFilters']
-катастрофи общо: 29472
+катастрофи общо: 29394
 полета на запис: ['bgS2005X', 'bgS2005Y', 'wgS84X', 'wgS84Y', 'diedCount', 'injuredCount', 'participantCount', 'crashType', 'crashDate', 'crashDateTime', 'ptpPlace', 'ptpPlaceCharacteristic', 'ptpRoadClass', 'year', 'region', 'hourOfDay', 'dayOfWeek', 'month', 'latitude', 'longitude', 'municipality', 'location', 'day', 'isMajor', 'tempC', 'precipMm', 'coco', 'weatherType', 'stationId', 'stationName', 'stationDistanceKm', 'allowedSpeedAtLocation', 'streetName', 'weatherStation']
-пример: {"bgS2005X": 389600.5061999997, "bgS2005Y": 4803517.9771, "wgS84X": 26.00605019000494, "wgS84Y": 3.5242607948784546, "diedCount": 0, "injuredCount": 1, "participantCount": 3, "crashType": 1366, "crashDate": "2025-10-31T00:00:00", "crashDateTime": "2025-10-31T00:35:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "ВЕЛИКО ТЪРНОВО", "hourOfDay": 0, "dayOfWeek": 5, "month": 10, "latitude": 43.37641278, "longitude": 25.63720282, "municipality": "ПОЛСКИ ТРЪМБЕШ", "location": "ГР.ПОЛСКИ ТРЪМБЕШ", "day": 31, "isMajor": true, "tempC": 8.8, "precipMm": 0, "coco
-София: 7518 | дати 2025-10-31 … 2026-10-30 | поле за дата: crashDate
-по месеци: [('2025-10', 22), ('2025-11', 526), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 710)]
-PM сензори в София (24ч): 272
-PM история: 25 дни
+пример: {"bgS2005X": 297975.27969999984, "bgS2005Y": 4840714.733100001, "wgS84X": 25.18276424486988, "wgS84Y": 2.694492916093074, "diedCount": 0, "injuredCount": 0, "participantCount": 1, "crashType": 1365, "crashDate": "2025-11-01T00:00:00", "crashDateTime": "2025-11-01T01:30:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "ПЛЕВЕН", "hourOfDay": 1, "dayOfWeek": 6, "month": 11, "latitude": 43.69196294, "longitude": 24.49314637, "municipality": "ГУЛЯНЦИ", "location": "С.ГИГЕН", "day": 1, "isMajor": false, "tempC": 11.1, "precipMm": 0, "coco": null, "weatherTy
+София: 7496 | дати 2025-11-01 … 2026-10-30 | поле за дата: crashDate
+по месеци: [('2025-11', 526), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 710)]
+PM сензори в София (24ч): 273
+PM история: 26 дни
