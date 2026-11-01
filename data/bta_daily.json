@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-01T01:40:20.767215Z",
+ "generated": "2026-11-01T08:13:17.201460Z",
  "days": [
   {
    "total": 20,
@@ -280,6 +280,14 @@
    "date": "2026-10-28",
    "url": "https://www.bta.bg/bg/news/bulgaria/1235102-trima-sa-zaginali-a-19-sa-raneni-pri-katastrofi-v-stranata-prez-izminaloto-deno",
    "published": "2026-10-29"
+  },
+  {
+   "total": 12,
+   "dead": 1,
+   "injured": 14,
+   "date": "2026-10-31",
+   "url": "https://www.bta.bg/bg/news/bulgaria/1237268-edin-chovek-e-zaginal-a-14-sa-raneni-pri-katastrofi-v-stranata-prez-izminaloto-",
+   "published": "2026-11-01"
   }
  ]
 }
