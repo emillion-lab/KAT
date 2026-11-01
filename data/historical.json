@@ -174,7 +174,7 @@
     "11_nov": 1.06,
     "12_dec": 1.1
   },
-  "updated": "2026-10-01T12:11:45.623380+00:00",
+  "updated": "2026-11-01T12:28:07.165685+00:00",
   "last_complete_year": 2024,
   "api_sources": {
     "worldbank": {
@@ -182,8 +182,8 @@
       "latest": "2019"
     },
     "who": {
-      "records": 1,
-      "latest": "2021"
+      "records": 0,
+      "latest": null
     },
     "eurostat": {
       "records": 0,
