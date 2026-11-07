@@ -1,3 +1,2 @@
-unexpected Kp format, sample: [{'time_tag': '2026-10-30T00:00:00', 'Kp': 1.67, 'a_running': 6, 'station_count': 8}]
-fetch failed: https://api.open-meteo.com/v1/forecast?latitude=42.6977&longitude=23.3219&current=surface_pressure <urlopen error _ssl.c:1063: The handshake operation timed out>
-записан ред: {'date': '2026-11-06', 'kp_max': None, 'kp_avg': None, 'pressure_hpa': None, 'moon_age_days': 25.67, 'dow': 4, 'accidents': None}
+unexpected Kp format, sample: [{'time_tag': '2026-10-31T00:00:00', 'Kp': 3.0, 'a_running': 15, 'station_count': 8}]
+записан ред: {'date': '2026-11-07', 'kp_max': None, 'kp_avg': None, 'pressure_hpa': 959.0, 'moon_age_days': 26.64, 'dow': 5, 'accidents': None}
