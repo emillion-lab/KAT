@@ -1,12 +1,23 @@
 {
-  "updated": "2026-11-09T18:55:54.117211+03:00",
+  "updated": "2026-11-10T17:43:27.523644+03:00",
   "status": "live_news",
   "source": "Google News RSS — дневни МВР справки (backfill v5)",
   "note": "Дневен брой от новинарски RSS (МВР справка), автоматично парснат.",
   "mvr_frozen_since": "2026-05-05",
   "mvr_news_url": "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp",
-  "days_count": 141,
+  "days_count": 142,
   "days": [
+    {
+      "date": "2026-11-09",
+      "source": "news",
+      "ptp": 14,
+      "dead": null,
+      "injured": null,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "За денонощие в Пернишко са регистрирани 14 катастрофи, няма пострадали - Утро Русе"
+    },
     {
       "date": "2026-11-08",
       "source": "news",
