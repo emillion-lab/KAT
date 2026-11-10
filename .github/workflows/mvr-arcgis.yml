@@ -1,6 +1,7 @@
 name: MVR Data Scraper
 on:
-  schedule: [{ cron: '15 * * * *' }]
+  # cron на час спрян на 10.11.2026: ArcGIS търсенето намира 0 услуги във
+  # всички 12 папки (data/discovery.txt). Остава за ръчно пускане.
   workflow_dispatch:
 permissions:
   contents: write
