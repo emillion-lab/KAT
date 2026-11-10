@@ -101,6 +101,10 @@ function windEffect(kmh){
   if(kmh==null) return 1.0;
   return kmh>=60?1.09 : kmh>=40?1.04 : 1.0;
 }
+/* Видимост в метри — най-ниската сутрешна (05–10 ч.) от Open-Meteo hourly.
+   До 10.11.2026 тук винаги идваше null и мъглата беше мъртъв код (×1.00).
+   ВНИМАНИЕ: коефициентите НЕ са калибрирани върху 4018-те дни, за разлика
+   от дъжда и облачността — в архива няма видимост. Кандидат за v2. */
 function fogEffect(vis){
   if(vis==null) return 1.0;
   return vis<200?1.22 : vis<500?1.12 : vis<1000?1.05 : 1.0;
@@ -160,19 +164,42 @@ function regimeEffect(mon){
     .sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
   if(days.length < 3) return off;
   const logs = [];
+  let clipped = 0;
   for(const e of days){
     const dt = new Date(e.date+'T12:00:00');
     if((Date.now()-dt)/86400000 > 7) continue;
-    const exp = baseDaily() * WD_FACTOR[dt.getDay()] * MO_FACTOR[dt.getMonth()];
-    const act = mvTotal(e);
-    if(!exp || !act || act<=0) continue;
-    logs.push(Math.log(act/exp));
+    const sp = mvSpike(e);
+    if(!sp) continue;
+    logs.push(sp.capped);
+    if(sp.clipped) clipped++;
   }
   if(logs.length < 3) return off;
   const avg = logs.reduce((a,b)=>a+b,0)/logs.length;
   const w = REG_W[mon-1];
   return {mult: Math.max(0.85, Math.min(1.18, Math.exp(w*avg))),
-          active:true, n:logs.length, w};
+          active:true, n:logs.length, w, clipped};
+}
+
+/* Таван на един ден в режима: ×2 над очакваното. В чистите дни от новинарския
+   поток (92 дни, юли–ноември 2026) най-високият е ×2.08, 99-ият перцентил
+   ×1.99 — таванът почти не пипа обичайните дни. Пази от масово събитие
+   (10.11.2026, АМ „Тракия“: 11 загинали, 48 ранени в мъгла): това е единичен
+   удар, не „режим“. Без таван едно такова денонощие през януари (тегло 0.45)
+   вдига риска с ~10% за цяла седмица. Отдолу таван не трябва — прагът
+   ≥10 ранени в mvTotal вече ограничава спада до около ×0.35. */
+const REG_CAP   = Math.log(2);
+const MASS_DEAD = 10;     // най-много в потока до момента: 9 (26.09.2026)
+
+function mvSpike(m){
+  const act = mvTotal(m);
+  if(act==null || act<=0) return null;
+  const dt  = new Date(m.date+'T12:00:00');
+  const exp = baseDaily() * WD_FACTOR[dt.getDay()] * MO_FACTOR[dt.getMonth()];
+  if(!exp) return null;
+  const raw = Math.log(act/exp);
+  const capped = Math.min(REG_CAP, raw);
+  return {raw, capped, ratio: act/exp, clipped: raw > REG_CAP,
+          mass: raw > REG_CAP || (m.dead!=null && m.dead>=MASS_DEAD && m.dead<50)};
 }
 
 /* ---------- проверка на новинарския поток ----------
@@ -207,6 +234,9 @@ function mvCheck(m){
   if(m.dead>0 && /(без|няма) загинал/.test(t)) r.push('nodead');
   if(r.length) return {kind:'bad', use:false, why:r};
   if(m.injured==null) return {kind:'gap', use:false, why:['noinj']};
+  /* „411 са загинали от началото на годината“ (30.10.2026) минаваше като
+     дневно число. Ранените от такова заглавие са верни и остават. */
+  if(m.dead!=null && m.dead>=50) return {kind:'gap', use:true, why:['cumdead']};
   if(m.dead==null && /загина|жертв/.test(t) && !/(без|няма) загинал/.test(t))
     return {kind:'gap', use:true, why:['nodeadnum']};
   return {kind:'ok', use:true, why:[]};
