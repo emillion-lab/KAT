@@ -42,6 +42,7 @@ async function fetchWeather(){
   const u = 'https://api.open-meteo.com/v1/forecast?latitude=42.6975&longitude=23.3242'
     + '&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,snowfall_sum,'
     + 'wind_speed_10m_max,weather_code,sunshine_duration,daylight_duration'
+    + '&hourly=visibility'
     + '&forecast_days=4&timezone=Europe%2FSofia';
   const r = await fetch(u);
   if(!r.ok) throw new Error('метео '+r.status);
@@ -58,14 +59,32 @@ async function fetchMvr(){
   return j.days || [];
 }
 
+/* Дневните данни на Open-Meteo нямат видимост — взема се най-ниската почасова
+   между 05 и 10 ч.: сутрешната мъгла, в която стана верижната катастрофа на
+   АМ „Тракия“ (10.11.2026, ~07 ч.). Без почасови данни остава null → ×1.00. */
+function morningVis(date){
+  const h = S.wx?.hourly;
+  if(!date || !h?.time || !h.visibility) return null;
+  let min = null;
+  for(let j=0;j<h.time.length;j++){
+    const t = h.time[j], v = h.visibility[j];
+    if(v==null || !t.startsWith(date)) continue;
+    const hr = +t.slice(11,13);
+    if(hr<5 || hr>10) continue;
+    if(min==null || v<min) min = v;
+  }
+  return min;
+}
+
 function envFor(i){
   const d = S.wx?.daily; if(!d) return {};
   const sun = (d.sunshine_duration?.[i]!=null && d.daylight_duration?.[i])
             ? d.sunshine_duration[i]/d.daylight_duration[i] : null;
   return { rain:d.precipitation_sum?.[i] ?? 0, snow:d.snowfall_sum?.[i] ?? 0,
            tmin:d.temperature_2m_min?.[i], tmax:d.temperature_2m_max?.[i],
-           wind:d.wind_speed_10m_max?.[i], sun, vis:null };
+           wind:d.wind_speed_10m_max?.[i], sun, vis:morningVis(d.time?.[i]) };
 }
+const visTxt = v => v==null ? '—' : v<1000 ? Math.round(v)+' m' : (v/1000).toFixed(0)+' km';
 
 function render(){
   const k = T();
@@ -123,6 +142,7 @@ function renderFactors(env){
       iceEffect(env.tmin,(env.rain||0)+(env.snow||0))],
     ['💨', BG()?'ВЯТЪР':'WIND',
       env.wind!=null ? env.wind.toFixed(0)+' km/h' : '—', windEffect(env.wind)],
+    ['🌫️', BG()?'МЪГЛА 05–10 Ч.':'FOG 5–10 AM', visTxt(env.vis), fogEffect(env.vis)],
     ['📅', BG()?'ДЕН ОТ СЕДМИЦАТА':'WEEKDAY',
       k.days[now.getDay()].slice(0,3), WD_FACTOR[now.getDay()]],
     ['🗓️', BG()?'МЕСЕЦ':'MONTH',
@@ -161,6 +181,7 @@ function renderForecast(k){
         <span>🌡️ ${env.tmin?.toFixed(0)}–${env.tmax?.toFixed(0)}°</span>
         <span>💨 ${env.wind?.toFixed(0)} km/h</span>
         <span>☁️ ${env.sun!=null?Math.round((1-env.sun)*100)+'%':'—'}</span>
+        ${env.vis!=null && env.vis<1000 ? `<span>🌫️ ${visTxt(env.vis)}</span>` : ''}
       </div></div>`);
   }
   $('forecast').innerHTML = rows.join('');
@@ -173,11 +194,13 @@ const MV_WHY = {
   bg:{fire:'статия за пожари, не за ПТП', region:'областно заглавие',
       inj:'ранените не са в заглавието', dead:'загиналите не са в заглавието',
       nodead:'пише „без загинали“, а има число', noinj:'няма брой ранени',
-      nodeadnum:'загиналите не са разчетени', nohead:'няма заглавие'},
+      nodeadnum:'загиналите не са разчетени', nohead:'няма заглавие',
+      cumdead:'загиналите са от началото на годината, не за денонощието'},
   en:{fire:'fire report, not crashes', region:'regional headline',
       inj:'injured not in headline', dead:'deaths not in headline',
       nodead:'says "no deaths" but has a number', noinj:'no injured count',
-      nodeadnum:'deaths not parsed', nohead:'no headline'}
+      nodeadnum:'deaths not parsed', nohead:'no headline',
+      cumdead:'deaths are year-to-date, not daily'}
 };
 function renderMvr(){
   const el = $('mvr'); if(!el) return;
@@ -193,14 +216,23 @@ function renderMvr(){
   const num = (v,u,c) => v==null ? '—' : (c.kind==='bad' ? `<s>${v}</s>` : v)+' '+u;
   const rows = recent.map(d=>{
     const c = mvCheck(d);
-    const col = c.kind==='bad' ? '#ef4444' : c.kind==='gap' ? '#fbbf24' : 'transparent';
-    const bgc = c.kind==='bad' ? 'rgba(239,68,68,.10)' : c.kind==='gap' ? 'rgba(251,191,36,.08)' : 'transparent';
+    /* Масово събитие не е грешка в данните — числата са верни, но идват от
+       един удар. Показва се в жълто, с колко е над очакваното и дали таванът
+       е хванал деня. Не се „поправя“ от новините. */
+    const sp  = c.use ? mvSpike(d) : null;
+    const big = !!(sp && sp.mass);
+    const col = c.kind==='bad' ? '#ef4444' : (c.kind==='gap'||big) ? '#fbbf24' : 'transparent';
+    const bgc = c.kind==='bad' ? 'rgba(239,68,68,.10)' : (c.kind==='gap'||big) ? 'rgba(251,191,36,.08)' : 'transparent';
     const why = c.why.map(w=>W[w]||w).join(' · ');
     const out = c.use ? '' : (BG()?' — не влиза в риска':' — excluded from risk');
+    const spTxt = !big ? '' : BG()
+      ? `⚠ масово събитие · ×${sp.ratio.toFixed(1)} ранени спрямо очакваното${sp.clipped?' · в режима влиза до ×2':''}`
+      : `⚠ mass event · ×${sp.ratio.toFixed(1)} injured vs expected${sp.clipped?' · capped at ×2 in regime':''}`;
     return `<div title="${esc(d.headline)}" style="display:flex;flex-wrap:wrap;gap:2px 10px;padding:4px 8px;margin-top:4px;border-left:3px solid ${col};background:${bgc};border-radius:4px;font-size:.85em">
       <span style="opacity:.7">${d.date.slice(5)}</span>
       <span>${num(d.injured, BG()?'ранени':'injured', c)} · ${num(d.dead, BG()?'загинали':'dead', c)}</span>
       ${why?`<span style="color:${col}">⚠ ${why}${out}</span>`:''}
+      ${spTxt?`<span style="color:#fbbf24">${spTxt}</span>`:''}
     </div>`;
   }).join('');
   const lastC = mvCheck(last);
@@ -210,6 +242,7 @@ function renderMvr(){
       ${last.dead!=null?' · '+last.dead+' '+(BG()?'загинали':'dead'):''}</span>
     <span class="mvr-reg">${reg.active
       ? (BG()?'режим ×':'regime ×')+reg.mult.toFixed(2)+(BG()?' · от '+reg.n+' чисти дни':' · '+reg.n+' clean days')
+        + (reg.clipped ? (BG()?' · '+reg.clipped+' с таван':' · '+reg.clipped+' capped') : '')
       : (BG()?'режимът спи — под 3 чисти дни':'regime idle — under 3 clean days')}</span>
     ${nProb?`<div style="width:100%;margin-top:8px;font-size:.85em;color:#fbbf24">⚠ ${BG()?'Проблемни дни от последните 7: ':'Problem days in last 7: '}${nProb}</div>`:''}
     <div style="width:100%">${rows}</div>
