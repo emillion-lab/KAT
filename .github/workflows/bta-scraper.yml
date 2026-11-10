@@ -1,6 +1,8 @@
 name: BTA Scraper
 on:
-  schedule: [{ cron: '*/15 * * * *' }]
+  # cron */15 спрян на 10.11.2026: последният цикъл прегледа 425 статии и намери
+  # 0 нови дни, а bta_daily.json не се чете от модела (engine.js чете само
+  # mvr_accidents.json). Остава за ръчно пускане и през .run.
   workflow_dispatch:
   push:
     branches: [ main ]
