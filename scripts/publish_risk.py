@@ -58,6 +58,17 @@ def wind_f(k):
     if k is None: return 1.0
     return 1.09 if k>=60 else 1.04 if k>=40 else 1.0
 
+def fog_f(vis):
+    # Същото като fogEffect в engine.js — некалибрирано, виж бележката там
+    if vis is None: return 1.0
+    return 1.22 if vis<200 else 1.12 if vis<500 else 1.05 if vis<1000 else 1.0
+
+def morning_vis(h, date_iso):
+    """Най-ниската видимост 05–10 ч. за деня; None, ако няма почасови данни."""
+    vals = [v for t, v in zip(h.get('time') or [], h.get('visibility') or [])
+            if v is not None and t.startswith(date_iso) and 5 <= int(t[11:13]) <= 10]
+    return min(vals) if vals else None
+
 def ampl_f(tmin, tmax, sun, mon):
     if tmin is None or tmax is None: return 1.0
     if sun is not None and sun<0.6: return 1.0
@@ -102,6 +113,7 @@ def main():
     url = ('https://api.open-meteo.com/v1/forecast?latitude=42.6975&longitude=23.3242'
            '&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,snowfall_sum,'
            'wind_speed_10m_max,sunshine_duration,daylight_duration'
+           '&hourly=visibility'
            '&forecast_days=4&timezone=Europe%2FSofia')
     # Open-Meteo понякога връща 429/5xx на споделените IP-та на runner-ите.
     # Три опита; ако всички паднат — старият risk_now.json остава, рънът е
@@ -109,7 +121,8 @@ def main():
     import time, sys
     for attempt in range(3):
         try:
-            d = json.load(urllib.request.urlopen(url, timeout=60))['daily']
+            j = json.load(urllib.request.urlopen(url, timeout=60))
+            d, h = j['daily'], j.get('hourly') or {}
             break
         except Exception as e:
             print(f"open-meteo опит {attempt+1}: {e}")
@@ -128,9 +141,11 @@ def main():
         sun = (d['sunshine_duration'][i]/d['daylight_duration'][i]
                if d['sunshine_duration'][i] is not None and d['daylight_duration'][i] else None)
 
+        vis = morning_vis(h, date.isoformat())
+
         dow = (date.weekday()+1) % 7          # към getDay: 0=Нд
         mon = date.month
-        common = (ice_f(tmin, rain+snow) * wind_f(wind) * xmas_f(date)
+        common = (ice_f(tmin, rain+snow) * wind_f(wind) * fog_f(vis) * xmas_f(date)
                   * ampl_f(tmin, tmax, sun, mon)
                   * (0.809 if holiday(date) else 1.0)
                   * (0.885 if holiday(date - datetime.timedelta(days=1)) else 1.0))
@@ -142,6 +157,7 @@ def main():
             'car_mult': round(car,3), 'harm_mult': round(harm,3),
             'rain': round(rain,1), 'snow': round(snow,1),
             'tmin': tmin, 'tmax': tmax,
+            'vis': None if vis is None else round(vis),
         })
 
     out = {'generated': datetime.datetime.now(tz).isoformat(timespec='minutes'),
