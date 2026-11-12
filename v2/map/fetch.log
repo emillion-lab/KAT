@@ -1,8 +1,8 @@
 отговор, ключове: ['accidents', 'totalCount', 'returnedCount', 'statistics', 'appliedFilters']
-катастрофи общо: 28684
+катастрофи общо: 28627
 полета на запис: ['bgS2005X', 'bgS2005Y', 'wgS84X', 'wgS84Y', 'diedCount', 'injuredCount', 'participantCount', 'crashType', 'crashDate', 'crashDateTime', 'ptpPlace', 'ptpPlaceCharacteristic', 'ptpRoadClass', 'year', 'region', 'hourOfDay', 'dayOfWeek', 'month', 'latitude', 'longitude', 'municipality', 'location', 'day', 'isMajor', 'tempC', 'precipMm', 'coco', 'weatherType', 'stationId', 'stationName', 'stationDistanceKm', 'allowedSpeedAtLocation', 'streetName', 'weatherStation']
-пример: {"bgS2005X": 537862.5163000003, "bgS2005Y": 4704452.8321, "wgS84X": 27.341481449560536, "wgS84Y": 4.866007006738584, "diedCount": 0, "injuredCount": 0, "participantCount": 1, "crashType": 5892, "crashDate": "2025-11-11T00:00:00", "crashDateTime": "2025-11-11T01:18:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "БУРГАС", "hourOfDay": 1, "dayOfWeek": 2, "month": 11, "latitude": 42.49150672, "longitude": 27.46074162, "municipality": "БУРГАС", "location": "ГР.БУРГАС", "day": 11, "isMajor": false, "tempC": 14.8, "precipMm": 0, "coco": null, "weatherType"
-София: 7336 | дати 2025-11-11 … 2026-10-30 | поле за дата: crashDate
-по месеци: [('2025-11', 366), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 710)]
-PM сензори в София (24ч): 276
-PM история: 36 дни
+пример: {"bgS2005X": 195728.38850000035, "bgS2005Y": 4732083.613, "wgS84X": 24.265336958685673, "wgS84Y": 1.76878156335307, "diedCount": 0, "injuredCount": 0, "participantCount": 4, "crashType": 1370, "crashDate": "2025-11-12T00:00:00", "crashDateTime": "2025-11-12T00:20:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "СОФИЯ", "hourOfDay": 0, "dayOfWeek": 3, "month": 11, "latitude": 42.68102322, "longitude": 23.28635557, "municipality": "СТОЛИЧНА", "location": "ГР.СОФИЯ", "day": 12, "isMajor": false, "tempC": 5.8, "precipMm": 0, "coco": null, "weatherType": 
+София: 7319 | дати 2025-11-12 … 2026-10-30 | поле за дата: crashDate
+по месеци: [('2025-11', 349), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 710)]
+PM сензори в София (24ч): 278
+PM история: 37 дни
