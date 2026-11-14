@@ -1,8 +1,8 @@
 отговор, ключове: ['accidents', 'totalCount', 'returnedCount', 'statistics', 'appliedFilters']
-катастрофи общо: 28565
+катастрофи общо: 28489
 полета на запис: ['bgS2005X', 'bgS2005Y', 'wgS84X', 'wgS84Y', 'diedCount', 'injuredCount', 'participantCount', 'crashType', 'crashDate', 'crashDateTime', 'ptpPlace', 'ptpPlaceCharacteristic', 'ptpRoadClass', 'year', 'region', 'hourOfDay', 'dayOfWeek', 'month', 'latitude', 'longitude', 'municipality', 'location', 'day', 'isMajor', 'tempC', 'precipMm', 'coco', 'weatherType', 'stationId', 'stationName', 'stationDistanceKm', 'allowedSpeedAtLocation', 'streetName', 'weatherStation']
-пример: {"bgS2005X": 168024.49280000012, "bgS2005Y": 4761030.779200001, "wgS84X": 24.016935230382604, "wgS84Y": 1.518093916140358, "diedCount": 0, "injuredCount": 0, "participantCount": 1, "crashType": 1378, "crashDate": "2025-11-13T00:00:00", "crashDateTime": "2025-11-13T00:07:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "СОФИЙСКА", "hourOfDay": 0, "dayOfWeek": 4, "month": 11, "latitude": 42.92959852, "longitude": 22.93199084, "municipality": "ДРАГОМАН", "location": "ГР.ДРАГОМАН", "day": 13, "isMajor": false, "tempC": 3.2, "precipMm": 0, "coco": null, "w
-София: 7302 | дати 2025-11-13 … 2026-10-30 | поле за дата: crashDate
-по месеци: [('2025-11', 332), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 710)]
-PM сензори в София (24ч): 278
-PM история: 38 дни
+пример: {"bgS2005X": 319840.05429999996, "bgS2005Y": 4658727.0582, "wgS84X": 25.379113106496053, "wgS84Y": 2.8925049623226813, "diedCount": 0, "injuredCount": 0, "participantCount": 1, "crashType": 1376, "crashDate": "2025-11-14T00:00:00", "crashDateTime": "2025-11-14T00:05:00", "ptpPlace": 2, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "ПЛОВДИВ", "hourOfDay": 0, "dayOfWeek": 5, "month": 11, "latitude": 42.05995697, "longitude": 24.82262765, "municipality": "РОДОПИ", "location": "", "day": 14, "isMajor": false, "tempC": 8.6, "precipMm": 0, "coco": null, "weatherType": 1, "s
+София: 7280 | дати 2025-11-14 … 2026-10-30 | поле за дата: crashDate
+по месеци: [('2025-11', 310), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 710)]
+PM сензори в София (24ч): 277
+PM история: 39 дни
