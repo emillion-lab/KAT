@@ -1,8 +1,8 @@
 отговор, ключове: ['accidents', 'totalCount', 'returnedCount', 'statistics', 'appliedFilters']
-катастрофи общо: 28243
+катастрофи общо: 28167
 полета на запис: ['bgS2005X', 'bgS2005Y', 'wgS84X', 'wgS84Y', 'diedCount', 'injuredCount', 'participantCount', 'crashType', 'crashDate', 'crashDateTime', 'ptpPlace', 'ptpPlaceCharacteristic', 'ptpRoadClass', 'year', 'region', 'hourOfDay', 'dayOfWeek', 'month', 'latitude', 'longitude', 'municipality', 'location', 'day', 'isMajor', 'tempC', 'precipMm', 'coco', 'weatherType', 'stationId', 'stationName', 'stationDistanceKm', 'allowedSpeedAtLocation', 'streetName', 'weatherStation']
-пример: {"bgS2005X": 206280.02799999993, "bgS2005Y": 4732383.4681, "wgS84X": 24.35996321717926, "wgS84Y": 1.8642807499854421, "diedCount": 0, "injuredCount": 0, "participantCount": 2, "crashType": 1371, "crashDate": "2025-11-18T00:00:00", "crashDateTime": "2025-11-18T01:12:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "СОФИЯ", "hourOfDay": 1, "dayOfWeek": 2, "month": 11, "latitude": 42.68781873, "longitude": 23.41473345, "municipality": "СТОЛИЧНА", "location": "ГР.СОФИЯ", "day": 18, "isMajor": false, "tempC": 7.1, "precipMm": 0, "coco": null, "weatherType"
-София: 7220 | дати 2025-11-18 … 2026-10-30 | поле за дата: crashDate
-по месеци: [('2025-11', 250), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 710)]
+пример: {"bgS2005X": 292872.28550000023, "bgS2005Y": 4671463.998400001, "wgS84X": 25.136947907080174, "wgS84Y": 2.648280410345053, "diedCount": 0, "injuredCount": 0, "participantCount": 1, "crashType": 1376, "crashDate": "2025-11-19T00:00:00", "crashDateTime": "2025-11-19T00:00:00", "ptpPlace": 2, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "ПАЗАРДЖИК", "hourOfDay": 0, "dayOfWeek": 3, "month": 11, "latitude": 42.16791868, "longitude": 24.49246675, "municipality": "ПАЗАРДЖИК", "location": "", "day": 19, "isMajor": false, "tempC": 11.4, "precipMm": 0, "coco": null, "weatherTy
+София: 7205 | дати 2025-11-19 … 2026-10-30 | поле за дата: crashDate
+по месеци: [('2025-11', 235), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 710)]
 PM сензори в София (24ч): 279
-PM история: 43 дни
+PM история: 44 дни
