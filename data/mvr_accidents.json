@@ -1,12 +1,34 @@
 {
-  "updated": "2026-11-19T18:36:48.285014+03:00",
+  "updated": "2026-11-20T18:15:55.650168+03:00",
   "status": "live_news",
   "source": "Google News RSS — дневни МВР справки (backfill v5)",
   "note": "Дневен брой от новинарски RSS (МВР справка), автоматично парснат.",
   "mvr_frozen_since": "2026-05-05",
   "mvr_news_url": "https://boulevardbulgaria.bg/articles/martin-atanasov-mvr-tihomalkom-sprya-kartata-s-danni-za-ptp",
-  "days_count": 149,
+  "days_count": 151,
   "days": [
+    {
+      "date": "2026-11-19",
+      "source": "news",
+      "ptp": 18,
+      "dead": null,
+      "injured": 21,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "МВР: 21 души са ранени при 18 катастрофи за денонощие, двама пострадаха при пожари - ПИРИНСКО - НОВИНИ ОТ ЮГОЗАПАДНА БЪЛГАРИЯ"
+    },
+    {
+      "date": "2026-11-18",
+      "source": "news",
+      "ptp": 38,
+      "dead": null,
+      "injured": 2,
+      "serious": null,
+      "light": null,
+      "sofia_light": null,
+      "headline": "Двама ранени при 38 катастрофи в София за денонощие - Stolica.BG"
+    },
     {
       "date": "2026-11-17",
       "source": "news",
