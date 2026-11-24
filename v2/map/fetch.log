@@ -1,8 +1,8 @@
 отговор, ключове: ['accidents', 'totalCount', 'returnedCount', 'statistics', 'appliedFilters']
-катастрофи общо: 27857
+катастрофи общо: 30212
 полета на запис: ['bgS2005X', 'bgS2005Y', 'wgS84X', 'wgS84Y', 'diedCount', 'injuredCount', 'participantCount', 'crashType', 'crashDate', 'crashDateTime', 'ptpPlace', 'ptpPlaceCharacteristic', 'ptpRoadClass', 'year', 'region', 'hourOfDay', 'dayOfWeek', 'month', 'latitude', 'longitude', 'municipality', 'location', 'day', 'isMajor', 'tempC', 'precipMm', 'coco', 'weatherType', 'stationId', 'stationName', 'stationDistanceKm', 'allowedSpeedAtLocation', 'streetName', 'weatherStation']
-пример: {"bgS2005X": 222449.95210000034, "bgS2005Y": 4722469.586300001, "wgS84X": 24.504993733695894, "wgS84Y": 2.0106470440463218, "diedCount": 0, "injuredCount": 0, "participantCount": 2, "crashType": 5892, "crashDate": "2025-11-23T00:00:00", "crashDateTime": "2025-11-23T00:20:00", "ptpPlace": 2, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "СОФИЙСКА", "hourOfDay": 0, "dayOfWeek": 7, "month": 11, "latitude": 42.60469892, "longitude": 23.61660351, "municipality": "ЕЛИН ПЕЛИН", "location": "", "day": 23, "isMajor": false, "tempC": 8.5, "precipMm": 0, "coco": null, "weatherTy
-София: 7125 | дати 2025-11-23 … 2026-10-30 | поле за дата: crashDate
-по месеци: [('2025-11', 155), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 710)]
+пример: {"bgS2005X": 493973.5680999998, "bgS2005Y": 4786960.030300001, "wgS84X": 26.945677924886642, "wgS84Y": 4.46904091435558, "diedCount": 0, "injuredCount": 0, "participantCount": 1, "crashType": 1370, "crashDate": "2025-11-24T00:00:00", "crashDateTime": "2025-11-24T04:10:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "ШУМЕН", "hourOfDay": 4, "dayOfWeek": 1, "month": 11, "latitude": 43.23541127, "longitude": 26.92577965, "municipality": "ШУМЕН", "location": "ГР.ШУМЕН", "day": 24, "isMajor": false, "tempC": 5.9, "precipMm": 0, "coco": null, "weatherType"
+София: 7780 | дати 2025-11-24 … 2026-11-24 | поле за дата: crashDate
+по месеци: [('2025-11', 139), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 745), ('2026-11', 636)]
 PM сензори в София (24ч): 277
-PM история: 48 дни
+PM история: 49 дни
