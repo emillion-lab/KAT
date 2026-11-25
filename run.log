@@ -1,2 +1,1 @@
-fetch failed: https://api.open-meteo.com/v1/forecast?latitude=42.6977&longitude=23.3219&current=surface_pressure <urlopen error _ssl.c:1063: The handshake operation timed out>
-записан ред: {'date': '2026-11-24', 'kp_max': 1.0, 'kp_avg': 1.0, 'pressure_hpa': None, 'moon_age_days': 14.3, 'dow': 1, 'accidents': None}
+записан ред: {'date': '2026-11-25', 'kp_max': 3.0, 'kp_avg': 3.0, 'pressure_hpa': 961.8, 'moon_age_days': 15.25, 'dow': 2, 'accidents': None}
