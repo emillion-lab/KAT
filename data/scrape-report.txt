@@ -1,5 +1,10 @@
 Backfill: 3 дни, 1 прозореца, 4 заявки
 SDVR: 12 бюлетина в листинга
+  SDVR no-parse 2026-11-24: len=174843 occ=5
+    TAIL: обстановка 25-11-2026 Информация за състоянието на републиканските пътища към 17:49 часа на 24.11.2026 г. &nbsp; СЪСТОЯНИЕ НА АВТОМАГИСТРАЛИТЕ: A-1 Автомагистрала "Тракия" Област Бургас Движението по път АМ "Тракия" - посока Бургас (Винарско - Българово) е с временно ограничение на скоростта до 80 км/ч поради полагане на пътна маркировка. Движението се регулира от пътни знаци. До отстраняване на повредата. Движението по път АМ "Тракия" - посока Бургас (Маленово - Бургас) се осъществява с повишен
+    ATTACH: /upload/210391/Logo_MVR_transparent.png
+    IFRAME: /maps/index.html?lat=42.68275660443&amp;lng=23.368463468189&amp;zoom=17
+    IFRAME: https:/maps/index.html?lat=42.68275660443&amp;lng=23.368463468189&amp;zoom=17
   SDVR no-parse 2026-11-23: len=175391 occ=5
     TAIL: обстановка 24-11-2026 Информация за състоянието на републиканските пътища към 17:29 часа на 23.11.2026 г. &nbsp; СЪСТОЯНИЕ НА АВТОМАГИСТРАЛИТЕ: A-1 Автомагистрала "Тракия" Област Бургас Движението по път АМ "Тракия" - посока Бургас (Винарско - Българово) е с временно ограничение на скоростта до 80 км/ч поради полагане на пътна маркировка. Движението се регулира от пътни знаци. До отстраняване на повредата. Движението по път АМ "Тракия" - посока Бургас (Маленово - Бургас) се осъществява с повишен
     ATTACH: /upload/210391/Logo_MVR_transparent.png
@@ -10,5 +15,13 @@ SDVR: 12 бюлетина в листинга
     ATTACH: /upload/210391/Logo_MVR_transparent.png
     IFRAME: /maps/index.html?lat=42.68275660443&amp;lng=23.368463468189&amp;zoom=17
     IFRAME: https:/maps/index.html?lat=42.68275660443&amp;lng=23.368463468189&amp;zoom=17
-  + 2026-11-23: ПТП=None София_леки=None загинали=36 | МВР: 36 загинали по пътищата, 17 ранени при катастрофи, 64 пожара за д
-Готово: 1 нови дни, общо 154
+  + 2026-11-24: ПТП=9 София_леки=None загинали=1 | МВР: Един загинал при 62 пожара, още една жертва на пътя след 9 катаст
+  fetch fail https://news.google.com/rss/articles/CBMiXEFVX3lxTE9ucUNVc1gwellSSEVZa: HTTP Error 429: Too Many Requests
+  fetch fail https://news.google.com/rss/articles/CBMilAFBVV95cUxONWVRUlhNOHZtUzNTV: HTTP Error 429: Too Many Requests
+  fetch fail https://news.google.com/rss/articles/CBMiogFBVV95cUxORGpUWEMyNnN2ci1KY: HTTP Error 429: Too Many Requests
+  fetch fail https://news.google.com/rss/articles/CBMizgFBVV95cUxPX3YzTjNCejBVRkVDQ: HTTP Error 429: Too Many Requests
+  fetch fail https://news.google.com/rss/articles/CBMingFBVV95cUxOQnpwZUd0ckYzdURwY: HTTP Error 429: Too Many Requests
+  fetch fail https://news.google.com/rss/articles/CBMitAFBVV95cUxOSGhsanpLYm1ROUlad: HTTP Error 429: Too Many Requests
+  fetch fail https://news.google.com/rss/articles/CBMizwFBVV95cUxPUWlNSlhlNkdTdGVjQ: HTTP Error 429: Too Many Requests
+  fetch fail https://news.google.com/rss/articles/CBMijwFBVV95cUxQZkxhaVNRQTRRNTNuS: HTTP Error 429: Too Many Requests
+Готово: 1 нови дни, общо 155
