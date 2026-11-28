@@ -1,8 +1,8 @@
 отговор, ключове: ['accidents', 'totalCount', 'returnedCount', 'statistics', 'appliedFilters']
-катастрофи общо: 30240
+катастрофи общо: 30261
 полета на запис: ['bgS2005X', 'bgS2005Y', 'wgS84X', 'wgS84Y', 'diedCount', 'injuredCount', 'participantCount', 'crashType', 'crashDate', 'crashDateTime', 'ptpPlace', 'ptpPlaceCharacteristic', 'ptpRoadClass', 'year', 'region', 'hourOfDay', 'dayOfWeek', 'month', 'latitude', 'longitude', 'municipality', 'location', 'day', 'isMajor', 'tempC', 'precipMm', 'coco', 'weatherType', 'stationId', 'stationName', 'stationDistanceKm', 'allowedSpeedAtLocation', 'streetName', 'weatherStation']
-пример: {"bgS2005X": 507609.8663999997, "bgS2005Y": 4744769.025800001, "wgS84X": 27.068606726169065, "wgS84Y": 4.59240376562058, "diedCount": 0, "injuredCount": 0, "participantCount": 1, "crashType": 1375, "crashDate": "2025-11-27T00:00:00", "crashDateTime": "2025-11-27T00:00:00", "ptpPlace": 2, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "БУРГАС", "hourOfDay": 0, "dayOfWeek": 4, "month": 11, "latitude": 42.85546667, "longitude": 27.093145, "municipality": "РУЕН", "location": "", "day": 27, "isMajor": false, "tempC": 14.3, "precipMm": 0, "coco": null, "weatherType": 1, "sta
-София: 7801 | дати 2025-11-27 … 2026-11-27 | поле за дата: crashDate
-по месеци: [('2025-11', 76), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 745), ('2026-11', 720)]
-PM сензори в София (24ч): 276
-PM история: 52 дни
+пример: {"bgS2005X": 418343.53029999975, "bgS2005Y": 4856231.798599999, "wgS84X": 26.26460107595825, "wgS84Y": 3.784516984291667, "diedCount": 0, "injuredCount": 0, "participantCount": 2, "crashType": 1376, "crashDate": "2025-11-28T00:00:00", "crashDateTime": "2025-11-28T00:04:00", "ptpPlace": 1, "ptpPlaceCharacteristic": 0, "ptpRoadClass": 0, "year": 2025, "region": "РУСЕ", "hourOfDay": 0, "dayOfWeek": 5, "month": 11, "latitude": 43.8546574, "longitude": 25.98398993, "municipality": "РУСЕ", "location": "ГР.РУСЕ", "day": 28, "isMajor": false, "tempC": 7.8, "precipMm": 0, "coco": null, "weatherType": 2
+София: 7803 | дати 2025-11-28 … 2026-11-28 | поле за дата: crashDate
+по месеци: [('2025-11', 64), ('2025-12', 570), ('2026-01', 599), ('2026-02', 734), ('2026-03', 622), ('2026-04', 648), ('2026-05', 774), ('2026-06', 572), ('2026-07', 628), ('2026-08', 532), ('2026-09', 581), ('2026-10', 745), ('2026-11', 734)]
+PM сензори в София (24ч): 280
+PM история: 53 дни
